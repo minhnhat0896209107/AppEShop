@@ -1,1 +1,1 @@
-enum Role { consumer, partner, dealer }
+enum Role { consumer, seller }

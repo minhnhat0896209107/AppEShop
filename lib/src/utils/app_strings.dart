@@ -1,7 +1,6 @@
 class AppStrings {
-  static const appName = 'base_code';
+  static const appName = 'BaseCode';
   static const login = 'Đăng nhập';
-  static const signinWithGoogle = 'Đăng nhập với Google';
   static const logout = 'Đăng xuất';
   static const error = 'Lỗi';
   static const confirm = 'Xác nhận';

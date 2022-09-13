@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:base_code/src/struct/app_color.dart';
 
 final ThemeData appTheme = ThemeData(
-  colorScheme: ColorScheme.fromSwatch().copyWith(
-      primary: AppColors.primayGreen, secondary: AppColors.primayGreen),
+  colorScheme: ColorScheme.fromSwatch()
+      .copyWith(primary: AppColors.primay, secondary: AppColors.primay),
   scaffoldBackgroundColor: Colors.white,
   platform: TargetPlatform.iOS,
-  fontFamily: 'PlusJakartaSans',
   textTheme: const TextTheme(
     // used for highlight text
     bodyText1: TextStyle(

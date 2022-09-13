@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:base_code/src/manager/user_manager.dart';
 import 'package:base_code/src/struct/api_services/domain_url.dart';
 
-class BaseRepository {
-  BaseRepository() {
+class BaseApi {
+  BaseApi() {
     domain = DomainUrl.domain;
   }
 

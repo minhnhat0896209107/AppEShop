@@ -14,15 +14,15 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   @override
   Widget build(BuildContext context) {
-    final User? currentUser = context.read<UserManager>().userStream.value;
+    final User? currentUser = context.read<UserManager>().currentUser;
     return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const Text('This is Home Screen'),
             Text('${currentUser?.email}'),
             Text('${currentUser?.roles.toString()}'),
-            Text('${currentUser?.loginType.toString()}'),
             TextButton(
                 onPressed: () {
                   context.read<UserManager>().clearUser();

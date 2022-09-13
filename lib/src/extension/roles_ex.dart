@@ -5,10 +5,8 @@ extension RoleExtension on String {
     switch (this) {
       case 'consumer':
         return Role.consumer;
-      case 'partner':
-        return Role.partner;
-      case 'dealer':
-        return Role.dealer;
+      case 'seller':
+        return Role.seller;
       default:
         return null;
     }

@@ -1,7 +1,7 @@
+import 'package:base_code/src/ui/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:base_code/src/commons/screens/error_screen.dart';
 import 'package:base_code/src/manager/user_manager.dart';
-import 'package:base_code/src/ui/auth/auth.dart';
 import 'package:base_code/src/ui/main/main.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,7 @@ class AppRoot extends StatelessWidget {
           if (logged) {
             return const Main();
           } else {
-            return const Auth();
+            return const LoginScreen();
           }
         });
   }

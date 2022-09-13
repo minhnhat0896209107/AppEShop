@@ -1,6 +1,4 @@
-import 'package:base_code/src/extension/login_type_ex.dart';
 import 'package:base_code/src/extension/roles_ex.dart';
-import 'package:base_code/src/utils/enums/login_type.dart';
 import 'package:base_code/src/utils/enums/roles.dart';
 
 class User {
@@ -13,7 +11,6 @@ class User {
   String lastName = '';
   String email = '';
   String avatar = '';
-  LoginType loginType = LoginType.normal;
   bool isActive = false;
   double accountBalance = 0;
   String address = '';
@@ -27,7 +24,6 @@ class User {
       ..lastName = json['lastName'] ?? ''
       ..email = json['email'] ?? ''
       ..avatar = json['avatar'] ?? ''
-      ..loginType = json['loginType'].toString().loginTypeFromString()
       ..isActive = json['isActive'] ?? false
       ..accountBalance = double.parse((json['accountBalance'] ?? 0).toString())
       ..address = json['address'] ?? ''

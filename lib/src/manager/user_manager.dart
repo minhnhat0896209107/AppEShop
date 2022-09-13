@@ -10,6 +10,7 @@ class UserManager with UserMixin {
   final BehaviorSubject<User?> _currentUser = BehaviorSubject<User?>();
   ValueStream<User?> get userStream => _currentUser.stream;
   static String get globalToken => _globalToken;
+  User? get currentUser => _currentUser.value;
   Future<void> updateUser(User? user) async {
     _currentUser.add(user);
   }
@@ -19,10 +20,6 @@ class UserManager with UserMixin {
     SharedPreferences pref = await SharedPreferences.getInstance();
     pref.clear();
     _currentUser.add(null);
-  }
-
-  Future<void> addErrorCurrentUser() async {
-    _currentUser.addError('Loi roi ban oi');
   }
 
   static Future<String?> getAccessToken() async {
