@@ -3,7 +3,7 @@ import 'package:base_code/src/struct/app_color.dart';
 
 final ThemeData appTheme = ThemeData(
   colorScheme: ColorScheme.fromSwatch()
-      .copyWith(primary: AppColors.primay, secondary: AppColors.primay),
+      .copyWith(primary: AppColors.primay, secondary: AppColors.secondary),
   scaffoldBackgroundColor: Colors.white,
   platform: TargetPlatform.iOS,
   textTheme: const TextTheme(
@@ -45,7 +45,28 @@ final ThemeData appTheme = ThemeData(
       fontSize: 24,
     ),
   ),
-
+  inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(4)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(4),
+      ),
+      fillColor: AppColors.pinkLight,
+      filled: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      iconColor: AppColors.primay,
+      hintStyle: const TextStyle(
+          color: AppColors.secondary,
+          fontSize: 16,
+          fontWeight: FontWeight.w400)),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+        side: const BorderSide(color: AppColors.primay),
+        primary: AppColors.pink,
+        onPrimary: AppColors.primay,
+        minimumSize: const Size(0, 32),
+        textStyle: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+  ),
   // bottomSheetTheme: const BottomSheetThemeData(
   //   backgroundColor: Colors.white,
   //   shape: RoundedRectangleBorder(

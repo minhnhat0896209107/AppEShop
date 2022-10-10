@@ -2,7 +2,6 @@ import 'package:base_code/src/manager/user_manager.dart';
 import 'package:base_code/src/models/user.dart';
 import 'package:base_code/src/repositories/auth_repo.dart';
 import 'package:base_code/src/struct/api_services/get_user_infor_mixin.dart';
-import 'package:base_code/src/ui/auth/sign_up_screen.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
@@ -10,16 +9,18 @@ import 'package:base_code/src/utils/app_strings.dart';
 import 'package:base_code/src/utils/helpers.dart';
 import 'package:provider/provider.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with UserMixin {
+class _SignUpScreenState extends State<SignUpScreen> with UserMixin {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final AuthRepository _authRepository = AuthRepository();
   late final UserManager _userManager = context.read<UserManager>();
 
@@ -42,6 +43,14 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
         child: Column(
           children: [
             Image.asset(AppImages.bannerLogin),
+            SizedBox(
+              height: paddingSize,
+            ),
+            const Text(
+              AppStrings.welcomeEshoping,
+              textAlign: TextAlign.center,
+              style: AppTextStyle.headlineStyle,
+            ),
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 38),
@@ -49,14 +58,6 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
-                        AppStrings.welcomeBack,
-                        textAlign: TextAlign.center,
-                        style: AppTextStyle.headlineStyle,
-                      ),
-                      SizedBox(
-                        height: paddingSize,
-                      ),
                       ElevatedButton(
                           onPressed: () async {},
                           child: const Text(AppStrings.signinWithGoogle)),
@@ -92,17 +93,18 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {},
-                            child: const Text(
-                              AppStrings.forgotPassword,
-                              style: AppTextStyle.linkTextStyle,
-                            ),
-                          )
-                        ],
+                      TextFormField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            hintText: AppStrings.confirmPasswordHint,
+                            suffix: InkWell(
+                              onTap: () {},
+                              child: Image.asset(
+                                AppImages.eyeShow,
+                                height: 16,
+                              ),
+                            )),
+                        controller: confirmPasswordController,
                       ),
                       SizedBox(
                         height: paddingSize,
@@ -121,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
                               showErrorDialog(context, error);
                             }
                           },
-                          child: const Text(AppStrings.login)),
+                          child: const Text(AppStrings.signup)),
                       SizedBox(
                         height: paddingSize,
                       ),
@@ -134,21 +136,15 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
                           ),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const SignUpScreen()));
+                              Navigator.pop(context);
                             },
                             child: const Text(
-                              AppStrings.signup,
+                              AppStrings.login,
                               style: AppTextStyle.linkTextStyle,
                             ),
                           )
                         ],
                       ),
-                      const SizedBox(
-                        height: 18,
-                      )
                     ]),
               ),
             ),
