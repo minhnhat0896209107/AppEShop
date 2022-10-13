@@ -6,28 +6,19 @@ class User {
   String id = '';
   // List<Role> rolesId = [];
   Role roles = Role.consumer;
-
-  String firstName = '';
-  String lastName = '';
+  String birthDay = '';
+  String fullName = '';
   String email = '';
-  String avatar = '';
-  bool isActive = false;
-  double accountBalance = 0;
-  String address = '';
-  String currentLocation = '';
+  bool status = true;
+  String avatarUrl = '';
+  String gender = '';
   factory User.fromJson(Map<String, dynamic> json) {
     User user = User()
       ..id = json['_id'] ?? ''
-      ..roles = json['roleId']['roleName'].toString().roleFromString() ??
-          Role.consumer
-      ..firstName = json['firstName'] ?? ''
-      ..lastName = json['lastName'] ?? ''
+      ..roles = json['role'].toString().roleFromString() ?? Role.consumer
+      ..fullName = json['fullName'] ?? ''
       ..email = json['email'] ?? ''
-      ..avatar = json['avatar'] ?? ''
-      ..isActive = json['isActive'] ?? false
-      ..accountBalance = double.parse((json['accountBalance'] ?? 0).toString())
-      ..address = json['address'] ?? ''
-      ..currentLocation = json['currentLocation'] ?? '';
+      ..avatarUrl = json['avatarUrl'] ?? '';
     return user;
   }
 

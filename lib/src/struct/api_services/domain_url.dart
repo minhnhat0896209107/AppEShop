@@ -1,4 +1,4 @@
 class DomainUrl {
   //domain
-  static const domain = 'http://localhost:3000/api/';
+  static const domain = 'https://pbl.ichhoa.dev';
 }

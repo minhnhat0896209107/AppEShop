@@ -1,3 +1,4 @@
+import 'package:base_code/src/blocs/login_bloc.dart';
 import 'package:base_code/src/manager/user_manager.dart';
 import 'package:base_code/src/models/user.dart';
 import 'package:base_code/src/repositories/auth_repo.dart';
@@ -37,124 +38,132 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
   @override
   Widget build(BuildContext context) {
     final double paddingSize = 30 / 667 * MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Image.asset(AppImages.bannerLogin),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 38),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const Text(
-                        AppStrings.welcomeBack,
-                        textAlign: TextAlign.center,
-                        style: AppTextStyle.headlineStyle,
-                      ),
-                      SizedBox(
-                        height: paddingSize,
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {},
-                          child: const Text(AppStrings.signinWithGoogle)),
-                      Padding(
-                        padding: EdgeInsets.symmetric(vertical: paddingSize),
-                        child: const Text(
-                          AppStrings.or,
-                          textAlign: TextAlign.center,
-                          style: AppTextStyle.secondaryText,
-                        ),
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                            hintText: AppStrings.emailHint),
-                        controller: emailController,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            hintText: AppStrings.passwordHint,
-                            suffix: InkWell(
-                              onTap: () {},
-                              child: Image.asset(
-                                AppImages.eyeShow,
-                                height: 16,
+    return Provider(
+        create: (_) => LoginBloC(_userManager),
+        builder: (context, _) {
+          context.read<LoginBloC>().checkAuthStatus();
+          return Scaffold(
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Image.asset(AppImages.bannerLogin),
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 38),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Text(
+                              AppStrings.welcomeBack,
+                              textAlign: TextAlign.center,
+                              style: AppTextStyle.headlineStyle,
+                            ),
+                            SizedBox(
+                              height: paddingSize,
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {},
+                                child: const Text(AppStrings.signinWithGoogle)),
+                            Padding(
+                              padding:
+                                  EdgeInsets.symmetric(vertical: paddingSize),
+                              child: const Text(
+                                AppStrings.or,
+                                textAlign: TextAlign.center,
+                                style: AppTextStyle.secondaryText,
                               ),
-                            )),
-                        controller: passwordController,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {},
-                            child: const Text(
-                              AppStrings.forgotPassword,
-                              style: AppTextStyle.linkTextStyle,
                             ),
-                          )
-                        ],
-                      ),
-                      SizedBox(
-                        height: paddingSize,
-                      ),
-                      ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              showLoading(context,
-                                  message: AppStrings.logingIn);
-                              await login(emailController.text,
-                                  passwordController.text);
-                              Navigator.pop(context);
-                            } catch (error) {
-                              debugPrint(error.toString());
-                              Navigator.pop(context);
-                              showErrorDialog(context, error);
-                            }
-                          },
-                          child: const Text(AppStrings.login)),
-                      SizedBox(
-                        height: paddingSize,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(AppStrings.donotHaveAccount),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const SignUpScreen()));
-                            },
-                            child: const Text(
-                              AppStrings.signup,
-                              style: AppTextStyle.linkTextStyle,
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                  hintText: AppStrings.emailHint),
+                              controller: emailController,
                             ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 18,
-                      )
-                    ]),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextFormField(
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                  hintText: AppStrings.passwordHint,
+                                  suffix: InkWell(
+                                    onTap: () {},
+                                    child: Image.asset(
+                                      AppImages.eyeShow,
+                                      height: 16,
+                                    ),
+                                  )),
+                              controller: passwordController,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: const Text(
+                                    AppStrings.forgotPassword,
+                                    style: AppTextStyle.linkTextStyle,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: paddingSize,
+                            ),
+                            ElevatedButton(
+                                onPressed: () async {
+                                  try {
+                                    showLoading(context,
+                                        message: AppStrings.logingIn);
+                                    await login(emailController.text,
+                                        passwordController.text);
+                                    Navigator.pop(context);
+                                  } catch (error, stackStrace) {
+                                    debugPrint(error.toString());
+                                    debugPrintStack(stackTrace: stackStrace);
+                                    Navigator.pop(context);
+                                    showErrorDialog(context, error);
+                                  }
+                                },
+                                child: const Text(AppStrings.login)),
+                            SizedBox(
+                              height: paddingSize,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(AppStrings.donotHaveAccount),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                const SignUpScreen()));
+                                  },
+                                  child: const Text(
+                                    AppStrings.signup,
+                                    style: AppTextStyle.linkTextStyle,
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 18,
+                            )
+                          ]),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 }

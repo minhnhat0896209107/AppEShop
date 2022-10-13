@@ -1,4 +1,4 @@
 class UserUrl {
   //auth
-  static const userInfor = 'user/infor';
+  static const userInfor = '/api/v1/users/me';
 }

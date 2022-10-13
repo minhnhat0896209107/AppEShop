@@ -15,11 +15,10 @@ mixin UserMixin {
       UserManager.updateGlobalToken(token);
       try {
         var respond = await _baseRepository.getMethod(UserUrl.userInfor);
-        if (respond['success']) {
-          return User.fromJson(respond['data']);
-        }
-      } catch (error) {
+        return User.fromJson(respond);
+      } catch (error, stackTrace) {
         debugPrint(error.toString());
+        debugPrintStack(stackTrace: stackTrace);
       }
     }
     return null;

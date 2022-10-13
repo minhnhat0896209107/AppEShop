@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:base_code/src/struct/app_color.dart';
 
 final ThemeData appTheme = ThemeData(
+  fontFamily: 'Nunito',
   colorScheme: ColorScheme.fromSwatch()
       .copyWith(primary: AppColors.primay, secondary: AppColors.secondary),
   scaffoldBackgroundColor: Colors.white,
@@ -17,7 +18,7 @@ final ThemeData appTheme = ThemeData(
     bodyText2: TextStyle(
       color: AppColors.textColor,
       fontWeight: FontWeight.w400,
-      fontSize: 14.0,
+      fontSize: 16.0,
     ),
     headline1: TextStyle(
       color: AppColors.textColor,
@@ -64,6 +65,13 @@ final ThemeData appTheme = ThemeData(
         side: const BorderSide(color: AppColors.primay),
         primary: AppColors.pink,
         onPrimary: AppColors.primay,
+        minimumSize: const Size(0, 32),
+        textStyle: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
+  ),
+  outlinedButtonTheme: OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: AppColors.primay),
+        primary: AppColors.primay,
         minimumSize: const Size(0, 32),
         textStyle: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16)),
   ),

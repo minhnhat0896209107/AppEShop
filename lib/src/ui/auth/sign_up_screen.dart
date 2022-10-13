@@ -30,9 +30,8 @@ class _SignUpScreenState extends State<SignUpScreen> with UserMixin {
     _userManager.updateUser(user);
   }
 
-  Future login(String email, String pass) async {
-    String token = await _authRepository.login(email: email, password: pass);
-    storeUserandAddUser(token);
+  Future signup(String email, String pass) async {
+    await _authRepository.signup(email: email, password: pass);
   }
 
   @override
@@ -114,8 +113,10 @@ class _SignUpScreenState extends State<SignUpScreen> with UserMixin {
                             try {
                               showLoading(context,
                                   message: AppStrings.logingIn);
-                              await login(emailController.text,
+                              await signup(emailController.text,
                                   passwordController.text);
+                              Navigator.pop(context);
+                              await showSuccessDialog(context);
                               Navigator.pop(context);
                             } catch (error) {
                               debugPrint(error.toString());

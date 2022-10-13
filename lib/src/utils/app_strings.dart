@@ -1,5 +1,8 @@
 class AppStrings {
-  static const appName = 'BaseCode';
+  static const appName = 'eShopping';
+  static const menu = 'Menu';
+  static const home = 'Home';
+  static const product = 'Product';
   static const login = 'Sign in';
   static const signup = 'Sign up';
   static const logout = 'Đăng xuất';
@@ -18,4 +21,15 @@ class AppStrings {
   static const confirmPasswordHint = 'Confirm your password';
   static const alreadyHaveAccount = 'Already have an account?';
   static const donotHaveAccount = 'Don’t have an account?';
+  static const newArrival = 'New arrivals.';
+  static const seeMore = 'See more';
+  static const success = 'Success';
+  static const fashionUp = 'Fashion up you look';
+  static const makeYourStyle = 'Make your style more unique with eShopping';
+  static const searchSomething = 'Search something...';
+  static const allCategories = 'All categories';
+  static const priceAscending = 'Price ascending';
+  static const latest = 'Latest';
+  static const bestSeller = 'Best seller';
+  static const nextPage = 'Next page';
 }

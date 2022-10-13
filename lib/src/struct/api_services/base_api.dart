@@ -109,7 +109,7 @@ class BaseApi {
   }
 
   dynamic _handleResponse(int statusCode, http.Response response) {
-    if (200 >= statusCode && statusCode <= 299) {
+    if (200 <= statusCode && statusCode <= 299) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     }
     if (statusCode == 401 || statusCode == 403) {

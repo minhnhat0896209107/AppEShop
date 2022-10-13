@@ -67,3 +67,39 @@ Future<T?> showErrorDialog<T extends Object?>(
     ),
   );
 }
+
+Future<T?> showSuccessDialog<T extends Object?>(BuildContext context) {
+  String message = AppStrings.success;
+  if (Platform.isIOS) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text(AppStrings.success),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text(AppStrings.confirm),
+          ),
+        ],
+      ),
+    );
+  }
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text(AppStrings.error),
+      content: Text(message),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: const Text(AppStrings.confirm),
+        ),
+      ],
+    ),
+  );
+}

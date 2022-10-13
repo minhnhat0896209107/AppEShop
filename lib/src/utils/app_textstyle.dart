@@ -8,4 +8,9 @@ class AppTextStyle {
       color: AppColors.secondary, fontSize: 14, fontWeight: FontWeight.w400);
   static const headlineStyle = TextStyle(
       color: AppColors.primay, fontSize: 30, fontWeight: FontWeight.w400);
+  static const bannerHeadlineStyle = TextStyle(
+      fontFamily: 'NotoSerif',
+      color: AppColors.primay,
+      fontSize: 32,
+      fontWeight: FontWeight.w700);
 }
