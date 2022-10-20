@@ -105,6 +105,9 @@ class _ProductScreenState extends State<ProductScreen> {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50), boxShadow: boxShadows),
       child: TextField(
+        onChanged: (value) {
+          _bloC.searchSink.add(value);
+        },
         style: const TextStyle(color: AppColors.secondary),
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -153,11 +156,17 @@ class _ProductScreenState extends State<ProductScreen> {
       AppImages.home4,
       AppImages.home5,
     ];
-    return StreamBuilder<List<Product>>(
+    return StreamBuilder<List<Product>?>(
         stream: _bloC.productStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<Product> products = snapshot.data!;
+            List<Product>? products = snapshot.data;
+            if (products == null) {
+              return const SizedBox(
+                height: 500,
+                child: CircularProgressIndicator(color: AppColors.pinkLight),
+              );
+            }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: GridView.builder(
