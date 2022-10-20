@@ -32,4 +32,5 @@ class AppStrings {
   static const latest = 'Latest';
   static const bestSeller = 'Best seller';
   static const nextPage = 'Next page';
+  static const tokenExpired = 'Token expired! Please login again!';
 }

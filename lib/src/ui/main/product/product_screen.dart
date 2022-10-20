@@ -163,7 +163,7 @@ class _ProductScreenState extends State<ProductScreen> {
               child: GridView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: 4,
+                  itemCount: products.length,
                   gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 200,
                       childAspectRatio: 170 / 280,
@@ -171,7 +171,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       mainAxisSpacing: 20),
                   itemBuilder: (context, index) {
                     return ProductItem(
-                      url: urls[index],
+                      url: urls[index % 5],
                       product: products[index],
                     );
                   }),

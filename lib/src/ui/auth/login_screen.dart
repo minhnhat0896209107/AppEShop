@@ -41,7 +41,12 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
     return Provider(
         create: (_) => LoginBloC(_userManager),
         builder: (context, _) {
-          context.read<LoginBloC>().checkAuthStatus();
+          context
+              .read<LoginBloC>()
+              .checkAuthStatus()
+              .onError((error, stackTrace) {
+            showErrorDialog(context, error);
+          });
           return Scaffold(
             body: SingleChildScrollView(
               child: Column(

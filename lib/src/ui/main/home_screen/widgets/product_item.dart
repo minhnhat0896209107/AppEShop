@@ -1,12 +1,13 @@
 import 'package:base_code/src/commons/widgets/rounded_image.dart';
 import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/struct/app_color.dart';
 import 'package:flutter/material.dart';
 
 class ProductItem extends StatelessWidget {
   const ProductItem({required this.url, required this.product, Key? key})
       : super(key: key);
-  final Product product;
   final String url;
+  final Product product;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,20 +17,39 @@ class ProductItem extends StatelessWidget {
       child: Column(
         children: [
           LayoutBuilder(builder: (context, constraints) {
-            return Column(children: [
-              SizedBox(
-                height: constraints.maxWidth,
-                child: RoundedImage(url: url),
-              ),
-              Text(product.name ?? '--'),
-              Text(
-                '${product.price} đ',
-                style: const TextStyle(
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20),
-              ),
-            ]);
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: constraints.maxWidth,
+                    child: RoundedImage(url: url),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    product.name ?? '--',
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    '${product.price} đ',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20),
+                  ),
+                  Text(
+                    '${product.price} đ',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        decoration: TextDecoration.lineThrough,
+                        color: AppColors.secondary,
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16),
+                  ),
+                ]);
           }),
         ],
       ),
