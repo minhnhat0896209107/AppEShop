@@ -14,4 +14,9 @@ class AppImages {
   static const share = 'assets/icons/share.png';
   static const search = 'assets/icons/search.png';
   static const dropdown = 'assets/icons/dropdown.png';
+  static const sale = 'assets/icons/sale.png';
+  static const starFill = 'assets/icons/star-fill.png';
+  static const starOutline = 'assets/icons/star-outline.png';
+  static const cart = 'assets/icons/cart.png';
+  static const wallet = 'assets/icons/wallet.png';
 }

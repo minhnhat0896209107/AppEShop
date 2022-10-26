@@ -1,6 +1,7 @@
 import 'package:base_code/src/commons/widgets/rounded_image.dart';
 import 'package:base_code/src/models/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
+import 'package:base_code/src/ui/main/product/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProductItem extends StatelessWidget {
@@ -10,48 +11,57 @@ class ProductItem extends StatelessWidget {
   final Product product;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(50)),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          LayoutBuilder(builder: (context, constraints) {
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: constraints.maxWidth,
-                    child: RoundedImage(url: url),
-                  ),
-                  const SizedBox(
-                    height: 5,
-                  ),
-                  Text(
-                    product.name ?? '--',
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    '${product.price} đ',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20),
-                  ),
-                  Text(
-                    '${product.price} đ',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                        color: AppColors.secondary,
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16),
-                  ),
-                ]);
-          }),
-        ],
+    product.imageUrl = url;
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => ProductDetailScreen(product: product)));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(50)),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            LayoutBuilder(builder: (context, constraints) {
+              return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: constraints.maxWidth,
+                      child: RoundedImage(url: url),
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      product.name ?? '--',
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      '${product.price} đ',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20),
+                    ),
+                    Text(
+                      '${product.price} đ',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          color: AppColors.secondary,
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16),
+                    ),
+                  ]);
+            }),
+          ],
+        ),
       ),
     );
   }

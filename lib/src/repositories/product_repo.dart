@@ -19,4 +19,15 @@ class ProductRepository {
       throw 'Server Error';
     }
   }
+
+  Future<Product> getProductDetail({required String id}) async {
+    String url = '${ProductUrl.getProductById}/$id';
+    var respond = await _baseApi.getMethod(url);
+    if (respond['success']) {
+      //TODO
+      return Product.fromJson({});
+    } else {
+      throw 'Server Error';
+    }
+  }
 }

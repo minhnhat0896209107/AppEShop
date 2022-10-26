@@ -7,6 +7,7 @@ class Product {
   int? price;
   int? originPrice;
   String? imageUrl;
+  String? category;
   Product({
     required this.id,
     required this.name,
@@ -23,6 +24,7 @@ class Product {
     unit = json['unit'];
     status = json['status'];
     price = json['price'];
+    category = json['category']?['name'];
     // originPrice = json['price'];
   }
 }

@@ -1,4 +1,5 @@
 import 'package:base_code/src/ui/auth/login_screen.dart';
+import 'package:base_code/src/ui/main/product/product_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:base_code/src/commons/screens/error_screen.dart';
 import 'package:base_code/src/manager/user_manager.dart';

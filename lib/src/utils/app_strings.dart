@@ -33,4 +33,13 @@ class AppStrings {
   static const bestSeller = 'Best seller';
   static const nextPage = 'Next page';
   static const tokenExpired = 'Token expired! Please login again!';
+  static const sale50 = 'Sale 50%';
+  static const review = 'review';
+  static const stock = 'stock';
+  static const color = 'Color';
+  static const size = 'Size';
+  static const quantity = 'Quantity';
+  static const total = 'Total';
+  static const addToCart = 'Add to cart';
+  static const buyNow = 'Buy now';
 }
