@@ -1,8 +1,11 @@
+import 'package:base_code/src/manager/user_manager.dart';
+import 'package:base_code/src/ui/main/cart/cart_screen.dart';
 import 'package:base_code/src/ui/main/common/app_bar.dart';
 import 'package:base_code/src/ui/main/home_screen/home_screen.dart';
 import 'package:base_code/src/ui/main/product/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:base_code/src/utils/app_strings.dart';
+import 'package:provider/provider.dart';
 
 class Main extends StatefulWidget {
   const Main({Key? key}) : super(key: key);
@@ -19,7 +22,11 @@ class _MainState extends State<Main> {
     });
   }
 
-  final List<Widget> _screens = [const HomeScreen(), const ProductScreen()];
+  final List<Widget> _screens = [
+    const HomeScreen(),
+    const ProductScreen(),
+    const CartScreen()
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +56,19 @@ class _MainState extends State<Main> {
             onTap: () {
               changeIndex(1);
               Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text(AppStrings.cart),
+            onTap: () {
+              changeIndex(2);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text(AppStrings.logout),
+            onTap: () {
+              context.read<UserManager>().clearUser();
             },
           ),
         ],

@@ -59,11 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         )),
-                    TextButton(
-                        onPressed: () {
-                          context.read<UserManager>().clearUser();
-                        },
-                        child: const Text(AppStrings.logout))
                   ],
                 ),
               ),

@@ -116,7 +116,8 @@ class _SignUpScreenState extends State<SignUpScreen> with UserMixin {
                               await signup(emailController.text,
                                   passwordController.text);
                               Navigator.pop(context);
-                              await showSuccessDialog(context);
+                              await showSuccessDialog(
+                                  context, AppStrings.checkMail);
                               Navigator.pop(context);
                             } catch (error) {
                               debugPrint(error.toString());

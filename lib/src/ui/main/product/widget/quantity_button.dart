@@ -7,8 +7,7 @@ class QuantityButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const Color buttonColor = AppColors.primay;
-    return OutlinedButton(
-      onPressed: () {},
+    return Container(
       child: Row(
         children: [
           IconButton(
@@ -26,10 +25,13 @@ class QuantityButton extends StatelessWidget {
           ),
         ],
       ),
-      style: OutlinedButton.styleFrom(
-          side: const BorderSide(color: buttonColor),
-          shape: const StadiumBorder(),
-          primary: buttonColor),
+      decoration: BoxDecoration(
+          border: Border.all(color: buttonColor),
+          borderRadius: BorderRadius.circular(50)),
+      // style: OutlinedButton.styleFrom(
+      //     side: const BorderSide(color: buttonColor),
+      //     shape: const StadiumBorder(),
+      //     primary: buttonColor),
     );
   }
 }

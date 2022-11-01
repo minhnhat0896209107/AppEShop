@@ -2,16 +2,21 @@ import 'package:base_code/src/struct/app_color.dart';
 import 'package:flutter/material.dart';
 
 class IconTextButton extends StatelessWidget {
-  const IconTextButton({required this.imageUrl, required this.title, Key? key})
+  const IconTextButton(
+      {required this.imageUrl,
+      required this.title,
+      required this.onTap,
+      Key? key})
       : super(key: key);
   final String imageUrl;
   final String title;
+  final void Function() onTap;
   @override
   Widget build(BuildContext context) {
     const Color buttonColor = AppColors.pinkDark;
 
     return OutlinedButton(
-        onPressed: () {},
+        onPressed: onTap,
         style: OutlinedButton.styleFrom(
             side: const BorderSide(color: buttonColor),
             shape: const StadiumBorder(),

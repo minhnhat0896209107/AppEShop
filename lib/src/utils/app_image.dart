@@ -7,6 +7,7 @@ class AppImages {
   static const home3 = 'assets/images/home3.png';
   static const home4 = 'assets/images/home4.png';
   static const home5 = 'assets/images/home5.png';
+  static const cartEmpty = 'assets/images/cart_empty.png';
   static const defaultThumbnail = 'assets/images/default-thumbnail.jpeg';
   // Icons
   static const eyeShow = 'assets/icons/eye_show.png';

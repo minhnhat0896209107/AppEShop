@@ -68,8 +68,8 @@ Future<T?> showErrorDialog<T extends Object?>(
   );
 }
 
-Future<T?> showSuccessDialog<T extends Object?>(BuildContext context) {
-  String message = AppStrings.success;
+Future<T?> showSuccessDialog<T extends Object?>(BuildContext context,
+    [String message = AppStrings.success]) {
   if (Platform.isIOS) {
     return showCupertinoDialog(
       context: context,

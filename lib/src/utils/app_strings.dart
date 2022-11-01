@@ -42,4 +42,8 @@ class AppStrings {
   static const total = 'Total';
   static const addToCart = 'Add to cart';
   static const buyNow = 'Buy now';
+  static const cart = 'Cart';
+  static const checkout = 'Check out';
+  static const checkMail =
+      'Sign up success! Please check mail to confirm your account!';
 }

@@ -313,15 +313,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ],
         ),
         Row(
-          children: const [
+          children: [
             IconTextButton(
+              onTap: () {
+                bloC.addToCart(product);
+              },
               imageUrl: AppImages.cart,
               title: AppStrings.addToCart,
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             IconTextButton(
+              onTap: () {},
               imageUrl: AppImages.wallet,
               title: AppStrings.buyNow,
             ),

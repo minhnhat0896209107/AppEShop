@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Product {
   String? id;
   String? name;
@@ -25,6 +27,20 @@ class Product {
     status = json['status'];
     price = json['price'];
     category = json['category']?['name'];
+    imageUrl = json['imageUrl'];
     // originPrice = json['price'];
+  }
+  Map toMap() {
+    Map<String, dynamic> map = {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'unit': unit,
+      'status': status,
+      'category': {'name': category},
+      'imageUrl': imageUrl
+    };
+    return map;
   }
 }
