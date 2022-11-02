@@ -1,6 +1,8 @@
 import 'package:base_code/src/blocs/product_detail_bloc.dart';
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/product.dart';
+import 'package:base_code/src/models/product/product_size/product_size.dart';
 import 'package:base_code/src/struct/app_color.dart';
+import 'package:base_code/src/ui/main/cart/cart_screen.dart';
 import 'package:base_code/src/ui/main/common/app_bar.dart';
 import 'package:base_code/src/ui/main/home_screen/widgets/slider_widget.dart';
 import 'package:base_code/src/ui/main/product/widget/category_button.dart';
@@ -13,6 +15,8 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../api/global_api.dart';
+
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({required this.product, Key? key})
       : super(key: key);
@@ -24,14 +28,19 @@ class ProductDetailScreen extends StatefulWidget {
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late ProductDetailBloC bloC;
   final CarouselController _carouselController = CarouselController();
+  bool isCheckSelect = false;
+  int? indexSelect;
+  int totalPrice = 0;
+  int value = 1;
   @override
   Widget build(BuildContext context) {
+
     return Provider<ProductDetailBloC>(
         create: ((context) => ProductDetailBloC()),
         builder: (context, child) {
           bloC = context.read<ProductDetailBloC>();
           bloC.init(product: widget.product);
-          bloC.getProductDetail(id: widget.product.id!);
+          bloC.getProductDetail(slug: widget.product.slug!);
           return Scaffold(
             appBar: customAppbar,
             body: StreamBuilder<Product>(
@@ -64,7 +73,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Stack(
       children: [
         SliderWidget(
-          listImage: [product.imageUrl!],
+          listImage: product.images,
           controller: _carouselController,
         ),
         Positioned.fill(
@@ -120,7 +129,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           color: Colors.white, borderRadius: BorderRadius.circular(50)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          (product.category ?? '--').toUpperCase(),
+          (product.category?.name ?? '--').toUpperCase(),
           style: const TextStyle(
               color: AppColors.secondary,
               fontSize: 20,
@@ -143,22 +152,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             const SizedBox(
               width: 20,
             ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  color: AppColors.pink,
-                  borderRadius: BorderRadius.circular(50)),
-              child: Row(children: [
-                Image.asset(
-                  AppImages.sale,
-                  height: 24,
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                const Text(AppStrings.sale50)
-              ]),
-            )
           ],
         ),
         Container(
@@ -183,7 +176,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               const SizedBox(
                 width: 20,
               ),
-              const Text('123 ${AppStrings.stock}'),
+              Text("${product.stock} ${AppStrings.stock}"),
             ],
           ),
         ),
@@ -197,87 +190,74 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   fontWeight: FontWeight.w700,
                   fontSize: 20),
             ),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              '${product.price} đ',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  decoration: TextDecoration.lineThrough,
-                  color: AppColors.secondary,
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16),
-            ),
           ],
         ),
-        Row(
-          children: const [
-            Text('${AppStrings.color}:'),
-            SizedBox(
-              width: 8,
-            ),
-            CategoryButton(
-              text: 'red',
-              buttonStatus: ButtonStatus.disabled,
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            CategoryButton(
-              text: 'blue',
-              buttonStatus: ButtonStatus.normal,
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            CategoryButton(
-              text: 'green',
-              buttonStatus: ButtonStatus.selected,
-            )
-          ],
+        Container(
+          height: 30,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: product.productSizes!.length,
+            itemBuilder: (context, index) {
+              ProductSize productSize = product.productSizes![index];
+              if (index == 0) {
+                return Row(
+                  children: [
+                    const Text('${AppStrings.size}:'),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    CategoryButton(
+                      onPressed: () {
+                        setState(() {
+                          isCheckSelect = true;
+                          indexSelect = index;
+                        });
+                      },
+                      text: productSize.size?.name ?? "--",
+                      buttonStatus: productSize.quantity == 0
+                          ? ButtonStatus.disabled
+                          : isCheckSelect && indexSelect == index
+                              ? ButtonStatus.selected
+                              : ButtonStatus.normal,
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    )
+                  ],
+                );
+              }
+              return Row(
+                children: [
+                  CategoryButton(
+                    onPressed: () {
+                      setState(() {
+                        isCheckSelect = true;
+                        indexSelect = index;
+                      });
+                    },
+                    text: productSize.size?.name ?? "--",
+                    buttonStatus: productSize.quantity == 0
+                        ? ButtonStatus.disabled
+                        : isCheckSelect && indexSelect == index
+                            ? ButtonStatus.selected
+                            : ButtonStatus.normal,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  )
+                ],
+              );
+            },
+          ),
         ),
+        SizedBox(height: 10,),
         Row(
-          children: const [
-            Text('${AppStrings.size}:'),
-            SizedBox(
-              width: 8,
-            ),
-            CategoryButton(
-              text: 'XS',
-              buttonStatus: ButtonStatus.disabled,
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            CategoryButton(
-              text: 'S',
-              buttonStatus: ButtonStatus.normal,
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            CategoryButton(
-              text: 'M',
-              buttonStatus: ButtonStatus.selected,
-            ),
-            SizedBox(
-              width: 8,
-            ),
-            CategoryButton(
-              text: 'L',
-              buttonStatus: ButtonStatus.normal,
-            ),
-          ],
-        ),
-        Row(
-          children: const [
+          children:  [
             Text('${AppStrings.quantity}:'),
             SizedBox(
               width: 8,
             ),
-            QuantityButton(),
+            _quantityButton(product, indexSelect ?? 0),
           ],
         ),
         const SizedBox(
@@ -290,26 +270,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               width: 5,
             ),
             Text(
-              '${product.price} đ',
+              '${product.price! * value} đ',
               textAlign: TextAlign.center,
               style: const TextStyle(
                   fontFamily: 'Nunito',
                   fontWeight: FontWeight.w700,
                   fontSize: 30),
             ),
-            const SizedBox(
-              width: 5,
-            ),
-            Text(
-              '${product.price} đ',
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  decoration: TextDecoration.lineThrough,
-                  color: AppColors.secondary,
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w400,
-                  fontSize: 20),
-            ),
+            
           ],
         ),
         Row(
@@ -358,6 +326,56 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Text(product.description ?? '--'),
+    );
+  }
+
+  Widget _quantityButton(Product product, int indexProductSize){
+    const Color buttonColor = AppColors.primay;
+    return Container(
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () {
+              if(value < 2){
+                setState(() {
+                  value == 1;
+                });
+              }else{
+                setState(() {
+                  value--;
+                });
+              }
+            },
+            icon: const Text('-'),
+            iconSize: 10,
+            splashRadius: 12,
+          ),
+          Text('${value}'),
+          IconButton(
+            onPressed: () {
+              if(value > widget.product.productSizes![indexProductSize].quantity!){
+                setState(() {
+                  value == widget.product.productSizes![indexProductSize].quantity;
+                });
+              }else{
+                setState(() {
+                    value++;
+                });
+              }
+            },
+            icon: const Text('+'),
+            iconSize: 10,
+            splashRadius: 12,
+          ),
+        ],
+      ),
+      decoration: BoxDecoration(
+          border: Border.all(color: buttonColor),
+          borderRadius: BorderRadius.circular(50)),
+      // style: OutlinedButton.styleFrom(
+      //     side: const BorderSide(color: buttonColor),
+      //     shape: const StadiumBorder(),
+      //     primary: buttonColor),
     );
   }
 }

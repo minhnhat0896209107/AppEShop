@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:base_code/src/blocs/base_bloc.dart';
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CartBloC extends BaseBloC {

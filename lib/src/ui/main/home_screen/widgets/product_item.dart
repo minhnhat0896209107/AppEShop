@@ -1,5 +1,6 @@
 import 'package:base_code/src/commons/widgets/rounded_image.dart';
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/category/category.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/product/product_detail_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,6 @@ class ProductItem extends StatelessWidget {
   final Product product;
   @override
   Widget build(BuildContext context) {
-    product.imageUrl = url;
     return GestureDetector(
       onTap: () {
         Navigator.push(

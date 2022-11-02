@@ -1,4 +1,4 @@
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/api_services/base_api.dart';
 import 'package:base_code/src/struct/api_services/product_url.dart';
 
@@ -20,12 +20,13 @@ class ProductRepository {
     }
   }
 
-  Future<Product> getProductDetail({required String id}) async {
-    String url = '${ProductUrl.getProductById}/$id';
+  Future<Product> getProductDetail({required String slug}) async {
+    String url = '${ProductUrl.getProductById}/$slug';
     var respond = await _baseApi.getMethod(url);
     if (respond['success']) {
       //TODO
-      return Product.fromJson({});
+      var data = (respond['data']);
+      return Product.fromJson(data);
     } else {
       throw 'Server Error';
     }

@@ -1,6 +1,6 @@
 import 'package:base_code/src/blocs/product_screen_bloc.dart';
 import 'package:base_code/src/commons/widgets/loading_widget.dart';
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/home_screen/widgets/product_item.dart';
 import 'package:base_code/src/utils/app_boxshadow.dart';
@@ -149,18 +149,14 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   Widget _productGridView() {
-    List<String> urls = [
-      AppImages.home1,
-      AppImages.home2,
-      AppImages.home3,
-      AppImages.home4,
-      AppImages.home5,
-    ];
     return StreamBuilder<List<Product>?>(
         stream: _bloC.productStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Product>? products = snapshot.data;
+            print("Length1 == ${products?[0].images!.first.url}");
+            print("Length2 == ${products?[1].images!.first.url}");
+            print("Length3 == ${products?[2].images!.first.url}");
             if (products == null) {
               return const SizedBox(
                 height: 500,
@@ -180,7 +176,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       mainAxisSpacing: 20),
                   itemBuilder: (context, index) {
                     return ProductItem(
-                      url: urls[index % 5],
+                      url:  products[index].images!.first.url!,
                       product: products[index],
                     );
                   }),

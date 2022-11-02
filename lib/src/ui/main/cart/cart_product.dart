@@ -1,4 +1,4 @@
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/ui/main/product/widget/category_button.dart';
 import 'package:base_code/src/ui/main/product/widget/quantity_button.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +14,8 @@ class CartProduct extends StatelessWidget {
       color: isStroke ? Colors.black.withOpacity(0.05) : null,
       padding: const EdgeInsets.all(12),
       child: Row(children: [
-        Image.asset(
-          product.imageUrl!,
+        Image.network(
+          product.images![0].url!,
           width: 100,
         ),
         const SizedBox(
@@ -31,7 +31,7 @@ class CartProduct extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               Text((product.price?.toString() ?? '--') + 'đ'),
-              const CategoryButton(
+               CategoryButton(
                 text: 'red',
               )
             ],
@@ -40,7 +40,7 @@ class CartProduct extends StatelessWidget {
         const SizedBox(
           width: 30,
         ),
-        const QuantityButton(),
+        // QuantityButton(product: product, indexProductSize: 0,),
       ]),
     );
   }

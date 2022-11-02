@@ -2,16 +2,17 @@ import 'package:base_code/src/struct/app_color.dart';
 import 'package:flutter/material.dart';
 
 class CategoryButton extends StatelessWidget {
-  const CategoryButton(
-      {required this.text, this.buttonStatus = ButtonStatus.normal, Key? key})
+   CategoryButton(
+      {required this.text, this.buttonStatus = ButtonStatus.normal, this.onPressed, Key? key})
       : super(key: key);
   final String text;
   final ButtonStatus buttonStatus;
+  Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     final Color buttonColor = buttonStatus.getColor();
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: onPressed,
       child: Text(text),
       style: OutlinedButton.styleFrom(
           backgroundColor: buttonStatus == ButtonStatus.selected

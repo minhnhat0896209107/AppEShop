@@ -42,10 +42,12 @@ dependencies:
   shared_preferences: ^2.0.15
   carousel_slider: ^4.1.1
   flutter_svg: ^1.0.3
+  json_annotation: ^4.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.5.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -1,6 +1,6 @@
 import 'package:base_code/src/blocs/cart_bloc.dart';
 import 'package:base_code/src/commons/widgets/loading_widget.dart';
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/cart/cart_product.dart';
 import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';

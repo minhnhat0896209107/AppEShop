@@ -17,7 +17,7 @@ class RoundedImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
-      child: Image.asset(
+      child: Image.network(
         url,
         errorBuilder: (context, error, stackTrace) {
           return Container(

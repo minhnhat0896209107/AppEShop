@@ -1,9 +1,21 @@
+import 'package:base_code/src/api/global_api.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:flutter/material.dart';
 
-class QuantityButton extends StatelessWidget {
-  const QuantityButton({this.value = 1, Key? key}) : super(key: key);
-  final int value;
+import '../../../../models/product/product_size/product_size.dart';
+
+class QuantityButton extends StatefulWidget {
+  QuantityButton({this.value = 1,required this.product,  this.indexProductSize , Key? key}) : super(key: key);
+  int value;
+  Product product;
+  int? indexProductSize;
+
+  @override
+  State<QuantityButton> createState() => _QuantityButtonState();
+}
+
+class _QuantityButtonState extends State<QuantityButton> {
   @override
   Widget build(BuildContext context) {
     const Color buttonColor = AppColors.primay;
@@ -11,14 +23,34 @@ class QuantityButton extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              if(widget.value < 2){
+                setState(() {
+                  widget.value == 1;
+                });
+              }else{
+                setState(() {
+                  widget.value--;
+                });
+              }
+            },
             icon: const Text('-'),
             iconSize: 10,
             splashRadius: 12,
           ),
-          Text('$value'),
+          Text('${widget.value}'),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              if(widget.value > widget.product.productSizes![widget.indexProductSize!].quantity!){
+                setState(() {
+                  widget.value == widget.product.productSizes![widget.indexProductSize!].quantity;
+                });
+              }else{
+                setState(() {
+                    widget.value++;
+                });
+              }
+            },
             icon: const Text('+'),
             iconSize: 10,
             splashRadius: 12,

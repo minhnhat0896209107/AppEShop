@@ -1,5 +1,5 @@
 import 'package:base_code/src/blocs/base_bloc.dart';
-import 'package:base_code/src/models/product.dart';
+import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/repositories/product_repo.dart';
 import 'package:rxdart/rxdart.dart';
 
