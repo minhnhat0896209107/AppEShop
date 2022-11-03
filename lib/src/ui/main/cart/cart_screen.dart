@@ -3,6 +3,7 @@ import 'package:base_code/src/commons/widgets/loading_widget.dart';
 import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/cart/cart_product.dart';
+import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
@@ -118,7 +119,8 @@ class _CartScreenState extends State<CartScreen> {
                                     IconTextButton(
                                         imageUrl: AppImages.wallet,
                                         title: AppStrings.checkout,
-                                        onTap: () {})
+                                        onTap: () {
+                                        })
                                   ]),
                             )
                           ],

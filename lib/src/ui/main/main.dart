@@ -2,6 +2,7 @@ import 'package:base_code/src/manager/user_manager.dart';
 import 'package:base_code/src/ui/main/cart/cart_screen.dart';
 import 'package:base_code/src/ui/main/common/app_bar.dart';
 import 'package:base_code/src/ui/main/home_screen/home_screen.dart';
+import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:base_code/src/ui/main/product/product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:base_code/src/utils/app_strings.dart';
@@ -25,7 +26,8 @@ class _MainState extends State<Main> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const ProductScreen(),
-    const CartScreen()
+    const CartScreen(),
+    const OrderScreen()
   ];
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,13 @@ class _MainState extends State<Main> {
             title: const Text(AppStrings.cart),
             onTap: () {
               changeIndex(2);
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            title: const Text(AppStrings.order),
+            onTap: () {
+              changeIndex(3);
               Navigator.pop(context);
             },
           ),

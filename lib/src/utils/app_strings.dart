@@ -41,9 +41,29 @@ class AppStrings {
   static const quantity = 'Quantity';
   static const total = 'Total';
   static const addToCart = 'Add to cart';
+  static const addToCartSuccess = 'Add to cart success!!!';
   static const buyNow = 'Buy now';
   static const cart = 'Cart';
+  static const order = 'Order';
+  static const deliveryInformation = 'Delivery information';
   static const checkout = 'Check out';
   static const checkMail =
       'Sign up success! Please check mail to confirm your account!';
+  static const name = 'Name';
+  static const city = 'City';
+  static const phoneNumber = 'Phone number';
+  static const district = 'District';
+  static const ward = 'Ward';
+  static const note = 'Note';
+  static const cancelOrder = 'Canel order';
+  static const next = 'Next >';
+  static const prev = '< Prev';
+  static const branchSystem = 'Branch System';
+  static const socialNetwork = 'Social Network';
+  static const policy = 'Policy';
+  static const price = 'Pirce';
+  static const ship = 'Ship';
+  static const discount = 'Discount';
+
+  
 }

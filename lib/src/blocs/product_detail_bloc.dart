@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:base_code/src/blocs/base_bloc.dart';
 import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/repositories/product_repo.dart';
+import 'package:base_code/src/utils/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,7 @@ class ProductDetailBloC extends BaseBloC {
   }
 
   void addToCart(Product product) async {
-    ToastUtils.showToast('Add to Cart success');
+    ToastUtils.showToast(AppStrings.addToCartSuccess);
 
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? jsonProducts = pref.getString('listCart');

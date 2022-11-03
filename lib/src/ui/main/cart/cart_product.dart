@@ -1,6 +1,4 @@
 import 'package:base_code/src/models/product/product.dart';
-import 'package:base_code/src/ui/main/product/widget/category_button.dart';
-import 'package:base_code/src/ui/main/product/widget/quantity_button.dart';
 import 'package:flutter/material.dart';
 
 import '../../../struct/app_color.dart';
@@ -81,15 +79,10 @@ class _CartProductState extends State<CartProduct> {
           Text('${numberQuantity}'),
           IconButton(
             onPressed: () {
-              if(numberQuantity > widget.product.productSizes![indexProductSize].quantity! && indexProductSize != -1){
-                setState(() {
-                  numberQuantity == widget.product.productSizes![indexProductSize].quantity;
-                });
-              }else{
+     
                 setState(() {
                     numberQuantity++;
                 });
-              }
             },
             icon: const Text('+'),
             iconSize: 10,
