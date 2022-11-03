@@ -2,7 +2,7 @@ part of 'product.dart';
 
 extension ProductCopyWith on Product {
   Product copyWith({
-    int? id,
+    String? id,
     String? name,
     String? slug,
     String? description,
@@ -31,7 +31,7 @@ extension ProductCopyWith on Product {
 
 Product _$ProductFromJson(Map<String, dynamic> json){
   return Product(
-    id: json["id"] as int?,
+    id: json["id"].toString(),
         name: json["name"] as String?,
         slug: json["slug"] as String?,
         description: json["description"] as String?,

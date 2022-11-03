@@ -31,7 +31,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool isCheckSelect = false;
   int? indexSelect;
   int totalPrice = 0;
-  int value = 1;
+  int numberQuantity = 1;
   @override
   Widget build(BuildContext context) {
 
@@ -257,7 +257,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             SizedBox(
               width: 8,
             ),
-            _quantityButton(product, indexSelect ?? 0),
+            _quantityButton(product, indexSelect ?? -1),
           ],
         ),
         const SizedBox(
@@ -270,7 +270,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               width: 5,
             ),
             Text(
-              '${product.price! * value} đ',
+              '${product.price! * numberQuantity} đ',
               textAlign: TextAlign.center,
               style: const TextStyle(
                   fontFamily: 'Nunito',
@@ -336,13 +336,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         children: [
           IconButton(
             onPressed: () {
-              if(value < 2){
+              if(numberQuantity < 2){
                 setState(() {
-                  value == 1;
+                  numberQuantity == 1;
                 });
               }else{
                 setState(() {
-                  value--;
+                  numberQuantity--;
                 });
               }
             },
@@ -350,16 +350,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             iconSize: 10,
             splashRadius: 12,
           ),
-          Text('${value}'),
+          Text('${numberQuantity}'),
           IconButton(
             onPressed: () {
-              if(value > widget.product.productSizes![indexProductSize].quantity!){
+              if(numberQuantity > widget.product.productSizes![indexProductSize].quantity! && indexProductSize != -1){
                 setState(() {
-                  value == widget.product.productSizes![indexProductSize].quantity;
+                  numberQuantity == widget.product.productSizes![indexProductSize].quantity;
                 });
               }else{
                 setState(() {
-                    value++;
+                    numberQuantity++;
                 });
               }
             },

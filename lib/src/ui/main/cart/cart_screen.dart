@@ -47,6 +47,7 @@ class _CartScreenState extends State<CartScreen> {
                         return const Center(child: loadingWidget);
                       }
                       List<Product> cartProducts = snapshot.data!;
+                      print("XYZ == ${cartProducts.length}");
                       double totalPrice = getTotalPrice(cartProducts);
                       if (cartProducts.isEmpty) {
                         return Image.asset(AppImages.cartEmpty);

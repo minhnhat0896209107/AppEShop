@@ -6,7 +6,7 @@ import 'product_size/product_size.dart';
 part 'product.g.dart';
 @JsonSerializable()
 class Product {
-  int? id;
+  String? id;
   String? name;
   String? slug;
   String? description;
@@ -33,5 +33,5 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
-  Map<String, dynamic> toJson() => _$ProductToJson(this);
+  Map toJson() => _$ProductToJson(this);
 }
