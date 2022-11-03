@@ -65,5 +65,6 @@ class AppStrings {
   static const ship = 'Ship';
   static const discount = 'Discount';
 
+  static const inputInformation = "Vui lòng nhập đầy đủ thông tin";
   
 }

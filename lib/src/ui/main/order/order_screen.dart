@@ -2,6 +2,7 @@
 
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/main.dart';
+import 'package:base_code/src/utils/helpers.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/app_image.dart';
@@ -111,7 +112,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 MaterialPageRoute(
                   builder: (context) => Main(),
                 )),
-            child: Text('Cancer Order'),
+            child: Text(AppStrings.cancelOrder),
           ),
           Container(
             width: MediaQuery.of(context).size.width / 2,
@@ -119,12 +120,20 @@ class _OrderScreenState extends State<OrderScreen> {
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
                 onTap: () {
-                  setState(() {
-                    page++;
-                    controller.animateToPage(page,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut);
-                  });
+                  if (edtName.text.isEmpty ||
+                      edtCity.text.isEmpty ||
+                      edtDistrict.text.isEmpty ||
+                      edtPhone.text.isEmpty ||
+                      edtWard.text.isEmpty) {
+                    showErrorDialog(context, AppStrings.inputInformation);
+                  } else {
+                    setState(() {
+                      page++;
+                      controller.animateToPage(page,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut);
+                    });
+                  }
                 },
                 child: Text(
                   AppStrings.next,
@@ -179,7 +188,6 @@ class _OrderScreenState extends State<OrderScreen> {
           Container(
             margin: EdgeInsets.only(left: 20, top: 10, bottom: 30),
             child: Align(
-              
               alignment: Alignment.topLeft,
               child: InkWell(
                 onTap: () => Navigator.push(
@@ -187,7 +195,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     MaterialPageRoute(
                       builder: (context) => Main(),
                     )),
-                child: Text('Cancer Order'),
+                child: Text(AppStrings.cancelOrder),
               ),
             ),
           ),
@@ -301,7 +309,6 @@ class _OrderScreenState extends State<OrderScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          
           Container(
             width: MediaQuery.of(context).size.width / 3,
             child: Padding(
