@@ -2,12 +2,10 @@ import 'package:base_code/src/blocs/product_detail_bloc.dart';
 import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/models/product/product_size/product_size.dart';
 import 'package:base_code/src/struct/app_color.dart';
-import 'package:base_code/src/ui/main/cart/cart_screen.dart';
 import 'package:base_code/src/ui/main/common/app_bar.dart';
 import 'package:base_code/src/ui/main/home_screen/widgets/slider_widget.dart';
 import 'package:base_code/src/ui/main/product/widget/category_button.dart';
 import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';
-import 'package:base_code/src/ui/main/product/widget/quantity_button.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
 import 'package:base_code/src/utils/app_textstyle.dart';
@@ -15,7 +13,7 @@ import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../api/global_api.dart';
+import '../../../utils/toast_utils.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({required this.product, Key? key})

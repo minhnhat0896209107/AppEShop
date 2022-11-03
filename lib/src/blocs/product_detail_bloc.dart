@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/toast_utils.dart';
+
 class ProductDetailBloC extends BaseBloC {
   final ProductRepository _productRepository = ProductRepository();
   final BehaviorSubject<Product> _productController =
@@ -30,6 +32,8 @@ class ProductDetailBloC extends BaseBloC {
   }
 
   void addToCart(Product product) async {
+    ToastUtils.showToast('Add to Cart success');
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     String? jsonProducts = pref.getString('listCart');
     jsonProducts ??= '[]';
