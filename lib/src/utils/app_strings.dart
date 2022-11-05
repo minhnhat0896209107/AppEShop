@@ -66,5 +66,7 @@ class AppStrings {
   static const discount = 'Discount';
 
   static const inputInformation = "Vui lòng nhập đầy đủ thông tin";
+  static const outOfStock = "Hết hàng";
+  static const chooseYourShoe = "Vui lòng chọn size giày!!";
   
 }

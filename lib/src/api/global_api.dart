@@ -1,10 +1,11 @@
 
 import 'package:flutter/material.dart';
 
+import '../models/cart.dart';
+
 
 GlobalApi globalApi = GlobalApi();
 class GlobalApi with ChangeNotifier{
   GlobalApi();
-
-  int quantityProduct = 1;
+  List<Cart> listCart = [];
 }

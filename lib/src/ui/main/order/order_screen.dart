@@ -26,12 +26,12 @@ class _OrderScreenState extends State<OrderScreen> {
   final TextEditingController edtNote = TextEditingController();
   int page = 0;
   PageController controller = PageController(initialPage: 0);
-  DeliverInformation deliver =  DeliverInformation();
-  
+  DeliverInformation deliver = DeliverInformation();
+
   @override
   void dispose() {
     // TODO: implement dispose
-    deliver =  DeliverInformation();
+    deliver = DeliverInformation();
     super.dispose();
   }
   @override
@@ -136,14 +136,15 @@ class _OrderScreenState extends State<OrderScreen> {
                       edtWard.text.isEmpty) {
                     showErrorDialog(context, AppStrings.inputInformation);
                   } else {
-                    deliver 
+                    deliver
                       ..name = edtName.text.toString()
                       ..city = edtCity.text.toString()
                       ..phoneNumber = edtPhone.text.toString()
                       ..district = edtDistrict.text.toString()
                       ..ward = edtWard.text.toString()
                       ..note = edtNote.text.toString();
-    print("DELIVER1 == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
+                    print(
+                        "DELIVER1 == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
 
                     setState(() {
                       page++;
@@ -169,7 +170,8 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _pageInforOrder() {
-    print("DELIVER == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
+    print(
+        "DELIVER == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
     return SingleChildScrollView(
       child: Column(
         children: [

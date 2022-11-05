@@ -1,27 +1,35 @@
+import 'package:base_code/src/api/global_api.dart';
 import 'package:base_code/src/models/product/product.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/cart.dart';
 import '../../../struct/app_color.dart';
 
 class CartProduct extends StatefulWidget {
-  const CartProduct({this.isStroke = true, required this.product, Key? key})
+  const CartProduct({this.isStroke = true, required this.product, Key? key, this.cart})
       : super(key: key);
   final bool isStroke;
   final Product product;
+  final Cart? cart;
 
   @override
-  State<CartProduct> createState() => _CartProductState();
+  State<CartProduct> createState() => CartProductState();
 }
 
-class _CartProductState extends State<CartProduct> {
+class CartProductState extends State<CartProduct> {
   bool hasData = false;
   Product? product;
   int numberQuantity = 1;
+  Cart? cart;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     product = widget.product;
+    cart = widget.cart;
+    if(cart!.numberQuantityBuy! > 0){
+      numberQuantity = cart!.numberQuantityBuy!;
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -51,11 +59,11 @@ class _CartProductState extends State<CartProduct> {
               const SizedBox(
                 width: 30,
               ),
-              _quantityButton(product!, numberQuantity)
+              _quantityButton(product!)
             ]),
           );
   }
-  Widget _quantityButton(Product product, int indexProductSize){
+  Widget _quantityButton(Product product){
     const Color buttonColor = AppColors.primay;
     return Container(
       child: Row(

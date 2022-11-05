@@ -30,9 +30,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int? indexSelect;
   int totalPrice = 0;
   int numberQuantity = 1;
+  String nameSize = "";
+  int? quantity;
   @override
   Widget build(BuildContext context) {
-
     return Provider<ProductDetailBloC>(
         create: ((context) => ProductDetailBloC()),
         builder: (context, child) {
@@ -120,6 +121,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _productDetail(Product product) {
+    print("NAME SIZE == $nameSize \t $quantity \t $numberQuantity");
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       padding: const EdgeInsets.all(20),
@@ -209,6 +212,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         setState(() {
                           isCheckSelect = true;
                           indexSelect = index;
+                          nameSize = productSize.size!.name!;
+                          quantity = productSize.quantity;
                         });
                       },
                       text: productSize.size?.name ?? "--",
@@ -231,6 +236,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       setState(() {
                         isCheckSelect = true;
                         indexSelect = index;
+                        nameSize = productSize.size!.name!;
+                        quantity = productSize.quantity;
                       });
                     },
                     text: productSize.size?.name ?? "--",
@@ -248,9 +255,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             },
           ),
         ),
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
-          children:  [
+          children: [
             Text('${AppStrings.quantity}:'),
             SizedBox(
               width: 8,
@@ -275,14 +284,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   fontWeight: FontWeight.w700,
                   fontSize: 30),
             ),
-            
           ],
         ),
         Row(
           children: [
             IconTextButton(
               onTap: () {
-                bloC.addToCart(product);
+                if (quantity == 0) {
+                  ToastUtils.showToast(AppStrings.outOfStock);
+                } else if (nameSize == "") {
+                  ToastUtils.showToast(AppStrings.chooseYourShoe);
+                } else {
+                  bloC.addToCart(product, quantity!, numberQuantity, nameSize!);
+                }
               },
               imageUrl: AppImages.cart,
               title: AppStrings.addToCart,
@@ -327,18 +341,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _quantityButton(Product product, int indexProductSize){
+  Widget _quantityButton(Product product, int indexProductSize) {
     const Color buttonColor = AppColors.primay;
     return Container(
       child: Row(
         children: [
           IconButton(
             onPressed: () {
-              if(numberQuantity < 2){
+              if (numberQuantity < 2) {
                 setState(() {
                   numberQuantity == 1;
                 });
-              }else{
+              } else {
                 setState(() {
                   numberQuantity--;
                 });
@@ -351,13 +365,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           Text('${numberQuantity}'),
           IconButton(
             onPressed: () {
-              if(numberQuantity > widget.product.productSizes![indexProductSize].quantity! && indexProductSize != -1){
+              if (numberQuantity >
+                      widget
+                          .product.productSizes![indexProductSize].quantity! &&
+                  indexProductSize != -1) {
                 setState(() {
-                  numberQuantity == widget.product.productSizes![indexProductSize].quantity;
+                  numberQuantity ==
+                      widget.product.productSizes![indexProductSize].quantity;
                 });
-              }else{
+              } else {
                 setState(() {
-                    numberQuantity++;
+                  numberQuantity++;
                 });
               }
             },
