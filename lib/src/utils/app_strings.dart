@@ -61,7 +61,7 @@ class AppStrings {
   static const branchSystem = 'Branch System';
   static const socialNetwork = 'Social Network';
   static const policy = 'Policy';
-  static const price = 'Pirce';
+  static const price = 'Price';
   static const ship = 'Ship';
   static const discount = 'Discount';
 

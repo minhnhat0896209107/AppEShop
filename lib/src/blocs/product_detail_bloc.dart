@@ -17,6 +17,7 @@ class ProductDetailBloC extends BaseBloC {
   final BehaviorSubject<Product> _productController =
       BehaviorSubject<Product>();
   Stream<Product> get productStream => _productController.stream;
+  List<Cart> listCart = [];
   void init({required Product product}) {
     _productController.add(product);
   }

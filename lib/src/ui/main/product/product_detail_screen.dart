@@ -258,14 +258,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         SizedBox(
           height: 10,
         ),
-        Row(
-          children: [
-            Text('${AppStrings.quantity}:'),
-            SizedBox(
-              width: 8,
-            ),
-            _quantityButton(product, indexSelect ?? -1),
-          ],
+        Visibility(
+          visible: product.productSizes!.isNotEmpty,
+          child: Row(
+            children: [
+              const Text('${AppStrings.quantity}:'),
+              SizedBox(
+                width: 8,
+              ),
+              _quantityButton(product),
+            ],
+          ),
         ),
         const SizedBox(
           height: 24,
@@ -287,6 +290,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconTextButton(
               onTap: () {
@@ -295,14 +299,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 } else if (nameSize == "") {
                   ToastUtils.showToast(AppStrings.chooseYourShoe);
                 } else {
-                  bloC.addToCart(product, quantity!, numberQuantity, nameSize!);
+                  bloC.addToCart(product, quantity!, numberQuantity, nameSize);
                 }
               },
               imageUrl: AppImages.cart,
               title: AppStrings.addToCart,
             ),
             const SizedBox(
-              width: 20,
+              width: 10,
             ),
             IconTextButton(
               onTap: () {},
@@ -341,7 +345,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 
-  Widget _quantityButton(Product product, int indexProductSize) {
+  Widget _quantityButton(Product product) {
+    print("INDEX == $indexSelect");
     const Color buttonColor = AppColors.primay;
     return Container(
       child: Row(
@@ -362,16 +367,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             iconSize: 10,
             splashRadius: 12,
           ),
-          Text('${numberQuantity}'),
+          Text('$numberQuantity'),
           IconButton(
             onPressed: () {
               if (numberQuantity >
-                      widget
-                          .product.productSizes![indexProductSize].quantity! &&
-                  indexProductSize != -1) {
+                      product.productSizes![indexSelect!].quantity! &&
+                  indexSelect != -1) {
                 setState(() {
                   numberQuantity ==
-                      widget.product.productSizes![indexProductSize].quantity;
+                      product.productSizes![indexSelect!].quantity;
                 });
               } else {
                 setState(() {

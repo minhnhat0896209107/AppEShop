@@ -44,6 +44,7 @@ dependencies:
   flutter_svg: ^1.0.3
   json_annotation: ^4.7.0
   fluttertoast: ^8.1.1
+  launch_review: ^3.0.1
 
 dev_dependencies:
   flutter_test:

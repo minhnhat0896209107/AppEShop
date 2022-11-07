@@ -48,16 +48,7 @@ class ProductItem extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                           fontSize: 20),
                     ),
-                    Text(
-                      '${product.price} đ',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          decoration: TextDecoration.lineThrough,
-                          color: AppColors.secondary,
-                          fontFamily: 'Nunito',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16),
-                    ),
+                   
                   ]);
             }),
           ],

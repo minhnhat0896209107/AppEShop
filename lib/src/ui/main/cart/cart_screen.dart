@@ -9,7 +9,9 @@ import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -22,18 +24,28 @@ class _CartScreenState extends State<CartScreen> {
   late CartBloC bloC;
   late List<Cart> listCart = [];
   List<int> listNumberQuantity = [];
+  late SharedPreferences pref;
 
   @override
   void initState() {
     listCart = globalApi.listCart;
-    for(Cart i in listCart){
+    if (listCart.length == 0) {
+      checkListProduct();
+    }
+    for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
     }
     super.initState();
   }
 
+  void checkListProduct() async {
+    pref = await SharedPreferences.getInstance();
+    pref.setString("listCart", "[]");
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("list cart == ${listCart.length}");
     return Provider<CartBloC>(
         create: (context) => CartBloC(),
         builder: (context, _) {
@@ -61,8 +73,8 @@ class _CartScreenState extends State<CartScreen> {
                         return const Center(child: loadingWidget);
                       }
                       List<Product> cartProducts = snapshot.data!;
-                      double totalPrice =
-                          getTotalPrice(cartProducts);
+                      print("list cart1 == ${cartProducts.length} ");
+                      double totalPrice = getTotalPrice(cartProducts);
                       if (cartProducts.isEmpty) {
                         return Image.asset(AppImages.cartEmpty);
                       } else {
@@ -96,11 +108,10 @@ class _CartScreenState extends State<CartScreen> {
                                   children: List.generate(
                                       cartProducts.length,
                                       (index) => _cartDetail(
-                                            index % 2 == 0,
-                                            cartProducts[index],
-                                            listCart[index],
-                                            index
-                                          ))),
+                                          index % 2 == 0,
+                                          cartProducts[index],
+                                          listCart[index],
+                                          index))),
                             ),
                             const SizedBox(
                               height: 50,
@@ -134,7 +145,16 @@ class _CartScreenState extends State<CartScreen> {
                                     IconTextButton(
                                         imageUrl: AppImages.wallet,
                                         title: AppStrings.checkout,
-                                        onTap: () {})
+                                        onTap: () async {
+                                          listCart = [];
+                                          pref = await SharedPreferences
+                                              .getInstance();
+                                          pref.setString("listCart", "[]");
+                                          LaunchReview.launch(
+                                              androidAppId:
+                                                  "com.mservice.momotransfer");
+                                          setState(() {});
+                                        })
                                   ]),
                             )
                           ],
