@@ -5,6 +5,7 @@ import 'package:base_code/src/models/cart.dart';
 import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/cart/cart_product.dart';
+import 'package:base_code/src/ui/main/momo_webview/momo_screen.dart';
 import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
@@ -150,9 +151,7 @@ class _CartScreenState extends State<CartScreen> {
                                           pref = await SharedPreferences
                                               .getInstance();
                                           pref.setString("listCart", "[]");
-                                          LaunchReview.launch(
-                                              androidAppId:
-                                                  "com.mservice.momotransfer");
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) =>const MomoScreen(),));
                                           setState(() {});
                                         })
                                   ]),

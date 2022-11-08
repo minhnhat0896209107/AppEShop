@@ -16,6 +16,7 @@ import '../../../models/cart.dart';
 import '../../../models/product/product.dart';
 import '../../../utils/app_image.dart';
 import '../../../utils/app_strings.dart';
+import '../momo_webview/momo_screen.dart';
 import '../product/widget/icon_text_button.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -430,7 +431,11 @@ class _OrderScreenState extends State<OrderScreen> {
                 listCart = [];
                 pref = await SharedPreferences.getInstance();
                 pref.setString("listCart", "[]");
-                LaunchReview.launch(androidAppId: "com.mservice.momotransfer");
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MomoScreen(),
+                    ));
                 setState(() {});
               })
         ],
