@@ -33,7 +33,7 @@ class ProductDetailBloC extends BaseBloC {
     }
   }
 
-  void addToCart(Product product, int quantity, int numberQuantityBuy, String size) async {
+  void addToCart(Product product, int quantity, int numberQuantityBuy, String size, int productSizeId) async {
     ToastUtils.showToast(AppStrings.addToCartSuccess);
     Cart cart = Cart();
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -43,7 +43,8 @@ class ProductDetailBloC extends BaseBloC {
     cart
     ..quantity = quantity
     ..numberQuantityBuy = numberQuantityBuy
-    ..size = size;
+    ..size = size
+    ..productSizeId = productSizeId;
     listMapProduct.add(product.toJson());
     globalApi.listCart.add(cart);
     pref.setString('listCart', json.encode(listMapProduct));

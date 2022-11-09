@@ -12,7 +12,10 @@ import 'package:base_code/src/utils/app_textstyle.dart';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../api/global_api.dart';
+import '../../../models/cart.dart';
 import '../../../utils/toast_utils.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -32,6 +35,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int numberQuantity = 1;
   String nameSize = "";
   int? quantity;
+  late SharedPreferences pref;
+  late List<Cart> listCart = [];
+  int? productSizeId;
+  @override
+  void initState() {
+    listCart = globalApi.listCart;
+    if (listCart.length == 0) {
+      checkListProduct();
+    }
+    // TODO: implement initState
+    super.initState();
+  }
+
+    void checkListProduct() async {
+    pref = await SharedPreferences.getInstance();
+    pref.setString("listCart", "[]");
+  }
   @override
   Widget build(BuildContext context) {
     return Provider<ProductDetailBloC>(
@@ -121,7 +141,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _productDetail(Product product) {
-    print("NAME SIZE == $nameSize \t $quantity \t $numberQuantity");
+    print("NAME SIZE == $nameSize \t $quantity \t $numberQuantity \t $productSizeId");
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -214,6 +234,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           indexSelect = index;
                           nameSize = productSize.size!.name!;
                           quantity = productSize.quantity;
+                          productSizeId = productSize.id;
                         });
                       },
                       text: productSize.size?.name ?? "--",
@@ -238,6 +259,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         indexSelect = index;
                         nameSize = productSize.size!.name!;
                         quantity = productSize.quantity;
+                        productSizeId = productSize.id;
                       });
                     },
                     text: productSize.size?.name ?? "--",
@@ -299,7 +321,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 } else if (nameSize == "") {
                   ToastUtils.showToast(AppStrings.chooseYourShoe);
                 } else {
-                  bloC.addToCart(product, quantity!, numberQuantity, nameSize);
+                  bloC.addToCart(product, quantity!, numberQuantity, nameSize, productSizeId!);
                 }
               },
               imageUrl: AppImages.cart,

@@ -6,6 +6,7 @@ import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/cart/cart_product.dart';
 import 'package:base_code/src/ui/main/momo_webview/momo_screen.dart';
+import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
@@ -43,7 +44,6 @@ class _CartScreenState extends State<CartScreen> {
     pref = await SharedPreferences.getInstance();
     pref.setString("listCart", "[]");
   }
-
   @override
   Widget build(BuildContext context) {
     print("list cart == ${listCart.length}");
@@ -147,12 +147,7 @@ class _CartScreenState extends State<CartScreen> {
                                         imageUrl: AppImages.wallet,
                                         title: AppStrings.checkout,
                                         onTap: () async {
-                                          listCart = [];
-                                          pref = await SharedPreferences
-                                              .getInstance();
-                                          pref.setString("listCart", "[]");
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) =>const MomoScreen(),));
-                                          setState(() {});
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) =>const OrderScreen(),));
                                         })
                                   ]),
                             )

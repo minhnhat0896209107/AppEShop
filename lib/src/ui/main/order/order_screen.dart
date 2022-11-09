@@ -1,7 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:base_code/src/blocs/cart_bloc.dart';
+import 'package:base_code/src/blocs/order_bloc.dart';
 import 'package:base_code/src/models/deliver_infomation/deliver_information.dart';
+import 'package:base_code/src/models/order.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/main.dart';
 import 'package:base_code/src/utils/helpers.dart';
@@ -14,8 +16,10 @@ import '../../../api/global_api.dart';
 import '../../../commons/widgets/loading_widget.dart';
 import '../../../models/cart.dart';
 import '../../../models/product/product.dart';
+import '../../../repositories/order_repo.dart';
 import '../../../utils/app_image.dart';
 import '../../../utils/app_strings.dart';
+import '../common/app_bar.dart';
 import '../momo_webview/momo_screen.dart';
 import '../product/widget/icon_text_button.dart';
 
@@ -37,9 +41,17 @@ class _OrderScreenState extends State<OrderScreen> {
   PageController controller = PageController(initialPage: 0);
   DeliverInformation deliver = DeliverInformation();
   late CartBloC bloC;
+  late OrderBloc orderBloc;
   late List<Cart> listCart = [];
   List<int> listNumberQuantity = [];
   late SharedPreferences pref;
+  late Order order = Order();
+  List<Item> items = [];
+  final OrderRepository _orderRepository = OrderRepository();
+  String? url;
+  Future postOrder() async {
+    url = await _orderRepository.postOrder(order: order);
+  }
 
   @override
   void initState() {
@@ -49,6 +61,8 @@ class _OrderScreenState extends State<OrderScreen> {
     }
     for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
+      var item = Item(productSizeId: i.productSizeId, quantity: i.quantity);
+      items.add(item);
     }
     super.initState();
   }
@@ -67,24 +81,27 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("AAAA == ${items.length}");
+
     return Scaffold(
+        appBar: customAppbar,
         body: Stack(
-      children: [
-        Container(
-          color: AppColors.pinkLight,
-        ),
-        PageView(
-          physics: NeverScrollableScrollPhysics(),
-          onPageChanged: (value) {
-            setState(() {
-              page = value;
-            });
-          },
-          children: [_pageInput(), _pageInforOrder()],
-          controller: controller,
-        )
-      ],
-    ));
+          children: [
+            Container(
+              color: AppColors.pinkLight,
+            ),
+            PageView(
+              physics: NeverScrollableScrollPhysics(),
+              onPageChanged: (value) {
+                setState(() {
+                  page = value;
+                });
+              },
+              children: [_pageInput(), _pageInforOrder()],
+              controller: controller,
+            )
+          ],
+        ));
   }
 
   Widget _pageInput() {
@@ -179,8 +196,6 @@ class _OrderScreenState extends State<OrderScreen> {
                       ..district = edtDistrict.text.toString()
                       ..ward = edtWard.text.toString()
                       ..note = edtNote.text.toString();
-                    print(
-                        "DELIVER1 == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
 
                     setState(() {
                       page++;
@@ -221,6 +236,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 return const Center(child: loadingWidget);
               }
               List<Product> cartProducts = snapshot.data!;
+
               double totalPrice = getTotalPrice(cartProducts);
               if (cartProducts.isEmpty) {
                 return Image.asset(AppImages.cartEmpty);
@@ -396,6 +412,17 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _backInforInput() {
+    order
+      ..items = items
+      ..address = "${deliver.district} - ${deliver.ward} - ${deliver.city}"
+      ..name = deliver.name
+      ..phone = deliver.phoneNumber
+      ..note = deliver.note;
+    print(
+        "ORDERBUILD== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
+
+    print(
+        "DELIVER1 == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
     return Padding(
       padding: const EdgeInsets.only(left: 20, top: 20, right: 30),
       child: Row(
@@ -428,14 +455,24 @@ class _OrderScreenState extends State<OrderScreen> {
               imageUrl: AppImages.wallet,
               title: AppStrings.checkout,
               onTap: () async {
-                listCart = [];
-                pref = await SharedPreferences.getInstance();
-                pref.setString("listCart", "[]");
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MomoScreen(),
-                    ));
+                // setState(() {});
+                try {
+                  await postOrder();
+                  print("URL == $url");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MomoScreen(url: url),
+                      ));
+                  listCart = [];
+                  pref = await SharedPreferences.getInstance();
+                  pref.setString("listCart", "[]");
+                } catch (error, stackStrace) {
+                  debugPrint(error.toString());
+                  debugPrintStack(stackTrace: stackStrace);
+                  showErrorDialog(context, error);
+                }
+
                 setState(() {});
               })
         ],

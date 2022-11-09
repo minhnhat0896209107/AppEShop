@@ -27,7 +27,6 @@ class _MainState extends State<Main> {
     const HomeScreen(),
     const ProductScreen(),
     const CartScreen(),
-    const OrderScreen()
   ];
   @override
   Widget build(BuildContext context) {
@@ -64,13 +63,6 @@ class _MainState extends State<Main> {
             title: const Text(AppStrings.cart),
             onTap: () {
               changeIndex(2);
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text(AppStrings.order),
-            onTap: () {
-              changeIndex(3);
               Navigator.pop(context);
             },
           ),

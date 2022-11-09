@@ -5,10 +5,12 @@ class Cart{
   int? quantity;
   int? numberQuantityBuy;
   String? size;
+  int? productSizeId;
 
   Cart({
     this.quantity,
     this.numberQuantityBuy,
-    this.size
+    this.size,
+    this.productSizeId
   });
 }
