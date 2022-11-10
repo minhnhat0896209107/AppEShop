@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/global_api.dart';
 import '../../../commons/widgets/loading_widget.dart';
+import '../../../manager/user_manager.dart';
 import '../../../models/cart.dart';
 import '../../../models/product/product.dart';
 import '../../../repositories/order_repo.dart';
@@ -61,7 +62,7 @@ class _OrderScreenState extends State<OrderScreen> {
     }
     for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
-      var item = Item(productSizeId: i.productSizeId, quantity: i.quantity);
+      var item = Item(productSizeId: i.productSizeId, quantity: i.numberQuantityBuy);
       items.add(item);
     }
     super.initState();
@@ -458,7 +459,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 // setState(() {});
                 try {
                   await postOrder();
-                  print("URL == $url");
+                  print("URL == $url \t ${UserManager.globalToken}");
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -468,6 +469,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   pref = await SharedPreferences.getInstance();
                   pref.setString("listCart", "[]");
                 } catch (error, stackStrace) {
+
                   debugPrint(error.toString());
                   debugPrintStack(stackTrace: stackStrace);
                   showErrorDialog(context, error);

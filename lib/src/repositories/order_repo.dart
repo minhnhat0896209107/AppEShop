@@ -13,7 +13,7 @@ class OrderRepository{
 
   Future<String> postOrder({required Order order}) async {
 
-      var repsponse = await _baseApi.postMethod(OrderUrl.orderUrl, body: order.toJson());
+      var repsponse = await _baseApi.postMethod(OrderUrl.orderUrl, body: order);
       if(repsponse['success']){
         print("SUCCESS");
         return repsponse['data']['payUrl'];

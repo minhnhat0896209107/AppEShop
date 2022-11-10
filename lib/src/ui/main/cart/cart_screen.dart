@@ -148,6 +148,9 @@ class _CartScreenState extends State<CartScreen> {
                                         title: AppStrings.checkout,
                                         onTap: () async {
                                           Navigator.push(context, MaterialPageRoute(builder: (context) =>const OrderScreen(),));
+                                          setState(() {
+                                            
+                                          });
                                         })
                                   ]),
                             )

@@ -154,9 +154,6 @@ class _ProductScreenState extends State<ProductScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Product>? products = snapshot.data;
-            print("Length1 == ${products?[0].images!.first.url}");
-            print("Length2 == ${products?[1].images!.first.url}");
-            print("Length3 == ${products?[2].images!.first.url}");
             if (products == null) {
               return const SizedBox(
                 height: 500,
