@@ -6,8 +6,12 @@ import 'package:base_code/src/ui/main/home_screen/widgets/product_item.dart';
 import 'package:base_code/src/utils/app_boxshadow.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../blocs/category_bloc.dart';
+import '../../../models/category/category.dart';
 
 class ProductScreen extends StatefulWidget {
   const ProductScreen({Key? key}) : super(key: key);
@@ -18,84 +22,94 @@ class ProductScreen extends StatefulWidget {
 
 class _ProductScreenState extends State<ProductScreen> {
   late ProductScreenBloC _bloC;
+  late CategoryBloc _categoryBloc;
+  
+  String? selectedValue;
   @override
   Widget build(BuildContext context) {
+    print("SELECT == $selectedValue");
     return Provider<ProductScreenBloC>(
         create: (_) => ProductScreenBloC(),
         dispose: (_, bloc) => bloc.dispose(),
         builder: (context, _) {
           _bloC = context.read<ProductScreenBloC>();
-          _bloC.getListProducts();
-          return Container(
-            color: AppColors.pinkLight,
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              child: Column(children: [
-                Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16, right: 16, top: 100, bottom: 50),
-                    child: _searchBox()),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _categoryItem(AppStrings.allCategories),
-                    _categoryItem(AppStrings.priceAscending)
-                  ],
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Flexible(
-                        child:
-                            _categoryItem(AppStrings.latest, hasLogo: false)),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      width: 1,
-                      height: 15,
-                      color: AppColors.primay,
-                    ),
-                    Flexible(
-                        child: _categoryItem(AppStrings.bestSeller,
-                            hasLogo: false))
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                _productGridView(),
-                const SizedBox(
-                  height: 30,
-                ),
-                OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                    ),
-                    onPressed: () {},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            AppImages.share,
-                            width: 24,
-                          ),
-                          const SizedBox(
-                            width: 11,
-                          ),
-                          const Text(AppStrings.nextPage)
-                        ],
+          _bloC.getListProducts(selectedValue ?? "");
+          return Provider<CategoryBloc>(
+            create:(_) => CategoryBloc(),
+            dispose: (context, bloc) => bloc.dispose(),
+            builder: (context, _) {
+              _categoryBloc = context.read<CategoryBloc>();
+              _categoryBloc.getListCategory();
+              return Container(
+              color: AppColors.pinkLight,
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16, right: 16, top: 100, bottom: 50),
+                      child: _searchBox()),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _categoryAllItem(AppStrings.allCategories),
+                      _categoryItem(AppStrings.priceAscending)
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                          child:
+                              _categoryItem(AppStrings.latest, hasLogo: false)),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        width: 1,
+                        height: 15,
+                        color: AppColors.primay,
                       ),
-                    )),
-                const SizedBox(
-                  height: 100,
-                ),
-              ]),
-            ),
+                      Flexible(
+                          child: _categoryItem(AppStrings.bestSeller,
+                              hasLogo: false))
+                    ],
+                  ),
+                  
+                  _productGridView(),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                      ),
+                      onPressed: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              AppImages.share,
+                              width: 24,
+                            ),
+                            const SizedBox(
+                              width: 11,
+                            ),
+                            const Text(AppStrings.nextPage)
+                          ],
+                        ),
+                      )),
+                  const SizedBox(
+                    height: 100,
+                  ),
+                ]),
+              ),
+            );
+            },
           );
         });
   }
@@ -131,8 +145,72 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 
-  Widget _categoryItem(String title, {bool hasLogo = true}) {
-    return Row(
+  Widget _categoryAllItem(String title, {bool hasLogo = true}) {
+    return StreamBuilder<List<Category>>(
+      stream: _categoryBloc.categoryStream,
+      builder: (context, snapshot) {
+        if(snapshot.hasData){
+          List<Category> categories = snapshot.data!;
+
+          return DropdownButtonHideUnderline(
+          child: DropdownButton2(
+            isExpanded: true,
+            hint: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+            items: categories
+                .map((item) => DropdownMenuItem<String>(
+                      value: item.name,
+                      child: Text(
+                        item.name!,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ))
+                .toList(),
+            value: selectedValue,
+            onChanged: (value) {
+              setState(() {
+                selectedValue = value as String;
+              });
+            },
+            icon:  Image.asset(
+                    AppImages.dropdown,
+                    width: 12,
+                  ),
+            iconSize: 14,
+            iconEnabledColor: Colors.black,
+            buttonHeight: 50,
+            buttonWidth: 160,
+            itemHeight: 40,
+            dropdownMaxHeight: 200,
+            dropdownWidth: 200,
+            dropdownPadding: null,
+            scrollbarRadius: const Radius.circular(40),
+            scrollbarThickness: 6,
+            scrollbarAlwaysShow: true,
+            offset: const Offset(-20, 0),
+          ),
+        );
+        }
+        return loadingWidget;
+      }
+    );
+  }
+
+  Widget _categoryItem(String title, {bool hasLogo = true}){
+        return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(title),
@@ -154,29 +232,30 @@ class _ProductScreenState extends State<ProductScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<Product>? products = snapshot.data;
-            if (products == null) {
-              return const SizedBox(
-                height: 500,
-                child: CircularProgressIndicator(color: AppColors.pinkLight),
-              );
+            print("Products ${products!.length}");
+            if (products.isEmpty) {
+              return Image.asset(AppImages.cartEmpty, width: 300, height: 300,);
             }
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: products.length,
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      childAspectRatio: 170 / 280,
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20),
-                  itemBuilder: (context, index) {
-                    return ProductItem(
-                      url:  products[index].images!.first.url!,
-                      product: products[index],
-                    );
-                  }),
+            return Container(
+              margin: EdgeInsets.only(top: 30),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: products.length,
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        childAspectRatio: 170 / 280,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20),
+                    itemBuilder: (context, index) {
+                      return ProductItem(
+                        url: products[index].images!.first.url!,
+                        product: products[index],
+                      );
+                    }),
+              ),
             );
           }
           return loadingWidget;
