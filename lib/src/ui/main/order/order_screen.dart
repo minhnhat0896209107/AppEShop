@@ -35,9 +35,7 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> {
   final TextEditingController edtName = TextEditingController();
   final TextEditingController edtPhone = TextEditingController();
-  final TextEditingController edtCity = TextEditingController();
-  final TextEditingController edtDistrict = TextEditingController();
-  final TextEditingController edtWard = TextEditingController();
+  final TextEditingController edtAddress = TextEditingController();
   final TextEditingController edtNote = TextEditingController();
   int page = 0;
   PageController controller = PageController(initialPage: 0);
@@ -137,11 +135,7 @@ class _OrderScreenState extends State<OrderScreen> {
           _inputInformation(
               "${AppStrings.phoneNumber} *", edtPhone, TextInputType.phone),
           _inputInformation(
-              "${AppStrings.city} *", edtCity, TextInputType.text),
-          _inputInformation(
-              "${AppStrings.district} *", edtDistrict, TextInputType.text),
-          _inputInformation(
-              "${AppStrings.ward} *", edtWard, TextInputType.text),
+              "${AppStrings.address} *", edtAddress, TextInputType.text),
           _inputInformation(AppStrings.note, edtNote, TextInputType.text),
           _nextPageInforOrder()
         ],
@@ -185,18 +179,14 @@ class _OrderScreenState extends State<OrderScreen> {
               child: GestureDetector(
                 onTap: () {
                   if (edtName.text.isEmpty ||
-                      edtCity.text.isEmpty ||
-                      edtDistrict.text.isEmpty ||
-                      edtPhone.text.isEmpty ||
-                      edtWard.text.isEmpty) {
+                      edtAddress.text.isEmpty ||
+                      edtPhone.text.isEmpty) {
                     showErrorDialog(context, AppStrings.inputInformation);
                   } else {
                     deliver
                       ..name = edtName.text.toString()
-                      ..city = edtCity.text.toString()
+                      ..address = edtAddress.text.toString()
                       ..phoneNumber = edtPhone.text.toString()
-                      ..district = edtDistrict.text.toString()
-                      ..ward = edtWard.text.toString()
                       ..note = edtNote.text.toString();
 
                     setState(() {
@@ -224,7 +214,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget _pageInforOrder() {
     print(
-        "DELIVER == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
+        "DELIVER == ${deliver.name} \t ${deliver.address} \t ${deliver.phoneNumber} \t ${deliver.note} \t ");
     return Provider<CartBloC>(
       create: (context) => CartBloC(),
       builder: (context, child) {
@@ -416,7 +406,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget _backInforInput() {
     order
       ..items = items
-      ..address = "${deliver.district} - ${deliver.ward} - ${deliver.city}"
+      ..address = deliver.address
       ..name = deliver.name
       ..phone = deliver.phoneNumber
       ..note = deliver.note;
@@ -424,7 +414,7 @@ class _OrderScreenState extends State<OrderScreen> {
         "ORDERBUILD== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
 
     print(
-        "DELIVER1 == ${deliver.name} \t ${deliver.city} \t ${deliver.phoneNumber} \t ${deliver.district} \t ${deliver.ward} \t ${deliver.note} \t ");
+        "DELIVER1 == ${deliver.name} \t ${deliver.phoneNumber} \t ${deliver.address} \t ${deliver.note} \t ");
     return Padding(
       padding: const EdgeInsets.only(left: 20, top: 20, right: 30),
       child: Row(

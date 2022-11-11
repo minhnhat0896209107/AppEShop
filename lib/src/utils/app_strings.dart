@@ -68,5 +68,7 @@ class AppStrings {
   static const inputInformation = "Vui lòng nhập đầy đủ thông tin";
   static const outOfStock = "Hết hàng";
   static const chooseYourShoe = "Vui lòng chọn size giày!!";
+  static const chooseQuantity = "Vui lòng chọn số lượng mua!!";
+  static const address = "Address";
   
 }

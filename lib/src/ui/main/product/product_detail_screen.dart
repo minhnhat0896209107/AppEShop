@@ -4,6 +4,7 @@ import 'package:base_code/src/models/product/product_size/product_size.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/common/app_bar.dart';
 import 'package:base_code/src/ui/main/home_screen/widgets/slider_widget.dart';
+import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:base_code/src/ui/main/product/widget/category_button.dart';
 import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';
 import 'package:base_code/src/utils/app_image.dart';
@@ -32,7 +33,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final CarouselController _carouselController = CarouselController();
   bool isCheckSelect = false;
   int? indexSelect;
-  int numberQuantity = 1;
+  int numberQuantity = 0;
   String nameSize = "";
   int? quantity;
   late SharedPreferences pref;
@@ -320,6 +321,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ToastUtils.showToast(AppStrings.outOfStock);
                 } else if (nameSize == "") {
                   ToastUtils.showToast(AppStrings.chooseYourShoe);
+                } else if (numberQuantity == 0){
+                  ToastUtils.showToast(AppStrings.chooseQuantity);
                 } else {
                   bloC.addToCart(product, quantity!, numberQuantity, nameSize, productSizeId!);
                 }
@@ -331,7 +334,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               width: 10,
             ),
             IconTextButton(
-              onTap: () {},
+              onTap: () {
+                 if (quantity == 0) {
+                  ToastUtils.showToast(AppStrings.outOfStock);
+                } else if (nameSize == "") {
+                  ToastUtils.showToast(AppStrings.chooseYourShoe);
+                } else if (numberQuantity == 0){
+                  ToastUtils.showToast(AppStrings.chooseQuantity);
+                } else {
+                  bloC.addToCart(product, quantity!, numberQuantity, nameSize, productSizeId!);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrderScreen(),));
+                }
+              },
               imageUrl: AppImages.wallet,
               title: AppStrings.buyNow,
             ),

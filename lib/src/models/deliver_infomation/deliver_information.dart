@@ -2,17 +2,13 @@
 class DeliverInformation{
   String? name;
   String? phoneNumber;
-  String? city;
-  String? district;
-  String? ward;
+  String? address;
   String? note;
 
   DeliverInformation({
     this.name,
     this.phoneNumber,
-    this.district,
-    this.city,
-    this.ward,
+    this.address,
     this.note
   });
 }
