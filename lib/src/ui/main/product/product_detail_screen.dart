@@ -17,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../api/global_api.dart';
 import '../../../models/cart.dart';
 import '../../../utils/toast_utils.dart';
+import 'package:base_code/src/utils/integer_extension.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({required this.product, Key? key})
@@ -31,7 +32,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final CarouselController _carouselController = CarouselController();
   bool isCheckSelect = false;
   int? indexSelect;
-  int totalPrice = 0;
   int numberQuantity = 1;
   String nameSize = "";
   int? quantity;
@@ -204,7 +204,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         Row(
           children: [
             Text(
-              '${product.price} đ',
+              '${product.price?.formatMoney}',
               textAlign: TextAlign.center,
               style: const TextStyle(
                   fontFamily: 'Nunito',
@@ -302,7 +302,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               width: 5,
             ),
             Text(
-              '${product.price! * numberQuantity} đ',
+              (product.price! * numberQuantity).formatMoney,
               textAlign: TextAlign.center,
               style: const TextStyle(
                   fontFamily: 'Nunito',

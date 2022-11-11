@@ -7,6 +7,7 @@ import 'package:base_code/src/models/order.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/main.dart';
 import 'package:base_code/src/utils/helpers.dart';
+import 'package:base_code/src/utils/integer_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
@@ -238,7 +239,7 @@ class _OrderScreenState extends State<OrderScreen> {
               }
               List<Product> cartProducts = snapshot.data!;
 
-              double totalPrice = getTotalPrice(cartProducts);
+              String totalPrice = getTotalPrice(cartProducts);
               if (cartProducts.isEmpty) {
                 return Image.asset(AppImages.cartEmpty);
               } else {
@@ -272,11 +273,11 @@ class _OrderScreenState extends State<OrderScreen> {
                       ),
                       _lineHeight(),
                       _inforPrice(
-                          AppStrings.price, "$totalPrice", FontWeight.w500),
+                          AppStrings.price, totalPrice, FontWeight.w500),
                       _inforPrice(AppStrings.ship, "0d", FontWeight.w500),
                       _inforPrice(AppStrings.discount, "0d", FontWeight.w500),
                       _inforPrice(
-                          AppStrings.total, "$totalPrice", FontWeight.w700),
+                          AppStrings.total, totalPrice, FontWeight.w700),
                       _lineHeight(),
                       _backInforInput(),
                       Container(
@@ -371,7 +372,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 Container(
                   margin: EdgeInsets.only(right: 5),
                   child: Text(
-                    "${listCart[index].numberQuantityBuy! * product.price!}" ??
+                    (listCart[index].numberQuantityBuy! * product.price!).formatMoney ??
                         '--',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -482,11 +483,11 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  double getTotalPrice(List<Product> products) {
-    double total = 0;
+  String getTotalPrice(List<Product> products) {
+    int total = 0;
     for (int i = 0; i < products.length; i++) {
       total += products[i].price! * listNumberQuantity[i];
     }
-    return total;
+    return total.formatMoney;
   }
 }

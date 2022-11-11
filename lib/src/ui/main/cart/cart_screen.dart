@@ -10,6 +10,7 @@ import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:base_code/src/ui/main/product/widget/icon_text_button.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
+import 'package:base_code/src/utils/integer_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
@@ -75,7 +76,7 @@ class _CartScreenState extends State<CartScreen> {
                       }
                       List<Product> cartProducts = snapshot.data!;
                       print("list cart1 == ${cartProducts.length} ");
-                      double totalPrice = getTotalPrice(cartProducts);
+                      String totalPrice = getTotalPrice(cartProducts);
                       if (cartProducts.isEmpty) {
                         return Image.asset(AppImages.cartEmpty);
                       } else {
@@ -136,7 +137,7 @@ class _CartScreenState extends State<CartScreen> {
                                           width: 5,
                                         ),
                                         Text(
-                                          totalPrice.toInt().toString() + 'đ',
+                                          totalPrice,
                                           style: const TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w700),
@@ -241,11 +242,11 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  double getTotalPrice(List<Product> products) {
-    double total = 0;
+  String getTotalPrice(List<Product> products) {
+    int total = 0;
     for (int i = 0; i < products.length; i++) {
       total += products[i].price! * listNumberQuantity[i];
     }
-    return total;
+    return total.formatMoney;
   }
 }

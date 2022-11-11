@@ -4,7 +4,7 @@ import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/product/product_detail_screen.dart';
 import 'package:flutter/material.dart';
-
+import 'package:base_code/src/utils/integer_extension.dart';
 class ProductItem extends StatelessWidget {
   const ProductItem({required this.url, required this.product, Key? key})
       : super(key: key);
@@ -41,7 +41,7 @@ class ProductItem extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      '${product.price} đ',
+                      '${product.price?.formatMoney}',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                           fontFamily: 'Nunito',
