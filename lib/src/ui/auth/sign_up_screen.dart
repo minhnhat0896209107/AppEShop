@@ -30,8 +30,8 @@ class _SignUpScreenState extends State<SignUpScreen> with UserMixin {
     _userManager.updateUser(user);
   }
 
-  Future signup(String email, String pass) async {
-    await _authRepository.signup(email: email, password: pass);
+  Future signup(String email) async {
+    await _authRepository.signup(email: email);
   }
 
   @override
@@ -73,38 +73,7 @@ class _SignUpScreenState extends State<SignUpScreen> with UserMixin {
                             hintText: AppStrings.emailHint),
                         controller: emailController,
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            hintText: AppStrings.passwordHint,
-                            suffix: InkWell(
-                              onTap: () {},
-                              child: Image.asset(
-                                AppImages.eyeShow,
-                                height: 16,
-                              ),
-                            )),
-                        controller: passwordController,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            hintText: AppStrings.confirmPasswordHint,
-                            suffix: InkWell(
-                              onTap: () {},
-                              child: Image.asset(
-                                AppImages.eyeShow,
-                                height: 16,
-                              ),
-                            )),
-                        controller: confirmPasswordController,
-                      ),
+                      
                       SizedBox(
                         height: paddingSize,
                       ),
@@ -113,8 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> with UserMixin {
                             try {
                               showLoading(context,
                                   message: AppStrings.logingIn);
-                              await signup(emailController.text,
-                                  passwordController.text);
+                              await signup(emailController.text);
                               Navigator.pop(context);
                               await showSuccessDialog(
                                   context, AppStrings.checkMail);

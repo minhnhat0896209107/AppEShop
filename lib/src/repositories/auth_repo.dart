@@ -10,8 +10,8 @@ class AuthRepository {
     return respond['data']['accessToken'];
   }
 
-  Future<void> signup({required String email, required String password}) async {
-    Map<String, String> body = {'email': email, 'password': password};
+  Future<void> signup({required String email}) async {
+    Map<String, String> body = {'email': email};
     var respond = await _baseApi.postMethod(AuthUrl.signup, body: body);
     if (respond['success']) {
     } else {
