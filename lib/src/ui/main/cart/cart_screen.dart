@@ -148,7 +148,7 @@ class _CartScreenState extends State<CartScreen> {
                                         imageUrl: AppImages.wallet,
                                         title: AppStrings.checkout,
                                         onTap: () async {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) =>const OrderScreen(),));
+                                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderScreen(),));
                                           setState(() {
                                             
                                           });

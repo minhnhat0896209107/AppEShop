@@ -24,15 +24,15 @@ class OrderMomoRepository{
     }
   }
 
-  // Future<Product> getProductDetail({required String slug}) async {
-  //   String url = '${ProductUrl.getProductById}/$slug';
-  //   var respond = await _baseApi.getMethod(url);
-  //   if (respond['success']) {
-  //     //TODO
-  //     var data = (respond['data']);
-  //     return Product.fromJson(data);
-  //   } else {
-  //     throw 'Server Error';
-  //   }
-  // }
+  Future<OrderMomo> getProductDetail({required String id}) async {
+    String url = '${OrderUrl.orderDetail}/$id';
+    var respond = await _baseApi.getMethod(url);
+    if (respond['success']) {
+      //TODO
+      var data = (respond['data']);
+      return OrderMomo.fromJson(data);
+    } else {
+      throw 'Server Error';
+    }
+  }
 }
