@@ -50,6 +50,9 @@ class _OrderScreenState extends State<OrderScreen> {
   final OrderRepository _orderRepository = OrderRepository();
   String? url;
   Future postOrder() async {
+     print(
+        "ORDERPOST== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
+
     url = await _orderRepository.postOrder(order: order);
   }
 

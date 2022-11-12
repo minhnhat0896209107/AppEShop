@@ -1,3 +1,4 @@
 class OrderUrl{
-  static const orderUrl = '/api/v1/orders';
+  static const order = '/api/v1/orders';
+  static const orderMine = '/api/v1/orders/mine';
 }
