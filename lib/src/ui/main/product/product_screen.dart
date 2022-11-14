@@ -23,17 +23,17 @@ class ProductScreen extends StatefulWidget {
 class _ProductScreenState extends State<ProductScreen> {
   late ProductScreenBloC _bloC;
   late CategoryBloc _categoryBloc;
-  
+  bool isCheckLatest = false;
   String? selectedValue;
   @override
   Widget build(BuildContext context) {
-    print("SELECT == $selectedValue");
+    print("SELECT == $selectedValue \t $isCheckLatest");
     return Provider<ProductScreenBloC>(
         create: (_) => ProductScreenBloC(),
         dispose: (_, bloc) => bloc.dispose(),
         builder: (context, _) {
           _bloC = context.read<ProductScreenBloC>();
-          _bloC.getListProducts(selectedValue ?? "");
+          _bloC.getListProducts(selectedValue ?? "", isCheckLatest);
           return Provider<CategoryBloc>(
             create:(_) => CategoryBloc(),
             dispose: (context, bloc) => bloc.dispose(),
@@ -65,7 +65,10 @@ class _ProductScreenState extends State<ProductScreen> {
                     children: [
                       Flexible(
                           child:
-                              _categoryItem(AppStrings.latest, hasLogo: false)),
+                              GestureDetector(onTap: () => setState(() {
+                                isCheckLatest = !isCheckLatest;
+                                selectedValue ?? "";
+                              }),child: _categoryItem(AppStrings.latest, hasLogo: false))),
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 10),
                         width: 1,
