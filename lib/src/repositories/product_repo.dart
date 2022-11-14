@@ -7,6 +7,22 @@ class ProductRepository {
   Future<List<Product>> getListProduct([String search = '']) async {
     Map<String, dynamic> params = {};
     if (search.isNotEmpty) {
+      params.addAll({'filter': "category|\$eq|$search"});
+    }
+    var respond =
+        await _baseApi.getMethod(ProductUrl.listProduct, param: params);
+    if (respond['success']) {
+      return (respond['data']['items'] as List)
+          .map((json) => Product.fromJson(json))
+          .toList();
+    } else {
+      throw 'Server Error';
+    }
+  }
+
+    Future<List<Product>> getListProductSearch([String search = '']) async {
+    Map<String, dynamic> params = {};
+    if (search.isNotEmpty) {
       params.addAll({'search': search});
     }
     var respond =

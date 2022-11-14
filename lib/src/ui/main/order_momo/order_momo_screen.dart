@@ -60,7 +60,17 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
                           child: ListView.separated(
                               itemBuilder: (context, index) {
                                 OrderMomo orderMomo = orderMomos[index];
-                                return _itemOrder(orderMomo);
+                                return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => OrderScreen(
+                                              id: orderMomo.id,
+                                            ),
+                                          ));
+                                    },
+                                    child: _itemOrder(orderMomo));
                               },
                               separatorBuilder: (context, index) => Container(
                                     margin:
@@ -80,21 +90,20 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
   }
 
   Widget _itemOrder(OrderMomo orderMomo) {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderScreen(id: orderMomo.id,),));
-        },
+    return Container(
+      color: Colors.transparent,
+      child: Padding(
+        padding: EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Expanded(
+                Expanded(
                   child: Text(
-                    "${orderMomo.orderItems?[0].productSize?.product?.name}" ?? '--',
+                    "${orderMomo.orderItems?[0].productSize?.product?.name}" ??
+                        '--',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
@@ -102,7 +111,7 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
                 ),
                 Container(
                   margin: EdgeInsets.only(left: 5),
-                  child:  Text(
+                  child: Text(
                     int.parse(orderMomo.total!).formatMoney,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -116,7 +125,7 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:  [
+              children: [
                 Text(
                   orderMomo.createdAt!.dateTimeToDDMMYYYY,
                   maxLines: 1,

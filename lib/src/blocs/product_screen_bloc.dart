@@ -23,10 +23,11 @@ class ProductScreenBloC extends BaseBloC {
     _productController.add(products);
   }
 
+
   void _searchText(String searchText) async {
     _productController.add(null);
     List<Product> products =
-        await _productRepository.getListProduct(searchText);
+        await _productRepository.getListProductSearch(searchText);
     _productController.add(products);
   }
 
