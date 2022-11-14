@@ -35,6 +35,8 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
     storeUserandAddUser(token);
   }
 
+  bool isVisible = false;
+
   @override
   Widget build(BuildContext context) {
     final double paddingSize = 30 / 667 * MediaQuery.of(context).size.height;
@@ -88,15 +90,17 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
                               height: 10,
                             ),
                             TextFormField(
-                              obscureText: true,
+                              obscureText: !isVisible ? true : false,
                               decoration: InputDecoration(
                                   hintText: AppStrings.passwordHint,
                                   suffix: InkWell(
-                                    onTap: () {},
-                                    child: Image.asset(
-                                      AppImages.eyeShow,
-                                      height: 16,
-                                    ),
+                                    onTap: () {
+                                      isVisible = !isVisible;
+                                      setState(() {
+                                        
+                                      });
+                                    },
+                                    child: isVisible ? Icon(Icons.visibility_off) :  Icon(Icons.visibility)
                                   )),
                               controller: passwordController,
                             ),

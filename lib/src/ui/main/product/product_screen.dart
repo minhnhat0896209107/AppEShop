@@ -67,7 +67,6 @@ class _ProductScreenState extends State<ProductScreen> {
                           child:
                               GestureDetector(onTap: () => setState(() {
                                 isCheckLatest = !isCheckLatest;
-                                selectedValue ?? "";
                               }),child: _categoryItem(AppStrings.latest, hasLogo: false))),
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 10),
