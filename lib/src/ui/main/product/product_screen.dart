@@ -25,6 +25,11 @@ class _ProductScreenState extends State<ProductScreen> {
   late CategoryBloc _categoryBloc;
   bool isCheckLatest = false;
   String? selectedValue;
+  List<String> itemsPriceAccending = [
+    "Price ascending",
+    "Price descending"
+  ];
+  String? selectPriceAssending;
   @override
   Widget build(BuildContext context) {
     print("SELECT == $selectedValue \t $isCheckLatest");
@@ -54,7 +59,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _categoryAllItem(AppStrings.allCategories),
-                      _categoryItem(AppStrings.priceAscending)
+                      _categoryPriceItem(AppStrings.priceAscending)
                     ],
                   ),
                   const SizedBox(
@@ -209,6 +214,59 @@ class _ProductScreenState extends State<ProductScreen> {
         return loadingWidget;
       }
     );
+  }
+   Widget _categoryPriceItem(String title, {bool hasLogo = true}) {
+   return DropdownButtonHideUnderline(
+          child: DropdownButton2(
+            isExpanded: true,
+            hint: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+            items: itemsPriceAccending
+                .map((item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(
+                        item,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ))
+                .toList(),
+            value: selectPriceAssending,
+            onChanged: (value) {
+              setState(() {
+                selectPriceAssending = value as String;
+              });
+            },
+            icon:  Image.asset(
+                    AppImages.dropdown,
+                    width: 12,
+                  ),
+            iconSize: 14,
+            iconEnabledColor: Colors.black,
+            buttonHeight: 50,
+            buttonWidth: 160,
+            itemHeight: 40,
+            dropdownMaxHeight: 200,
+            dropdownWidth: 200,
+            dropdownPadding: null,
+            scrollbarRadius: const Radius.circular(40),
+            scrollbarThickness: 6,
+            scrollbarAlwaysShow: true,
+            offset: const Offset(-20, 0),
+          ),
+        );
   }
 
   Widget _categoryItem(String title, {bool hasLogo = true}){
