@@ -42,6 +42,7 @@ class AppStrings {
   static const total = 'Total';
   static const addToCart = 'Add to cart';
   static const addToCartSuccess = 'Add to cart success!!!';
+  static const updateCartSuccess = 'Update to cart success!!!';
   static const buyNow = 'Buy now';
   static const cart = 'Cart';
   static const order = 'Order';

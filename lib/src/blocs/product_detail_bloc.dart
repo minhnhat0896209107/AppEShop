@@ -18,13 +18,15 @@ class ProductDetailBloC extends BaseBloC {
       BehaviorSubject<Product>();
   Stream<Product> get productStream => _productController.stream;
   List<Cart> listCart = [];
+  bool isCheckUpdate = false;
+  int? indexCart;
+  int? numberBuyBefore;
   void init({required Product product}) {
     _productController.add(product);
   }
 
   void getProductDetail({required String slug}) async {
     try {
-
       Product product = await _productRepository.getProductDetail(slug: slug);
       _productController.add(product);
     } catch (error, stackTrace) {
@@ -33,25 +35,40 @@ class ProductDetailBloC extends BaseBloC {
     }
   }
 
-  void addToCart(Product product, int quantity, int numberQuantityBuy, String size, int productSizeId) async {
+  void addToCart(Product product, int quantity, int numberQuantityBuy,
+      String size, int productSizeId) async {
     Cart cart = Cart();
-    // SharedPreferences pref = await SharedPreferences.getInstance();
-    // String? jsonProducts = pref.getString('listCart');
-    // jsonProducts ??= '[]';
-    // List listMapProduct = (json.decode(jsonProducts));
-    cart
-    ..quantity = quantity
-    ..numberQuantityBuy = numberQuantityBuy
-    ..size = size
-    ..productSizeId = productSizeId
-    ..product = product;
+    for (int i = 0; i < globalApi.listCart.length; i++) {
+      if (globalApi.listCart[i].idProduct == product.id && globalApi.listCart[i].size == size ) {
+        isCheckUpdate = true;
+        indexCart = i;
+        numberBuyBefore = globalApi.listCart[i].numberQuantityBuy;
+      }
+    }
+    if (!isCheckUpdate) {
+      cart
+        ..idProduct = product.id
+        ..quantity = quantity
+        ..numberQuantityBuy = numberQuantityBuy
+        ..size = size
+        ..productSizeId = productSizeId
+        ..product = product;
 
-
-    // listMapProduct.add(product.toJson());
-    globalApi.listCart.add(cart);
-    ToastUtils.showToast(AppStrings.addToCartSuccess);
-
-    // pref.setString('listCart', json.encode(listMapProduct));
+      // listMapProduct.add(product.toJson());
+      globalApi.listCart.add(cart);
+      ToastUtils.showToast(AppStrings.addToCartSuccess);
+    }else {
+      globalApi.listCart.remove(globalApi.listCart[indexCart!]);
+      cart
+        ..idProduct = product.id
+        ..quantity = quantity
+        ..numberQuantityBuy = (numberQuantityBuy + numberBuyBefore!)
+        ..size = size
+        ..productSizeId = productSizeId
+        ..product = product;
+      globalApi.listCart.insert(indexCart!,cart);
+      ToastUtils.showToast(AppStrings.updateCartSuccess);
+    }
   }
 
   @override

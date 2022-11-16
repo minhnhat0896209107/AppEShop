@@ -42,9 +42,7 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("list cart == ${listCart.length}");
     String totalPrice = getTotalPrice(cartProducts);
-
     return Container(
       color: AppColors.pinkLight,
       child: SingleChildScrollView(

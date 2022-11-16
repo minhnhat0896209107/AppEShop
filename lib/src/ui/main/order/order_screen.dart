@@ -57,7 +57,7 @@ class _OrderScreenState extends State<OrderScreen> {
   late OrderMomoBloc _orderMomoBloc;
   int? idOrderMomo;
   OrderMomo? orderMomo;
-  List<Product> cartProducts = [];
+  // List<Product> cartProducts = [];
 
   Future postOrder() async {
     print(
@@ -68,18 +68,19 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   void initState() {
-    print("AAAAAAA1 ${globalApi.listCart} \t ${listCart}");
 
     idOrderMomo = widget.id;
     listCart = globalApi.listCart;
 
-    for (Cart i in listCart) {
+    for (Cart i in globalApi.listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
-      cartProducts.add(i.product!);
+      // cartProducts.add(i.product!);
       var item =
           Item(productSizeId: i.productSizeId, quantity: i.numberQuantityBuy);
       items.add(item);
     }
+    print("AAAAAAA1 ${globalApi.listCart.length} \t ${listCart.length}");
+
     super.initState();
   }
 
@@ -92,7 +93,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("AAAAAAA ${globalApi.listCart} \t ${listCart}");
+    print("AAAAAAA ${globalApi.listCart.length} \t ${listCart.length}");
     return Scaffold(
         appBar: customAppbar,
         body: Stack(
@@ -127,9 +128,8 @@ class _OrderScreenState extends State<OrderScreen> {
               if (snapshot.connectionState == ConnectionState.waiting){
                 return loadingWidget;
               }
-              if (orderMomo == null)
-                return Image.asset(AppImages.cartEmpty);
-              else {
+              if (orderMomo != null || globalApi.listCart.length > 0)
+               {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
@@ -192,6 +192,8 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                 );
               }
+              else  return Image.asset(AppImages.cartEmpty);
+
             });
       },
     );
@@ -277,7 +279,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _pageInforOrder() {
-    print("AAAAAAA2 ${globalApi.listCart} \t ${listCart}");
+    print("AAAAAAA2 ${globalApi.listCart} \t ${listCart.length} \t $orderMomo");
   
     if (orderMomo != null) {
      return  SingleChildScrollView(
@@ -314,7 +316,7 @@ class _OrderScreenState extends State<OrderScreen> {
             _inforPrice(AppStrings.total,
                 int.parse(orderMomo!.total!).formatMoney, FontWeight.w700),
             _lineHeight(),
-            _backInforInput(orderMomo),
+            _backInforInputMomo(orderMomo),
             Container(
               margin: EdgeInsets.only(left: 20, top: 10, bottom: 30),
               child: Align(
@@ -332,10 +334,12 @@ class _OrderScreenState extends State<OrderScreen> {
           ],
         ),
       );
-    } else {
-      String totalPrice = getTotalPrice(cartProducts);
+     } 
+     
+     else {
+      String totalPrice = getTotalPrice(globalApi.listCart);
 
-      return listCart.isEmpty
+      return globalApi.listCart.length == 0
           ? Image.asset(AppImages.cartEmpty)
           : SingleChildScrollView(
               child: Column(
@@ -355,13 +359,13 @@ class _OrderScreenState extends State<OrderScreen> {
                     alignment: Alignment.center,
                     width: double.infinity,
                     child: Text(
-                      "${AppStrings.order} (${cartProducts.length} products)",
+                      "${AppStrings.order} (${globalApi.listCart.length} products)",
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  _listOrder(cartProducts),
+                  _listOrder(globalApi.listCart),
                   SizedBox(
                     height: 10,
                   ),
@@ -371,7 +375,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   _inforPrice(AppStrings.discount, "0d", FontWeight.w500),
                   _inforPrice(AppStrings.total, totalPrice, FontWeight.w700),
                   _lineHeight(),
-                  _backInforInput(null),
+                  _backInforInput(),
                   Container(
                     margin: EdgeInsets.only(left: 20, top: 10, bottom: 30),
                     child: Align(
@@ -392,15 +396,15 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
-  Widget _listOrder(List<Product> cartProducts) {
+  Widget _listOrder(List<Cart> listCart) {
     return Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 5),
         child: ListView.builder(
           physics: NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: cartProducts.length,
+          itemCount: listCart.length,
           itemBuilder: (context, index) {
-            Product product = cartProducts[index];
+            Product product = listCart[index].product!;
             return Row(
               children: [
                 Padding(
@@ -585,10 +589,9 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Widget _backInforInput(OrderMomo? orderMomo) {
+  Widget _backInforInputMomo(OrderMomo? orderMomo) {
     itemsOrder = [];
-    if (orderMomo != null) {
-      for (var i in orderMomo.orderItems!) {
+      for (var i in orderMomo!.orderItems!) {
         var item = Item(productSizeId: i.productSizeId, quantity: i.quantity);
         itemsOrder.add(item);
       }
@@ -598,18 +601,11 @@ class _OrderScreenState extends State<OrderScreen> {
         ..name = orderMomo.name
         ..phone = orderMomo.phone
         ..note = orderMomo.note;
-    } else {
-      order
-        ..items = items
-        ..address = deliver.address
-        ..name = deliver.name
-        ..phone = deliver.phoneNumber
-        ..note = deliver.note;
-    }
+   
+     
 
     print(
         "ORDERBUILD== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
-
     return Padding(
       padding: const EdgeInsets.only(left: 20, top: 20, right: 30),
       child: Row(
@@ -673,10 +669,80 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  String getTotalPrice(List<Product> products) {
+  Widget _backInforInput() {
+      order
+        ..items = items
+        ..address = deliver.address
+        ..name = deliver.name
+        ..phone = deliver.phoneNumber
+        ..note = deliver.note;
+   
+     
+
+    print(
+        "ORDERBUILD== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, top: 20, right: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width / 3,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    page--;
+                    controller.animateToPage(page,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut);
+                  });
+                },
+                child: Text(
+                  AppStrings.prev,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+            ),
+          ),
+          IconTextButton(
+              imageUrl: AppImages.wallet,
+              title: AppStrings.checkout,
+              onTap: () async {
+                try {
+                  await postOrder();
+                  print("URL == $url \t ${UserManager.globalToken}");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MomoScreen(url: url),
+                      )).then((value) {
+                  });
+                    globalApi.listCart = [];
+                    setState(() {
+                    
+                  });
+                } catch (error, stackStrace) {
+                  debugPrint(error.toString());
+                  debugPrintStack(stackTrace: stackStrace);
+                  showErrorDialog(context, error);
+                }
+          
+                setState(() {});
+              })
+        ],
+      ),
+    );
+  }
+
+  String getTotalPrice(List<Cart> list) {
     int total = 0;
-    for (int i = 0; i < products.length; i++) {
-      total += products[i].price! * listNumberQuantity[i];
+    for (int i = 0; i < list.length; i++) {
+      total += list[i].product!.price! * listNumberQuantity[i];
     }
     return total.formatMoney;
   }
