@@ -19,13 +19,13 @@ class CartBloC extends BaseBloC {
   }
 
   void getInCartProduct() async {
-    pref = await SharedPreferences.getInstance();
-    String? jsonProducts = pref.getString('listCart');
-    jsonProducts ??= '[]';
-    List listMapProduct = (json.decode(jsonProducts));
-    List<Product> listProduct =
-        listMapProduct.map((json) => Product.fromJson(json)).toList();
-    _listCartController.add(listProduct);
+    // pref = await SharedPreferences.getInstance();
+    // String? jsonProducts = pref.getString('listCart');
+    // jsonProducts ??= '[]';
+    // List listMapProduct = (json.decode(jsonProducts));
+    // List<Product> listProduct =
+    //     listMapProduct.map((json) => Product.fromJson(json)).toList();
+    // _listCartController.add(listProduct);
   }
 
   @override

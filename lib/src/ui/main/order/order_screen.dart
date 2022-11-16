@@ -57,6 +57,8 @@ class _OrderScreenState extends State<OrderScreen> {
   late OrderMomoBloc _orderMomoBloc;
   int? idOrderMomo;
   OrderMomo? orderMomo;
+  List<Product> cartProducts = [];
+
   Future postOrder() async {
     print(
         "ORDERPOST== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
@@ -66,13 +68,14 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   void initState() {
+    print("AAAAAAA1 ${globalApi.listCart} \t ${listCart}");
+
     idOrderMomo = widget.id;
     listCart = globalApi.listCart;
-    if (listCart.length == 0) {
-      checkListProduct();
-    }
+
     for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
+      cartProducts.add(i.product!);
       var item =
           Item(productSizeId: i.productSizeId, quantity: i.numberQuantityBuy);
       items.add(item);
@@ -87,13 +90,9 @@ class _OrderScreenState extends State<OrderScreen> {
     super.dispose();
   }
 
-  void checkListProduct() async {
-    pref = await SharedPreferences.getInstance();
-    pref.setString("listCart", "[]");
-  }
-
   @override
   Widget build(BuildContext context) {
+    print("AAAAAAA ${globalApi.listCart} \t ${listCart}");
     return Scaffold(
         appBar: customAppbar,
         body: Stack(
@@ -125,67 +124,71 @@ class _OrderScreenState extends State<OrderScreen> {
             stream: _orderMomoBloc.orderMomoDetailStream,
             builder: (context, snapshot) {
               orderMomo = snapshot.data;
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 100,
-                      child: Text(
-                        AppStrings.order,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 32, fontWeight: FontWeight.w700),
+              if (listCart.isEmpty && orderMomo == null)
+                return Image.asset(AppImages.cartEmpty);
+              else {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        height: 100,
+                        child: Text(
+                          AppStrings.order,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 32, fontWeight: FontWeight.w700),
+                        ),
                       ),
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      child: Text(
-                        AppStrings.deliveryInformation,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w500),
+                      Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        child: Text(
+                          AppStrings.deliveryInformation,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    _inputInformation(
-                        orderMomo != null
-                            ? orderMomo!.name!
-                            : "${AppStrings.name} *",
-                        edtName,
-                        TextInputType.text,
-                        orderMomo),
-                    _inputInformation(
-                        orderMomo != null
-                            ? orderMomo!.phone!
-                            : "${AppStrings.phoneNumber} *",
-                        edtPhone,
-                        TextInputType.phone,
-                        orderMomo),
-                    _inputInformation(
-                        orderMomo != null
-                            ? orderMomo!.address!
-                            : "${AppStrings.address} *",
-                        edtAddress,
-                        TextInputType.text,
-                        orderMomo),
-                    _inputInformation(
-                        orderMomo == null
-                            ? AppStrings.note
-                            : orderMomo?.note != null
-                                ? orderMomo?.note
-                                : "",
-                        edtNote,
-                        TextInputType.text,
-                        orderMomo),
-                    _nextPageInforOrder(orderMomo)
-                  ],
-                ),
-              );
+                      SizedBox(
+                        height: 30,
+                      ),
+                      _inputInformation(
+                          orderMomo != null
+                              ? orderMomo!.name!
+                              : "${AppStrings.name} *",
+                          edtName,
+                          TextInputType.text,
+                          orderMomo),
+                      _inputInformation(
+                          orderMomo != null
+                              ? orderMomo!.phone!
+                              : "${AppStrings.phoneNumber} *",
+                          edtPhone,
+                          TextInputType.phone,
+                          orderMomo),
+                      _inputInformation(
+                          orderMomo != null
+                              ? orderMomo!.address!
+                              : "${AppStrings.address} *",
+                          edtAddress,
+                          TextInputType.text,
+                          orderMomo),
+                      _inputInformation(
+                          orderMomo == null
+                              ? AppStrings.note
+                              : orderMomo?.note != null
+                                  ? orderMomo?.note
+                                  : "",
+                          edtNote,
+                          TextInputType.text,
+                          orderMomo),
+                      _nextPageInforOrder(orderMomo)
+                    ],
+                  ),
+                );
+              }
             });
       },
     );
@@ -271,8 +274,10 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _pageInforOrder() {
+    print("AAAAAAA2 ${globalApi.listCart} \t ${listCart}");
+  
     if (orderMomo != null) {
-      return SingleChildScrollView(
+     return  SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -325,83 +330,62 @@ class _OrderScreenState extends State<OrderScreen> {
         ),
       );
     } else {
-      return Provider<CartBloC>(
-        create: (context) => CartBloC(),
-        builder: (context, child) {
-          bloC = context.read<CartBloC>();
-          bloC.getInCartProduct();
-          bloC.init();
-          return StreamBuilder<List<Product>>(
-              stream: bloC.listCartStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: loadingWidget);
-                }
-                List<Product> cartProducts = snapshot.data!;
+      String totalPrice = getTotalPrice(cartProducts);
 
-                String totalPrice = getTotalPrice(cartProducts);
-                if (cartProducts.isEmpty) {
-                  return Image.asset(AppImages.cartEmpty);
-                } else {
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          height: 100,
-                          child: Text(
-                            AppStrings.order,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 32, fontWeight: FontWeight.w700),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: double.infinity,
-                          child: Text(
-                            "${AppStrings.order} (${cartProducts.length} products)",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        _listOrder(cartProducts),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        _lineHeight(),
-                        _inforPrice(
-                            AppStrings.price, totalPrice, FontWeight.w500),
-                        _inforPrice(AppStrings.ship, "0d", FontWeight.w500),
-                        _inforPrice(AppStrings.discount, "0d", FontWeight.w500),
-                        _inforPrice(
-                            AppStrings.total, totalPrice, FontWeight.w700),
-                        _lineHeight(),
-                        _backInforInput(null),
-                        Container(
-                          margin:
-                              EdgeInsets.only(left: 20, top: 10, bottom: 30),
-                          child: Align(
-                            alignment: Alignment.topLeft,
-                            child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Main(),
-                                  )),
-                              child: Text(AppStrings.cancelOrder),
-                            ),
-                          ),
-                        ),
-                      ],
+      return listCart.isEmpty
+          ? Image.asset(AppImages.cartEmpty)
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 100,
+                    child: Text(
+                      AppStrings.order,
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
                     ),
-                  );
-                }
-              });
-        },
-      );
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    child: Text(
+                      "${AppStrings.order} (${cartProducts.length} products)",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  _listOrder(cartProducts),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  _lineHeight(),
+                  _inforPrice(AppStrings.price, totalPrice, FontWeight.w500),
+                  _inforPrice(AppStrings.ship, "0d", FontWeight.w500),
+                  _inforPrice(AppStrings.discount, "0d", FontWeight.w500),
+                  _inforPrice(AppStrings.total, totalPrice, FontWeight.w700),
+                  _lineHeight(),
+                  _backInforInput(null),
+                  Container(
+                    margin: EdgeInsets.only(left: 20, top: 10, bottom: 30),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: InkWell(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Main(),
+                            )),
+                        child: Text(AppStrings.cancelOrder),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
     }
   }
 
@@ -655,7 +639,6 @@ class _OrderScreenState extends State<OrderScreen> {
               imageUrl: AppImages.wallet,
               title: AppStrings.checkout,
               onTap: () async {
-                // setState(() {});
                 try {
                   await postOrder();
                   print("URL == $url \t ${UserManager.globalToken}");
@@ -663,10 +646,14 @@ class _OrderScreenState extends State<OrderScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => MomoScreen(url: url),
-                      ));
-                  listCart = [];
-                  pref = await SharedPreferences.getInstance();
-                  pref.setString("listCart", "[]");
+                      )).then((value) {
+                    globalApi.listCart = [];
+                    listCart = [];
+                    setState(() {
+                    
+                  });
+                  });
+                  
                 } catch (error, stackStrace) {
                   debugPrint(error.toString());
                   debugPrintStack(stackTrace: stackStrace);

@@ -7,12 +7,14 @@ class Cart{
   int? numberQuantityBuy;
   String? size;
   int? productSizeId;
+  Product? product;
 
   Cart({
     this.idProduct,
     this.quantity,
     this.numberQuantityBuy,
     this.size,
-    this.productSizeId
+    this.productSizeId,
+    this.product
   });
 }

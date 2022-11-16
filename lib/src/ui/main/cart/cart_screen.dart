@@ -28,145 +28,115 @@ class _CartScreenState extends State<CartScreen> {
   late List<Cart> listCart = [];
   List<int> listNumberQuantity = [];
   late SharedPreferences pref;
+  List<Product> cartProducts = [];
 
   @override
   void initState() {
     listCart = globalApi.listCart;
-    if (listCart.length == 0) {
-      checkListProduct();
-    }
     for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
+      cartProducts.add(i.product!);
     }
     super.initState();
-  }
-
-  void checkListProduct() async {
-    pref = await SharedPreferences.getInstance();
-    pref.setString("listCart", "[]");
   }
 
   @override
   Widget build(BuildContext context) {
     print("list cart == ${listCart.length}");
-    return Provider<CartBloC>(
-        create: (context) => CartBloC(),
-        builder: (context, _) {
-          bloC = context.read<CartBloC>();
-          bloC.getInCartProduct();
-          bloC.init();
-          return Container(
-            color: AppColors.pinkLight,
-            child: SingleChildScrollView(
-              child: Column(children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  height: 100,
-                  child: const Text(
-                    AppStrings.cart,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
-                  ),
-                ),
-                StreamBuilder<List<Product>>(
-                    stream: bloC.listCartStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: loadingWidget);
-                      }
-                      List<Product> cartProducts = snapshot.data!;
-                      print("list cart1 == ${cartProducts.length} ");
-                      String totalPrice = getTotalPrice(cartProducts);
-                      if (cartProducts.isEmpty) {
-                        return Image.asset(AppImages.cartEmpty);
-                      } else {
-                        return Column(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: const [
-                                  Text(
-                                    AppStrings.product,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16),
-                                  ),
-                                  Text(
-                                    AppStrings.quantity,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 16),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Column(
-                                  children: List.generate(
-                                      cartProducts.length,
-                                      (index) => _cartDetail(
-                                          index % 2 == 0,
-                                          cartProducts[index],
-                                          listCart[index],
-                                          index))),
-                            ),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Text(AppStrings.total + ':'),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        Text(
-                                          totalPrice,
-                                          style: const TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w700),
-                                        ),
-                                      ],
-                                    ),
-                                    IconTextButton(
-                                        imageUrl: AppImages.wallet,
-                                        title: AppStrings.checkout,
-                                        onTap: () async {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    OrderScreen(),
-                                              ));
-                                          setState(() {});
-                                        })
-                                  ]),
-                            )
-                          ],
-                        );
-                      }
-                    })
-              ]),
+    String totalPrice = getTotalPrice(cartProducts);
+
+    return Container(
+      color: AppColors.pinkLight,
+      child: SingleChildScrollView(
+        child: Column(children: [
+          Container(
+            alignment: Alignment.center,
+            width: double.infinity,
+            height: 100,
+            child: const Text(
+              AppStrings.cart,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
             ),
-          );
-        });
+          ),
+          cartProducts.isEmpty
+              ? Image.asset(AppImages.cartEmpty)
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text(
+                            AppStrings.product,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 16),
+                          ),
+                          Text(
+                            AppStrings.quantity,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700, fontSize: 16),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(
+                          children: List.generate(
+                              cartProducts.length,
+                              (index) => _cartDetail(
+                                  index % 2 == 0,
+                                  cartProducts[index],
+                                  listCart[index],
+                                  index))),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Text(AppStrings.total + ':'),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  totalPrice,
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                              ],
+                            ),
+                            IconTextButton(
+                                imageUrl: AppImages.wallet,
+                                title: AppStrings.checkout,
+                                onTap: () async {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => OrderScreen(),
+                                      ));
+                                  setState(() {});
+                                })
+                          ]),
+                    )
+                  ],
+                )
+        ]),
+      ),
+    );
   }
 
   Widget _cartDetail(bool isStroke, Product? product, Cart cart, int index) {
