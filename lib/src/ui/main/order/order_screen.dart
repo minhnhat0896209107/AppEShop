@@ -124,7 +124,10 @@ class _OrderScreenState extends State<OrderScreen> {
             stream: _orderMomoBloc.orderMomoDetailStream,
             builder: (context, snapshot) {
               orderMomo = snapshot.data;
-              if (listCart.isEmpty && orderMomo == null)
+              if (snapshot.connectionState == ConnectionState.waiting){
+                return loadingWidget;
+              }
+              if (orderMomo == null)
                 return Image.asset(AppImages.cartEmpty);
               else {
                 return SingleChildScrollView(
@@ -635,33 +638,36 @@ class _OrderScreenState extends State<OrderScreen> {
               border: Border.all(color: Colors.black),
             ),
           ),
-          IconTextButton(
-              imageUrl: AppImages.wallet,
-              title: AppStrings.checkout,
-              onTap: () async {
-                try {
-                  await postOrder();
-                  print("URL == $url \t ${UserManager.globalToken}");
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MomoScreen(url: url),
-                      )).then((value) {
-                    globalApi.listCart = [];
-                    listCart = [];
-                    setState(() {
+          Visibility(
+            visible: orderMomo!.status != 'cancelled',
+            child: IconTextButton(
+                imageUrl: AppImages.wallet,
+                title: AppStrings.checkout,
+                onTap: () async {
+                  try {
+                    await postOrder();
+                    print("URL == $url \t ${UserManager.globalToken}");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MomoScreen(url: url),
+                        )).then((value) {
+                      globalApi.listCart = [];
+                      listCart = [];
+                      setState(() {
+                      
+                    });
+                    });
                     
-                  });
-                  });
-                  
-                } catch (error, stackStrace) {
-                  debugPrint(error.toString());
-                  debugPrintStack(stackTrace: stackStrace);
-                  showErrorDialog(context, error);
-                }
-
-                setState(() {});
-              })
+                  } catch (error, stackStrace) {
+                    debugPrint(error.toString());
+                    debugPrintStack(stackTrace: stackStrace);
+                    showErrorDialog(context, error);
+                  }
+          
+                  setState(() {});
+                }),
+          )
         ],
       ),
     );
