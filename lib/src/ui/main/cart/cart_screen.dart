@@ -45,6 +45,7 @@ class _CartScreenState extends State<CartScreen> {
     pref = await SharedPreferences.getInstance();
     pref.setString("listCart", "[]");
   }
+
   @override
   Widget build(BuildContext context) {
     print("list cart == ${listCart.length}");
@@ -148,10 +149,13 @@ class _CartScreenState extends State<CartScreen> {
                                         imageUrl: AppImages.wallet,
                                         title: AppStrings.checkout,
                                         onTap: () async {
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderScreen(),));
-                                          setState(() {
-                                            
-                                          });
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OrderScreen(),
+                                              ));
+                                          setState(() {});
                                         })
                                   ]),
                             )
@@ -186,6 +190,12 @@ class _CartScreenState extends State<CartScreen> {
                 product?.name ?? '--',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Text(
+                cart.size ?? '--',
               ),
             ],
           ),
