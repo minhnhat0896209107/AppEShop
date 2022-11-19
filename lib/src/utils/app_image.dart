@@ -20,4 +20,11 @@ class AppImages {
   static const starOutline = 'assets/icons/star-outline.png';
   static const cart = 'assets/icons/cart.png';
   static const wallet = 'assets/icons/wallet.png';
+
+  static const cart_header = 'assets/icons/icon_cart.png';
+  static const home = 'assets/icons/icon_home.png';
+  static const logout = 'assets/icons/icon_logout.png';
+  static const order = 'assets/icons/icon_order.png';
+  static const product = 'assets/icons/icon_product.png';
+
 }
