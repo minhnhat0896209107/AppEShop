@@ -32,13 +32,13 @@ class _ProductScreenState extends State<ProductScreen> {
   String? selectPriceAssending;
   @override
   Widget build(BuildContext context) {
-    print("SELECT == $selectedValue \t $isCheckLatest");
+    print("SELECT == $selectedValue \t $isCheckLatest \t $selectPriceAssending");
     return Provider<ProductScreenBloC>(
         create: (_) => ProductScreenBloC(),
         dispose: (_, bloc) => bloc.dispose(),
         builder: (context, _) {
           _bloC = context.read<ProductScreenBloC>();
-          _bloC.getListProducts(selectedValue ?? "", isCheckLatest);
+          _bloC.getListProducts(selectedValue ?? "", isCheckLatest, selectPriceAssending == "Price ascending" ? 0 : 1);
           return Provider<CategoryBloc>(
             create:(_) => CategoryBloc(),
             dispose: (context, bloc) => bloc.dispose(),
@@ -216,6 +216,7 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
    Widget _categoryPriceItem(String title, {bool hasLogo = true}) {
+    
    return DropdownButtonHideUnderline(
           child: DropdownButton2(
             isExpanded: true,
@@ -230,7 +231,8 @@ class _ProductScreenState extends State<ProductScreen> {
               ],
             ),
             items: itemsPriceAccending
-                .map((item) => DropdownMenuItem<String>(
+                .map((item) {
+                  return DropdownMenuItem<String>(
                       value: item,
                       child: Text(
                         item,
@@ -241,7 +243,8 @@ class _ProductScreenState extends State<ProductScreen> {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ))
+                    );
+                })
                 .toList(),
             value: selectPriceAssending,
             onChanged: (value) {

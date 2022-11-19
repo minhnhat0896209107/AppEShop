@@ -4,10 +4,17 @@ import 'package:base_code/src/struct/api_services/product_url.dart';
 
 class ProductRepository {
   final BaseApi _baseApi = BaseApi();
-  Future<List<Product>> getListProduct([String search = '', bool isCheckLatest = false, ]) async {
+  Future<List<Product>> getListProduct(
+      [String search = '',
+      bool isCheckLatest = false,
+      int sortAssending = 0]) async {
     Map<String, dynamic> params = {};
 
-    params.addAll({'filter': search != "" ? "category|\$eq|$search": "", 'sort' :isCheckLatest ? "createdAt" : "", });
+    params.addAll({
+      'filter': search != "" ? "category|\$eq|$search" : "",
+      'sort': isCheckLatest ? "createdAt" : "",
+      'sort': sortAssending == 0 ? "price" : "-price"
+    });
 
     var respond =
         await _baseApi.getMethod(ProductUrl.listProduct, param: params);
@@ -20,7 +27,7 @@ class ProductRepository {
     }
   }
 
-    Future<List<Product>> getListProductSearch([String search = '']) async {
+  Future<List<Product>> getListProductSearch([String search = '']) async {
     Map<String, dynamic> params = {};
     if (search.isNotEmpty) {
       params.addAll({'search': search});

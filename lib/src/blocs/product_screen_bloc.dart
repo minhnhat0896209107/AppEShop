@@ -18,8 +18,8 @@ class ProductScreenBloC extends BaseBloC {
         .debounce((_) => TimerStream(true, kSearchDebounceDuration))
         .listen((searchText) => _searchText(searchText));
   }
-  void getListProducts(String search, bool isCheckLatest) async {
-    List<Product> products = await _productRepository.getListProduct(search, isCheckLatest);
+  void getListProducts(String search, bool isCheckLatest, int sortAssending) async {
+    List<Product> products = await _productRepository.getListProduct(search, isCheckLatest, sortAssending);
     _productController.add(products);
   }
 
