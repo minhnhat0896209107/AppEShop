@@ -56,6 +56,7 @@ class _OrderScreenState extends State<OrderScreen> {
   late OrderMomoBloc _orderMomoBloc;
   int? idOrderMomo;
   OrderMomo? orderMomo;
+  double priceDiscount = 0;
   // List<Product> cartProducts = [];
 
   Future postOrder() async {
@@ -277,7 +278,11 @@ class _OrderScreenState extends State<OrderScreen> {
 
   Widget _pageInforOrder() {
     print("AAAAAAA2 ${globalApi.listCartSelect} \t ${globalApi.listCartSelect.length} \t $orderMomo");
-  
+    for (var element in globalApi.listCartSelect) { 
+      if(element.product!.discount!.length > 0) {
+        priceDiscount +=  (element.product!.discount![0].percent! / 100) * element.product!.price!;
+      }
+      }
     if (orderMomo != null) {
      return  SingleChildScrollView(
         child: Column(
@@ -308,7 +313,6 @@ class _OrderScreenState extends State<OrderScreen> {
             _lineHeight(),
             _inforPrice(AppStrings.price,
                 int.parse(orderMomo!.total!).formatMoney, FontWeight.w500),
-            _inforPrice(AppStrings.ship, "0d", FontWeight.w500),
             _inforPrice(AppStrings.discount, "0d", FontWeight.w500),
             _inforPrice(AppStrings.total,
                 int.parse(orderMomo!.total!).formatMoney, FontWeight.w700),
@@ -335,6 +339,7 @@ class _OrderScreenState extends State<OrderScreen> {
      
      else {
       String totalPrice = getTotalPrice(globalApi.listCartSelect);
+      String totalPriceAfterDiscount = getTotalPriceAfterDiscount(globalApi.listCartSelect);
 
       return globalApi.listCartSelect.length == 0
           ? Image.asset(AppImages.cartEmpty)
@@ -368,9 +373,8 @@ class _OrderScreenState extends State<OrderScreen> {
                   ),
                   _lineHeight(),
                   _inforPrice(AppStrings.price, totalPrice, FontWeight.w500),
-                  _inforPrice(AppStrings.ship, "0d", FontWeight.w500),
-                  _inforPrice(AppStrings.discount, "0d", FontWeight.w500),
-                  _inforPrice(AppStrings.total, totalPrice, FontWeight.w700),
+                  _inforPrice(AppStrings.discount, "${priceDiscount.toInt()}", FontWeight.w500),
+                  _inforPrice(AppStrings.total, totalPriceAfterDiscount, FontWeight.w700),
                   _lineHeight(),
                   _backInforInput(),
                   Container(
@@ -743,5 +747,12 @@ class _OrderScreenState extends State<OrderScreen> {
       total += list[i].product!.price! * listNumberQuantity[i];
     }
     return total.formatMoney;
+  }
+  String getTotalPriceAfterDiscount(List<Cart> list) {
+    int total = 0;
+    for (int i = 0; i < list.length; i++) {
+      total += list[i].product!.price! * listNumberQuantity[i];
+    }
+    return (total - priceDiscount.toInt()).formatMoney;
   }
 }

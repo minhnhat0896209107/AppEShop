@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'category/category.dart';
+import 'discount/discount.dart';
 import 'product_size/product_size.dart';
 part 'product.g.dart';
 @JsonSerializable()
@@ -17,6 +18,8 @@ class Product {
   Category? category;
   List<ProductSize>? productSizes;
   List<Category>? images;
+  List<Discount>? discount;
+
 
   Product({
     this.id,
@@ -30,6 +33,7 @@ class Product {
     this.category,
     this.productSizes,
     this.images,
+    this.discount
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);

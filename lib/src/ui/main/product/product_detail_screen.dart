@@ -39,6 +39,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late SharedPreferences pref;
   late List<Cart> listCart = [];
   int? productSizeId;
+  Cart cart = Cart();
+
   @override
   void initState() {
     listCart = globalApi.listCart;
@@ -49,10 +51,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     super.initState();
   }
 
-    void checkListProduct() async {
+  void checkListProduct() async {
     pref = await SharedPreferences.getInstance();
     pref.setString("listCart", "[]");
   }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Provider<ProductDetailBloC>(
@@ -142,7 +151,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _productDetail(Product product) {
-    print("NAME SIZE == $nameSize \t $quantity \t $numberQuantity \t $productSizeId");
+    print(
+        "NAME SIZE == $nameSize \t $quantity \t $numberQuantity \t $productSizeId");
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -321,10 +331,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ToastUtils.showToast(AppStrings.outOfStock);
                 } else if (nameSize == "") {
                   ToastUtils.showToast(AppStrings.chooseYourShoe);
-                } else if (numberQuantity == 0){
+                } else if (numberQuantity == 0) {
                   ToastUtils.showToast(AppStrings.chooseQuantity);
                 } else {
-                  bloC.addToCart(product, quantity!, numberQuantity, nameSize, productSizeId!);
+                  bloC.addToCart(product, quantity!, numberQuantity, nameSize,
+                      productSizeId!);
                 }
               },
               imageUrl: AppImages.cart,
@@ -335,15 +346,28 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             ),
             IconTextButton(
               onTap: () {
-                 if (quantity == 0) {
+                if (quantity == 0) {
                   ToastUtils.showToast(AppStrings.outOfStock);
                 } else if (nameSize == "") {
                   ToastUtils.showToast(AppStrings.chooseYourShoe);
-                } else if (numberQuantity == 0){
+                } else if (numberQuantity == 0) {
                   ToastUtils.showToast(AppStrings.chooseQuantity);
                 } else {
-                  bloC.addToCart(product, quantity!, numberQuantity, nameSize, productSizeId!);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrderScreen(),));
+                  cart
+                    ..idProduct = product.id
+                    ..quantity = quantity
+                    ..numberQuantityBuy = numberQuantity
+                    ..size = nameSize
+                    ..productSizeId = productSizeId
+                    ..product = product;
+
+                  globalApi.listCartSelect.add(cart);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderScreen(),
+                      )).then((value) => globalApi.listCartSelect = []);
+                  
                 }
               },
               imageUrl: AppImages.wallet,

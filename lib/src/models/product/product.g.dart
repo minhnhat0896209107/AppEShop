@@ -13,6 +13,8 @@ extension ProductCopyWith on Product {
     Category? category,
     List<ProductSize>? productSizes,
     List<Category>? images,
+    List<Discount>? discount
+
   }) {
     return Product(
         id: id ?? this.id,
@@ -25,7 +27,8 @@ extension ProductCopyWith on Product {
         stock: stock ?? this.stock,
         category: category ?? this.category,
         productSizes: productSizes ?? this.productSizes,
-        images: images ?? this.images);
+        images: images ?? this.images,
+        discount: discount ?? this.discount);
   }
 }
 
@@ -48,7 +51,8 @@ Product _$ProductFromJson(Map<String, dynamic> json){
         .toList(),
         images: (json['images'] as List<dynamic>?)
         ?.map((e) => Category.fromJson(Map<String, dynamic>.from(e as Map)))
-        .toList()
+        .toList(),
+        discount: (json['discount'] as List<dynamic>?)?.map((e) => Discount.fromJson(Map<String, dynamic>.from(e as Map))).toList()
   );
 }
 
@@ -72,6 +76,7 @@ Map<String, dynamic> _$ProductToJson(Product instance){
   writeNotNull("category", instance.category);
   writeNotNull("productSizes", instance.productSizes);
   writeNotNull("images", instance.images);
+  writeNotNull("discount", instance.discount);
 
   return val;
 }
