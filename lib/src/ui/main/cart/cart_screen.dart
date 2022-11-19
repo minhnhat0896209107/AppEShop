@@ -16,6 +16,8 @@ import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../utils/toast_utils.dart';
+
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
 
@@ -26,9 +28,11 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   late CartBloC bloC;
   late List<Cart> listCart = [];
+  late List<Cart> listCartSelect = [];
   List<int> listNumberQuantity = [];
   late SharedPreferences pref;
   List<Product> cartProducts = [];
+  List<bool> listCheck = [];
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _CartScreenState extends State<CartScreen> {
     for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
       cartProducts.add(i.product!);
+      listCheck.add(false);
     }
     super.initState();
   }
@@ -43,6 +48,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     String totalPrice = getTotalPrice(cartProducts);
+
     return Container(
       color: AppColors.pinkLight,
       child: SingleChildScrollView(
@@ -83,12 +89,12 @@ class _CartScreenState extends State<CartScreen> {
                       padding: const EdgeInsets.only(left: 10),
                       child: Column(
                           children: List.generate(
-                              cartProducts.length,
-                              (index) => _cartDetail(
-                                  index % 2 == 0,
-                                  cartProducts[index],
-                                  listCart[index],
-                                  index))),
+                        cartProducts.length,
+                        (index) {
+                          return _cartDetail(index % 2 == 0,
+                              cartProducts[index], listCart[index], index);
+                        },
+                      )),
                     ),
                     const SizedBox(
                       height: 50,
@@ -121,12 +127,13 @@ class _CartScreenState extends State<CartScreen> {
                                 imageUrl: AppImages.wallet,
                                 title: AppStrings.checkout,
                                 onTap: () async {
-                                  Navigator.push(
+                     
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => OrderScreen(),
                                       ));
-                                  setState(() {});
+                                  
                                 })
                           ]),
                     )
@@ -138,10 +145,65 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _cartDetail(bool isStroke, Product? product, Cart cart, int index) {
+    print("CHECK ${listCheck[index]}");
+
     return Container(
       color: isStroke ? Colors.black.withOpacity(0.05) : null,
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
       child: Row(children: [
+        !listCheck[index]
+            ? GestureDetector(
+                onTap: () {
+                  setState(() {
+                    listCheck[index] = !listCheck[index];
+                    if (globalApi.listCartSelect != []) {
+                      if (listCheck[index]) {
+                        globalApi.listCartSelect.add(listCart[index]);
+                      } else {
+                        globalApi.listCartSelect.remove(listCart[index]);
+                      }
+                    }
+                  });
+                },
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    shape: BoxShape.rectangle,
+                  ),
+                ),
+              )
+            : GestureDetector(
+                onTap: () {
+                  setState(() {
+                    listCheck[index] = !listCheck[index];
+                    if (globalApi.listCartSelect != []) {
+                      if (listCheck[index]) {
+                        globalApi.listCartSelect.add(listCart[index]);
+                      } else {
+                        globalApi.listCartSelect.remove(listCart[index]);
+                      }
+                    }
+                  });
+                },
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  child: Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    shape: BoxShape.rectangle,
+                  ),
+                ),
+              ),
+        SizedBox(
+          width: 10,
+        ),
         Image.network(
           product?.images?.first.url ??
               "https://loremflickr.com/640/480/fashion",

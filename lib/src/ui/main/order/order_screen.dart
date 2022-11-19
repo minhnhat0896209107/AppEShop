@@ -46,7 +46,6 @@ class _OrderScreenState extends State<OrderScreen> {
   DeliverInformation deliver = DeliverInformation();
   late CartBloC bloC;
   late OrderBloc orderBloc;
-  late List<Cart> listCart = [];
   List<int> listNumberQuantity = [];
   late SharedPreferences pref;
   late Order order = Order();
@@ -70,16 +69,14 @@ class _OrderScreenState extends State<OrderScreen> {
   void initState() {
 
     idOrderMomo = widget.id;
-    listCart = globalApi.listCart;
 
-    for (Cart i in globalApi.listCart) {
+    for (Cart i in globalApi.listCartSelect) {
       listNumberQuantity.add(i.numberQuantityBuy!);
       // cartProducts.add(i.product!);
       var item =
           Item(productSizeId: i.productSizeId, quantity: i.numberQuantityBuy);
       items.add(item);
     }
-    print("AAAAAAA1 ${globalApi.listCart.length} \t ${listCart.length}");
 
     super.initState();
   }
@@ -93,7 +90,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("AAAAAAA ${globalApi.listCart.length} \t ${listCart.length}");
+    print("AAAAAAA ${globalApi.listCartSelect.length} \t ${globalApi.listCartSelect.length}");
     return Scaffold(
         appBar: customAppbar,
         body: Stack(
@@ -125,10 +122,10 @@ class _OrderScreenState extends State<OrderScreen> {
             stream: _orderMomoBloc.orderMomoDetailStream,
             builder: (context, snapshot) {
               orderMomo = snapshot.data;
-              if (snapshot.connectionState == ConnectionState.waiting){
-                return loadingWidget;
-              }
-              if (orderMomo != null || globalApi.listCart.length > 0)
+              // if (snapshot.connectionState == ConnectionState.waiting){
+              //   return loadingWidget;
+              // }
+              if (orderMomo != null || globalApi.listCartSelect.length > 0)
                {
                 return SingleChildScrollView(
                   child: Column(
@@ -279,7 +276,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _pageInforOrder() {
-    print("AAAAAAA2 ${globalApi.listCart} \t ${listCart.length} \t $orderMomo");
+    print("AAAAAAA2 ${globalApi.listCartSelect} \t ${globalApi.listCartSelect.length} \t $orderMomo");
   
     if (orderMomo != null) {
      return  SingleChildScrollView(
@@ -337,9 +334,9 @@ class _OrderScreenState extends State<OrderScreen> {
      } 
      
      else {
-      String totalPrice = getTotalPrice(globalApi.listCart);
+      String totalPrice = getTotalPrice(globalApi.listCartSelect);
 
-      return globalApi.listCart.length == 0
+      return globalApi.listCartSelect.length == 0
           ? Image.asset(AppImages.cartEmpty)
           : SingleChildScrollView(
               child: Column(
@@ -359,13 +356,13 @@ class _OrderScreenState extends State<OrderScreen> {
                     alignment: Alignment.center,
                     width: double.infinity,
                     child: Text(
-                      "${AppStrings.order} (${globalApi.listCart.length} products)",
+                      "${AppStrings.order} (${globalApi.listCartSelect.length} products)",
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  _listOrder(globalApi.listCart),
+                  _listOrder(globalApi.listCartSelect),
                   SizedBox(
                     height: 10,
                   ),
@@ -648,8 +645,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         MaterialPageRoute(
                           builder: (context) => MomoScreen(url: url),
                         )).then((value) {
-                      globalApi.listCart = [];
-                      listCart = [];
+                      globalApi.listCartSelect = [];
                       setState(() {
                       
                     });
@@ -715,6 +711,8 @@ class _OrderScreenState extends State<OrderScreen> {
               onTap: () async {
                 try {
                   await postOrder();
+                  for (var element in globalApi.listCartSelect) {globalApi.listCart.remove(element);}
+
                   print("URL == $url \t ${UserManager.globalToken}");
                   Navigator.push(
                       context,
@@ -722,7 +720,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         builder: (context) => MomoScreen(url: url),
                       )).then((value) {
                   });
-                    globalApi.listCart = [];
+                    globalApi.listCartSelect = [];
                     setState(() {
                     
                   });

@@ -8,4 +8,5 @@ GlobalApi globalApi = GlobalApi();
 class GlobalApi with ChangeNotifier{
   GlobalApi();
   List<Cart> listCart = [];
+  List<Cart> listCartSelect = [];
 }
