@@ -92,6 +92,14 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     print("AAAAAAA ${globalApi.listCartSelect.length} \t ${globalApi.listCartSelect.length}");
+       for (var element in globalApi.listCartSelect) { 
+        print("PRICEDISCOUNT2 == ${element.percent} \t ${element.product!.price}");
+
+      if(element.product!.discount!.length > 0) {
+        priceDiscount +=  (element.percent! / 100) * element.product!.price!;
+      }
+      }
+    print("AAAAAAA2 ${globalApi.listCartSelect} \t ${globalApi.listCartSelect.length} \t $priceDiscount");
     return Scaffold(
         appBar: customAppbar,
         body: Stack(
@@ -277,12 +285,7 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 
   Widget _pageInforOrder() {
-    print("AAAAAAA2 ${globalApi.listCartSelect} \t ${globalApi.listCartSelect.length} \t $orderMomo");
-    for (var element in globalApi.listCartSelect) { 
-      if(element.product!.discount!.length > 0) {
-        priceDiscount +=  (element.product!.discount![0].percent! / 100) * element.product!.price!;
-      }
-      }
+    
     if (orderMomo != null) {
      return  SingleChildScrollView(
         child: Column(

@@ -9,8 +9,8 @@ class ProductRepository {
       bool isCheckLatest = false,
       int sortAssending = 0]) async {
     Map<String, dynamic> params = {};
-
-    params.addAll({
+      
+      params.addAll({
       'filter': search != "" ? "category|\$eq|$search" : "",
       'sort': isCheckLatest ? "createdAt" : "",
       'sort': sortAssending == 0 ? "price" : "-price"
@@ -19,6 +19,7 @@ class ProductRepository {
     var respond =
         await _baseApi.getMethod(ProductUrl.listProduct, param: params);
     if (respond['success']) {
+
       return (respond['data']['items'] as List)
           .map((json) => Product.fromJson(json))
           .toList();
@@ -45,10 +46,12 @@ class ProductRepository {
 
   Future<Product> getProductDetail({required String slug}) async {
     String url = '${ProductUrl.getProductById}/$slug';
+
     var respond = await _baseApi.getMethod(url);
     if (respond['success']) {
       //TODO
       var data = (respond['data']);
+      print("DDDDDDD ${data['discount']}");
       return Product.fromJson(data);
     } else {
       throw 'Server Error';

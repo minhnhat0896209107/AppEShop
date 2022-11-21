@@ -40,6 +40,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   late List<Cart> listCart = [];
   int? productSizeId;
   Cart cart = Cart();
+  int priceDiscount = 0;
 
   @override
   void initState() {
@@ -76,6 +77,14 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 stream: bloC.productStream,
                 builder: (context, snapshot) {
                   Product product = snapshot.data!;
+                  if (product.discount!.length > 0) {
+                    priceDiscount =
+                        ((product.discount[0].percent! / 100) * product.price!)
+                            .toInt();
+                  print("PRICEDISCOUNT1  \t ${product.discount[0].percent}");
+                  }
+                  print(
+                      "PRICEDISCOUNT ${product.discount.length} \t $priceDiscount \t ${product}");
                   return Container(
                     color: AppColors.pinkLight,
                     child: SingleChildScrollView(
@@ -153,7 +162,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget _productDetail(Product product) {
     print(
         "NAME SIZE == $nameSize \t $quantity \t $numberQuantity \t $productSizeId");
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       padding: const EdgeInsets.all(20),
@@ -309,16 +317,34 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         Row(
           children: [
             const Text('${AppStrings.total}:'),
+            
             const SizedBox(
               width: 5,
             ),
-            Text(
-              (product.price! * numberQuantity).formatMoney,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 30),
+            FittedBox(
+              child: Text(
+                numberQuantity > 0 ? ((product.price! * numberQuantity) - priceDiscount).formatMoney : "0d",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20),
+              ),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            FittedBox(
+              child: Text(
+                ((product.price! * numberQuantity) - 0).formatMoney,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    decoration: TextDecoration.lineThrough,
+
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20),
+              ),
             ),
           ],
         ),
@@ -335,7 +361,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ToastUtils.showToast(AppStrings.chooseQuantity);
                 } else {
                   bloC.addToCart(product, quantity!, numberQuantity, nameSize,
-                      productSizeId!);
+                      productSizeId!, ((product.price! * numberQuantity) - priceDiscount));
                 }
               },
               imageUrl: AppImages.cart,
@@ -359,15 +385,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ..numberQuantityBuy = numberQuantity
                     ..size = nameSize
                     ..productSizeId = productSizeId
+                    ..percent = product.discount.length > 0
+                        ? product.discount[0].percent
+                        : 0
                     ..product = product;
-
+                  print(
+                      "CARTPERCENT == ${cart.percent} \t ${product.discount.length}");
                   globalApi.listCartSelect.add(cart);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => OrderScreen(),
                       )).then((value) => globalApi.listCartSelect = []);
-                  
                 }
               },
               imageUrl: AppImages.wallet,

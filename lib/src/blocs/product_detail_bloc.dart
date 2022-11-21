@@ -36,7 +36,7 @@ class ProductDetailBloC extends BaseBloC {
   }
 
   void addToCart(Product product, int quantity, int numberQuantityBuy,
-      String size, int productSizeId) async {
+      String size, int productSizeId, int priceAfterDiscount) async {
     Cart cart = Cart();
     for (int i = 0; i < globalApi.listCart.length; i++) {
       if (globalApi.listCart[i].idProduct == product.id && globalApi.listCart[i].size == size ) {
@@ -52,6 +52,8 @@ class ProductDetailBloC extends BaseBloC {
         ..numberQuantityBuy = numberQuantityBuy
         ..size = size
         ..productSizeId = productSizeId
+        ..percent = product.discount!.length > 0 ? product.discount![0].percent : 0
+        ..priceAfterDiscount = priceAfterDiscount
         ..product = product;
 
       // listMapProduct.add(product.toJson());
@@ -65,6 +67,8 @@ class ProductDetailBloC extends BaseBloC {
         ..numberQuantityBuy = (numberQuantityBuy + numberBuyBefore!)
         ..size = size
         ..productSizeId = productSizeId
+        ..percent = product.discount!.length > 0 ? product.discount![0].percent : 0
+        ..priceAfterDiscount = priceAfterDiscount
         ..product = product;
       globalApi.listCart.insert(indexCart!,cart);
       ToastUtils.showToast(AppStrings.updateCartSuccess);

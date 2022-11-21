@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'category/category.dart';
@@ -18,7 +17,7 @@ class Product {
   Category? category;
   List<ProductSize>? productSizes;
   List<Category>? images;
-  List<Discount>? discount;
+  List<Discount> discount;
 
 
   Product({
@@ -33,7 +32,7 @@ class Product {
     this.category,
     this.productSizes,
     this.images,
-    this.discount
+    required this.discount
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);

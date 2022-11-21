@@ -7,6 +7,8 @@ class Cart{
   int? numberQuantityBuy;
   String? size;
   int? productSizeId;
+  int? percent;
+  int? priceAfterDiscount;
   Product? product;
 
   Cart({
@@ -15,6 +17,8 @@ class Cart{
     this.numberQuantityBuy,
     this.size,
     this.productSizeId,
+    this.percent,
+    this.priceAfterDiscount,
     this.product
   });
 }

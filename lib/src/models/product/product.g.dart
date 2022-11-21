@@ -1,21 +1,19 @@
 part of 'product.dart';
 
 extension ProductCopyWith on Product {
-  Product copyWith({
-    String? id,
-    String? name,
-    String? slug,
-    String? description,
-    int? price,
-    String? unit,
-    String? status,
-    int? stock,
-    Category? category,
-    List<ProductSize>? productSizes,
-    List<Category>? images,
-    List<Discount>? discount
-
-  }) {
+  Product copyWith(
+      {String? id,
+      String? name,
+      String? slug,
+      String? description,
+      int? price,
+      String? unit,
+      String? status,
+      int? stock,
+      Category? category,
+      List<ProductSize>? productSizes,
+      List<Category>? images,
+      List<Discount>? discount}) {
     return Product(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -32,35 +30,36 @@ extension ProductCopyWith on Product {
   }
 }
 
-Product _$ProductFromJson(Map<String, dynamic> json){
+Product _$ProductFromJson(Map<String, dynamic> json) {
   return Product(
     id: json["id"].toString(),
-        name: json["name"] as String?,
-        slug: json["slug"] as String?,
-        description: json["description"] as String?,
-        price: json["price"] as int?,
-        unit: json["unit"] as String?,
-        status: json["status"] as String?,
-        stock: json["stock"] as int?,
-        category: json['category'] == null
-          ? null
-          :
-         Category.fromJson(Map<String,dynamic>.from(json['category'] as Map)),
-        productSizes:(json['productSizes'] as List<dynamic>?)
+    name: json["name"] as String?,
+    slug: json["slug"] as String?,
+    description: json["description"] as String?,
+    price: json["price"] as int?,
+    unit: json["unit"] as String?,
+    status: json["status"] as String?,
+    stock: json["stock"] as int?,
+    category: json['category'] == null
+        ? null
+        : Category.fromJson(Map<String, dynamic>.from(json['category'] as Map)),
+    productSizes: (json['productSizes'] as List<dynamic>?)
         ?.map((e) => ProductSize.fromJson(Map<String, dynamic>.from(e as Map)))
         .toList(),
-        images: (json['images'] as List<dynamic>?)
+    images: (json['images'] as List<dynamic>?)
         ?.map((e) => Category.fromJson(Map<String, dynamic>.from(e as Map)))
         .toList(),
-        discount: (json['discount'] as List<dynamic>?)?.map((e) => Discount.fromJson(Map<String, dynamic>.from(e as Map))).toList()
+    discount: (json['discount'] as List<dynamic>)
+        .map((e) => Discount.fromJson(Map<String, dynamic>.from(e as Map)))
+        .toList(),
   );
 }
 
-Map<String, dynamic> _$ProductToJson(Product instance){
+Map<String, dynamic> _$ProductToJson(Product instance) {
   var val = <String, dynamic>{};
 
-  void writeNotNull(String key, dynamic value){
-    if(value != null){
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
       val[key] = value;
     }
   }

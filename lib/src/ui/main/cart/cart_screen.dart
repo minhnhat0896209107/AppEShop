@@ -221,6 +221,12 @@ class _CartScreenState extends State<CartScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
+               SizedBox(
+                height: 10,
+              ),
+              Text(
+                cart.priceAfterDiscount?.formatMoney ?? '--',
+              ),
               SizedBox(
                 height: 10,
               ),
