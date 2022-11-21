@@ -33,6 +33,7 @@ class _CartScreenState extends State<CartScreen> {
   late SharedPreferences pref;
   List<Product> cartProducts = [];
   List<bool> listCheck = [];
+  Cart cart = Cart();
 
   @override
   void initState() {
@@ -127,13 +128,11 @@ class _CartScreenState extends State<CartScreen> {
                                 imageUrl: AppImages.wallet,
                                 title: AppStrings.checkout,
                                 onTap: () async {
-                     
-                                    Navigator.push(
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => OrderScreen(),
                                       ));
-                                  
                                 })
                           ]),
                     )
@@ -146,6 +145,7 @@ class _CartScreenState extends State<CartScreen> {
 
   Widget _cartDetail(bool isStroke, Product? product, Cart cart, int index) {
     print("CHECK ${listCheck[index]}");
+     print("CHECK ADD1 ${globalApi.listCart[index].numberQuantityBuy}");
 
     return Container(
       color: isStroke ? Colors.black.withOpacity(0.05) : null,
@@ -221,7 +221,7 @@ class _CartScreenState extends State<CartScreen> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-               SizedBox(
+              SizedBox(
                 height: 10,
               ),
               Text(
@@ -245,6 +245,20 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _quantityButton(Product product, index) {
+    print(
+        "NUMBER == ${listNumberQuantity[index]} \t ${product.id}  \t ${globalApi.listCart[index].quantity}  \t ${globalApi.listCart[index].size}  \t ${globalApi.listCart[index].productSizeId} \t ${globalApi.listCart[index].priceAfterDiscount}");
+    cart
+      ..idProduct = product!.id
+      ..quantity = globalApi.listCart[index].quantity
+      ..numberQuantityBuy = listNumberQuantity[index]
+      ..size = globalApi.listCart[index].size
+      ..productSizeId = globalApi.listCart[index].productSizeId
+      ..percent = product.discount.length > 0 ? product.discount[0].percent : 0
+      ..priceAfterDiscount = globalApi.listCart[index].priceAfterDiscount
+      ..product = product;
+
+    globalApi.listCart.insert(index,cart);
+    print("CHECK ADD ${globalApi.listCart[index].numberQuantityBuy}");
     const Color buttonColor = AppColors.primay;
     return Container(
       child: Row(
