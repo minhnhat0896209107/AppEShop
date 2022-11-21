@@ -47,7 +47,7 @@ class ProductRepository {
   Future<Product> getProductDetail({required String slug}) async {
     String url = '${ProductUrl.getProductById}/$slug';
 
-    var respond = await _baseApi.getMethod(url);
+    var respond = await _baseApi.getMethod(url, param: {});
     if (respond['success']) {
       //TODO
       var data = (respond['data']);
