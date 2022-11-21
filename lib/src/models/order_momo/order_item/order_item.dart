@@ -13,7 +13,7 @@ class OrderItem {
     int? id;
     int? productSizeId;
     int? quantity;
-    String? price;
+    int? price;
     String? total;
     ProductSize? productSize;
 

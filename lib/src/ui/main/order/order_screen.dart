@@ -10,17 +10,13 @@ import 'package:base_code/src/ui/main/main.dart';
 import 'package:base_code/src/utils/helpers.dart';
 import 'package:base_code/src/utils/integer_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/global_api.dart';
 import '../../../blocs/order_momo_bloc.dart';
-import '../../../commons/widgets/loading_widget.dart';
 import '../../../manager/user_manager.dart';
 import '../../../models/cart.dart';
-import '../../../models/order_momo/order_item/order_item.dart';
-import '../../../models/product/product.dart';
 import '../../../repositories/order_repo.dart';
 import '../../../utils/app_image.dart';
 import '../../../utils/app_strings.dart';
@@ -309,16 +305,16 @@ class _OrderScreenState extends State<OrderScreen> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
-            _listOrderMomo(orderMomo!.orderItems!),
+            _listOrderMomo(orderMomo!.orderItems!, orderMomo!.total!),
             SizedBox(
               height: 10,
             ),
             _lineHeight(),
             _inforPrice(AppStrings.price,
-                int.parse(orderMomo!.total!).formatMoney, FontWeight.w500),
-            _inforPrice(AppStrings.discount, "0d", FontWeight.w500),
+                orderMomo!.total!.formatMoney, FontWeight.w500),
+            _inforPrice(AppStrings.discount, (orderMomo!.total! - orderMomo!.orderItems![0].price!).formatMoney, FontWeight.w500),
             _inforPrice(AppStrings.total,
-                int.parse(orderMomo!.total!).formatMoney, FontWeight.w700),
+               orderMomo!.orderItems![0].price!.formatMoney, FontWeight.w700),
             _lineHeight(),
             _backInforInputMomo(orderMomo),
             Container(
@@ -408,7 +404,7 @@ class _OrderScreenState extends State<OrderScreen> {
           shrinkWrap: true,
           itemCount: listCart.length,
           itemBuilder: (context, index) {
-            Product product = listCart[index].product!;
+            var product = listCart[index].product!;
             return Row(
               children: [
                 Padding(
@@ -483,7 +479,7 @@ class _OrderScreenState extends State<OrderScreen> {
         ));
   }
 
-  Widget _listOrderMomo(List<OrderItem> orderItems) {
+  Widget _listOrderMomo(List<OrderItem> orderItems, int money) {
     return Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 5),
         child: ListView.builder(
@@ -553,7 +549,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 Container(
                   margin: EdgeInsets.only(right: 5),
                   child: Text(
-                    int.parse(orderItem.price!).formatMoney ?? '--',
+                    money.formatMoney ?? '--',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),

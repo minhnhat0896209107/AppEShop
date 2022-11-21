@@ -112,7 +112,7 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
                 Container(
                   margin: EdgeInsets.only(left: 5),
                   child: Text(
-                    int.parse(orderMomo.total!).formatMoney,
+                    orderMomo.total!.formatMoney,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
