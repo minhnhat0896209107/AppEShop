@@ -21,6 +21,8 @@ class ProductDetailBloC extends BaseBloC {
   bool isCheckUpdate = false;
   int? indexCart;
   int? numberBuyBefore;
+  Cart cart = Cart();
+
   void init({required Product product}) {
     _productController.add(product);
   }
@@ -37,7 +39,6 @@ class ProductDetailBloC extends BaseBloC {
 
   void addToCart(Product product, int quantity, int numberQuantityBuy,
       String size, int productSizeId, int priceAfterDiscount) async {
-    Cart cart = Cart();
     for (int i = 0; i < globalApi.listCart.length; i++) {
       if (globalApi.listCart[i].idProduct == product.id && globalApi.listCart[i].size == size ) {
         isCheckUpdate = true;
@@ -57,7 +58,7 @@ class ProductDetailBloC extends BaseBloC {
         ..product = product;
 
       // listMapProduct.add(product.toJson());
-      globalApi.listCart.add(cart);
+      globalApi.listCart.insert(globalApi.listCart.length, cart);
       ToastUtils.showToast(AppStrings.addToCartSuccess);
     }else {
       globalApi.listCart.remove(globalApi.listCart[indexCart!]);
@@ -73,6 +74,7 @@ class ProductDetailBloC extends BaseBloC {
       globalApi.listCart.insert(indexCart!,cart);
       ToastUtils.showToast(AppStrings.updateCartSuccess);
     }
+    print("GLOBAL API CART ${globalApi.listCart.length}");
   }
 
   @override

@@ -37,31 +37,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   String nameSize = "";
   int? quantity;
   late SharedPreferences pref;
-  late List<Cart> listCart = [];
   int? productSizeId;
   Cart cart = Cart();
   int priceDiscount = 0;
 
-  @override
-  void initState() {
-    listCart = globalApi.listCart;
-    if (listCart.length == 0) {
-      checkListProduct();
-    }
-    // TODO: implement initState
-    super.initState();
-  }
-
-  void checkListProduct() async {
-    pref = await SharedPreferences.getInstance();
-    pref.setString("listCart", "[]");
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -385,6 +364,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ..numberQuantityBuy = numberQuantity
                     ..size = nameSize
                     ..productSizeId = productSizeId
+                    ..priceAfterDiscount = ((product.price! * numberQuantity) - priceDiscount)
                     ..percent = product.discount.length > 0
                         ? product.discount[0].percent
                         : 0

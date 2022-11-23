@@ -27,9 +27,9 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   late CartBloC bloC;
-  late List<Cart> listCart = [];
   late List<Cart> listCartSelect = [];
   List<int> listNumberQuantity = [];
+  List<Cart> listCart = [];
   late SharedPreferences pref;
   List<Product> cartProducts = [];
   List<bool> listCheck = [];
@@ -45,11 +45,16 @@ class _CartScreenState extends State<CartScreen> {
     }
     super.initState();
   }
+  @override
+  void dispose() {
+    listCart = [];
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    String totalPrice = getTotalPrice(cartProducts);
-
+    String totalPrice = getTotalPrice();
+    print("GLOBAL API ${globalApi.listCart.length}");
     return Container(
       color: AppColors.pinkLight,
       child: SingleChildScrollView(
@@ -93,7 +98,7 @@ class _CartScreenState extends State<CartScreen> {
                         cartProducts.length,
                         (index) {
                           return _cartDetail(index % 2 == 0,
-                              cartProducts[index], listCart[index], index);
+                              cartProducts[index], globalApi.listCart[index], index);
                         },
                       )),
                     ),
@@ -158,9 +163,9 @@ class _CartScreenState extends State<CartScreen> {
                     listCheck[index] = !listCheck[index];
                     if (globalApi.listCartSelect != []) {
                       if (listCheck[index]) {
-                        globalApi.listCartSelect.add(listCart[index]);
+                        globalApi.listCartSelect.add(globalApi.listCart[index]);
                       } else {
-                        globalApi.listCartSelect.remove(listCart[index]);
+                        globalApi.listCartSelect.remove(globalApi.listCart[index]);
                       }
                     }
                   });
@@ -180,9 +185,9 @@ class _CartScreenState extends State<CartScreen> {
                     listCheck[index] = !listCheck[index];
                     if (globalApi.listCartSelect != []) {
                       if (listCheck[index]) {
-                        globalApi.listCartSelect.add(listCart[index]);
+                        globalApi.listCartSelect.add(globalApi.listCart[index]);
                       } else {
-                        globalApi.listCartSelect.remove(listCart[index]);
+                        globalApi.listCartSelect.remove(globalApi.listCart[index]);
                       }
                     }
                   });
@@ -302,10 +307,12 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  String getTotalPrice(List<Product> products) {
+  String getTotalPrice() {
     int total = 0;
-    for (int i = 0; i < products.length; i++) {
-      total += products[i].price! * listNumberQuantity[i];
+    for (int i = 0; i < listCheck.length; i++) {
+      if(listCheck[i]) {
+        total += globalApi.listCart[i].priceAfterDiscount! * listNumberQuantity[i];
+      }
     }
     return total.formatMoney;
   }
