@@ -2,11 +2,11 @@ class AppImages {
   // Images
   static const bannerLogin = 'assets/images/banner_login.png';
   static const bannerHome = 'assets/images/banner_home.png';
-  static const home1 = 'assets/images/home1.png';
-  static const home2 = 'assets/images/home2.png';
-  static const home3 = 'assets/images/home3.png';
-  static const home4 = 'assets/images/home4.png';
-  static const home5 = 'assets/images/home5.png';
+  static const home1 = 'https://global-uploads.webflow.com/5fce68a0d8f769e24b593987/605672772e8de83e673e2c0e_Granny%20Blob.png';
+  static const home2 = 'https://i.pinimg.com/564x/32/0b/cd/320bcd3101152c7880e8ca5f83cefcf9.jpg';
+  static const home3 = 'https://i.pinimg.com/564x/01/08/13/010813db391083c00e732fc14cb1d09e.jpg';
+  static const home4 = 'https://i.pinimg.com/564x/3e/42/ed/3e42ed507749080874aaad5eb04ea2d5.jpg';
+  static const home5 = 'https://i.pinimg.com/736x/be/33/25/be33251f9522d73faa33797ad799f455.jpg';
   static const cartEmpty = 'assets/images/cart_empty.png';
   static const defaultThumbnail = 'assets/images/default-thumbnail.jpeg';
   // Icons
