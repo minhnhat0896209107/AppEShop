@@ -54,7 +54,6 @@ class _OrderScreenState extends State<OrderScreen> {
   OrderMomo? orderMomo;
   double priceDiscount = 0;
   // List<Product> cartProducts = [];
-
   Future postOrder() async {
     print(
         "ORDERPOST== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
@@ -713,6 +712,7 @@ class _OrderScreenState extends State<OrderScreen> {
               title: AppStrings.checkout,
               onTap: () async {
                 try {
+                  pref = await SharedPreferences.getInstance();
                   await postOrder();
                   for (var element in globalApi.listCartSelect) {
                     globalApi.listCart.remove(element);
@@ -725,6 +725,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         builder: (context) => MomoScreen(url: url),
                       )).then((value) {});
                   globalApi.listCartSelect = [];
+                  pref.setString('listCart', '[]');
                   setState(() {});
                 } catch (error, stackStrace) {
                   debugPrint(error.toString());

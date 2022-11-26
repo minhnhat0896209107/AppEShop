@@ -39,6 +39,10 @@ class ProductDetailBloC extends BaseBloC {
 
   void addToCart(Product product, int quantity, int numberQuantityBuy,
       String size, int productSizeId, int priceAfterDiscount) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String? jsonProducts = pref.getString('listCart');
+    jsonProducts ??= '[]';
+    List listMapProduct = (json.decode(jsonProducts));
     for (int i = 0; i < globalApi.listCart.length; i++) {
       if (globalApi.listCart[i].idProduct == product.id && globalApi.listCart[i].size == size ) {
         isCheckUpdate = true;
@@ -58,7 +62,9 @@ class ProductDetailBloC extends BaseBloC {
         ..product = product;
 
       // listMapProduct.add(product.toJson());
-      globalApi.listCart.insert(globalApi.listCart.length, cart);
+      globalApi.listCart.add(cart);
+    listMapProduct.add(cart.toJson());
+    pref.setString('listCart', json.encode(listMapProduct));
       ToastUtils.showToast(AppStrings.addToCartSuccess);
     }else {
       globalApi.listCart.remove(globalApi.listCart[indexCart!]);
@@ -74,7 +80,6 @@ class ProductDetailBloC extends BaseBloC {
       globalApi.listCart.insert(indexCart!,cart);
       ToastUtils.showToast(AppStrings.updateCartSuccess);
     }
-    print("GLOBAL API CART ${globalApi.listCart.length}");
   }
 
   @override

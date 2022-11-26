@@ -54,7 +54,6 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     String totalPrice = getTotalPrice();
-    print("GLOBAL API ${globalApi.listCart.length}");
     return Container(
       color: AppColors.pinkLight,
       child: SingleChildScrollView(

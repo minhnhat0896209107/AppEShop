@@ -1,12 +1,27 @@
+import 'dart:convert';
+
+import 'package:base_code/src/api/global_api.dart';
 import 'package:flutter/material.dart';
 import 'package:base_code/src/app.dart';
 import 'package:base_code/src/manager/user_manager.dart';
 import 'package:base_code/src/struct/app_theme.dart';
 import 'package:base_code/src/utils/app_strings.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+import 'src/models/cart.dart';
+
+late SharedPreferences pref;
+
+void main() async{
   runApp(const MyApp());
+   pref = await SharedPreferences.getInstance();
+    String? jsonProducts = pref.getString('listCart');
+    jsonProducts ??= '[]';
+    List listMapProduct = (json.decode(jsonProducts));
+    List<Cart> listCart =
+        listMapProduct.map((json) => Cart.fromJson(json)).toList();
+    globalApi.listCart = listCart;
 }
 
 class MyApp extends StatelessWidget {
