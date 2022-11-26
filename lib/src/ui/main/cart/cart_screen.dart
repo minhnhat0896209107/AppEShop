@@ -47,9 +47,15 @@ class _CartScreenState extends State<CartScreen> {
   }
   @override
   void dispose() {
-    listCart = [];
+    globalApi.listCart.clear();
+    removeListCart();
     super.dispose();
   }
+  void removeListCart() async {
+    pref = await SharedPreferences.getInstance();
+    pref.remove('listCart');
+  }
+
 
   @override
   Widget build(BuildContext context) {

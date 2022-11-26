@@ -61,6 +61,10 @@ class _OrderScreenState extends State<OrderScreen> {
     url = await _orderRepository.postOrder(order: order);
   }
 
+  void removeListCart() async {
+    pref = await SharedPreferences.getInstance();
+    pref.remove('listCart');
+  }
   @override
   void initState() {
     idOrderMomo = widget.id;
@@ -712,20 +716,17 @@ class _OrderScreenState extends State<OrderScreen> {
               title: AppStrings.checkout,
               onTap: () async {
                 try {
-                  pref = await SharedPreferences.getInstance();
                   await postOrder();
                   for (var element in globalApi.listCartSelect) {
                     globalApi.listCart.remove(element);
                   }
-
-                  print("URL == $url \t ${UserManager.globalToken}");
+                  removeListCart();
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MomoScreen(url: url),
                       )).then((value) {});
                   globalApi.listCartSelect = [];
-                  pref.setString('listCart', '[]');
                   setState(() {});
                 } catch (error, stackStrace) {
                   debugPrint(error.toString());
