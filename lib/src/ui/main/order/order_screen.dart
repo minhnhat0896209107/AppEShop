@@ -9,6 +9,7 @@ import 'package:base_code/src/struct/app_color.dart';
 import 'package:base_code/src/ui/main/main.dart';
 import 'package:base_code/src/utils/helpers.dart';
 import 'package:base_code/src/utils/integer_extension.dart';
+import 'package:base_code/src/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -310,20 +311,20 @@ class _OrderScreenState extends State<OrderScreen> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
-            _listOrderMomo(orderMomo!.orderItems!, orderMomo!.total!),
+            _listOrderMomo(orderMomo!.orderItems!, int.parse(orderMomo!.total!.stringSplitZero)),
             SizedBox(
               height: 10,
             ),
             _lineHeight(),
-            _inforPrice(AppStrings.price, orderMomo!.total!.formatMoney,
+            _inforPrice(AppStrings.price, int.parse(orderMomo!.total!.stringSplitZero).formatMoney,
                 FontWeight.w500),
             _inforPrice(
                 AppStrings.discount,
-                (orderMomo!.total! - orderMomo!.orderItems![0].price!)
+                (int.parse(orderMomo!.total!.stringSplitZero) - int.parse(orderMomo!.orderItems![0].price!.stringSplitZero))
                     .formatMoney,
                 FontWeight.w500),
             _inforPrice(AppStrings.total,
-                orderMomo!.orderItems![0].price!.formatMoney, FontWeight.w700),
+                int.parse(orderMomo!.orderItems![0].price!.stringSplitZero).formatMoney, FontWeight.w700),
             _lineHeight(),
             _backInforInputMomo(orderMomo),
             Container(
@@ -519,7 +520,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Text(
-                            "${orderItem.quantity}",
+                            orderItem.quantity?.stringSplitZero ?? "1",
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -559,7 +560,7 @@ class _OrderScreenState extends State<OrderScreen> {
                 Container(
                   margin: EdgeInsets.only(right: 5),
                   child: Text(
-                    money.formatMoney ?? '--',
+                    money.formatMoney,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
@@ -602,7 +603,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget _backInforInputMomo(OrderMomo? orderMomo) {
     itemsOrder = [];
     for (var i in orderMomo!.orderItems!) {
-      var item = Item(productSizeId: i.productSizeId, quantity: i.quantity);
+      var item = Item(productSizeId: i.productSizeId, quantity: int.parse(i.quantity?.stringSplitZero ?? "0"));
       itemsOrder.add(item);
     }
     order

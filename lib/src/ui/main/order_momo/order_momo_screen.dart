@@ -1,5 +1,6 @@
 import 'package:base_code/src/commons/widgets/loading_widget.dart';
 import 'package:base_code/src/ui/main/order/order_screen.dart';
+import 'package:base_code/src/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -112,7 +113,7 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
                 Container(
                   margin: EdgeInsets.only(left: 5),
                   child: Text(
-                    orderMomo.total!.formatMoney,
+                    int.parse(orderMomo.total!.stringSplitZero).formatMoney,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),

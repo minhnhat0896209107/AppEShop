@@ -28,7 +28,7 @@ class OrderMomo {
     DateTime? updatedAt;
     String? status;
     int? userId;
-    int? total;
+    String? total;
     String? address;
     String? name;
     String? phone;
@@ -80,9 +80,9 @@ class OrderItem {
     DateTime? createdAt;
     DateTime? updatedAt;
     int? productSizeId;
-    int? quantity;
-    int? price;
-    int? total;
+    String? quantity;
+    String? price;
+    String? total;
     ProductSize? productSize;
 
     factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
