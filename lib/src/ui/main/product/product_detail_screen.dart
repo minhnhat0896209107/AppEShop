@@ -1,4 +1,5 @@
 import 'package:base_code/src/blocs/product_detail_bloc.dart';
+import 'package:base_code/src/commons/widgets/loading_widget.dart';
 import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/models/product/product_size/product_size.dart';
 import 'package:base_code/src/struct/app_color.dart';
@@ -56,7 +57,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 stream: bloC.productStream,
                 builder: (context, snapshot) {
                   Product product = snapshot.data!;
-                  if (product.discount!.length > 0) {
+                  if (product.discount.length > 0) {
                     priceDiscount =
                         ((product.discount[0].percent! / 100) * product.price!)
                             .toInt();
@@ -195,7 +196,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               const SizedBox(
                 width: 20,
               ),
-              Text("${product.stock} ${AppStrings.stock}"),
+              Text(indexSelect == null ? "0 ${AppStrings.quantity}":"${product.productSizes?[indexSelect!].quantity} ${AppStrings.quantity}"),
             ],
           ),
         ),

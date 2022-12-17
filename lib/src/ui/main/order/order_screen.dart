@@ -323,6 +323,10 @@ class _OrderScreenState extends State<OrderScreen> {
                 (int.parse(orderMomo!.total!.stringSplitZero) - int.parse(orderMomo!.orderItems![0].price!.stringSplitZero))
                     .formatMoney,
                 FontWeight.w500),
+            _inforPrice(
+                AppStrings.discount,
+                "20.000 đ",
+                FontWeight.w500),
             _inforPrice(AppStrings.total,
                 int.parse(orderMomo!.orderItems![0].price!.stringSplitZero).formatMoney, FontWeight.w700),
             _lineHeight(),
@@ -383,6 +387,10 @@ class _OrderScreenState extends State<OrderScreen> {
                   _inforPrice(AppStrings.price, totalPrice, FontWeight.w500),
                   _inforPrice(AppStrings.discount, "${priceDiscount.toInt()}",
                       FontWeight.w500),
+                _inforPrice(
+                AppStrings.ship,
+                  "20.000 đ",
+                FontWeight.w500),
                   _inforPrice(AppStrings.total, totalPriceAfterDiscount,
                       FontWeight.w700),
                   _lineHeight(),
@@ -755,6 +763,6 @@ class _OrderScreenState extends State<OrderScreen> {
     for (int i = 0; i < list.length; i++) {
       total += list[i].product!.price! * listNumberQuantity[i];
     }
-    return (total - priceDiscount.toInt()).formatMoney;
+    return (total - priceDiscount.toInt() + 20000).formatMoney;
   }
 }
