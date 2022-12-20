@@ -338,15 +338,14 @@ class _OrderScreenState extends State<OrderScreen> {
                 FontWeight.w500),
             _inforPrice(
                 AppStrings.discount,
-                (int.parse(orderMomo!.total!.stringSplitZero) -
-                        int.parse(
-                            orderMomo!.orderItems![0].price!.stringSplitZero))
+                (int.parse(orderMomo!.total!) -
+                        orderMomo!.orderItems![0].price!)
                     .formatMoney,
                 FontWeight.w500),
             _inforPrice(AppStrings.discount, "20.000 đ", FontWeight.w500),
             _inforPrice(
                 AppStrings.total,
-                int.parse(orderMomo!.orderItems![0].price!.stringSplitZero)
+                orderMomo!.orderItems![0].price!
                     .formatMoney,
                 FontWeight.w700),
             _lineHeight(),
@@ -545,7 +544,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Text(
-                            orderItem.quantity?.stringSplitZero ?? "1",
+                            orderItem.quantity.toString(),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -630,7 +629,7 @@ class _OrderScreenState extends State<OrderScreen> {
     for (var i in orderMomo!.orderItems!) {
       var item = Item(
           productSizeId: i.productSizeId,
-          quantity: int.parse(i.quantity?.stringSplitZero ?? "0"));
+          quantity: i.quantity);
       itemsOrder.add(item);
     }
     order

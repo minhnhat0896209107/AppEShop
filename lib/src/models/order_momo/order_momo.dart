@@ -80,9 +80,9 @@ class OrderItem {
     DateTime? createdAt;
     DateTime? updatedAt;
     int? productSizeId;
-    String? quantity;
-    String? price;
-    String? total;
+    int? quantity;
+    int? price;
+    int? total;
     ProductSize? productSize;
 
     factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
