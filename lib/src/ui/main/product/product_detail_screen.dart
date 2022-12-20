@@ -17,9 +17,13 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/global_api.dart';
+import '../../../commons/screens/error_screen.dart';
+import '../../../manager/user_manager.dart';
 import '../../../models/cart.dart';
 import '../../../utils/toast_utils.dart';
 import 'package:base_code/src/utils/integer_extension.dart';
+
+import '../../auth/login_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   const ProductDetailScreen({required this.product, Key? key})
@@ -41,10 +45,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int? productSizeId;
   Cart cart = Cart();
   int priceDiscount = 0;
+  bool logged = false;
 
 
   @override
   Widget build(BuildContext context) {
+    return  StreamBuilder(
+        stream: context.read<UserManager>().userStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return ErrorScreen(message: snapshot.error!.toString());
+          }
+
+          logged = snapshot.data != null;
+          {
     return Provider<ProductDetailBloC>(
         create: ((context) => ProductDetailBloC()),
         builder: (context, child) {
@@ -84,7 +98,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   );
                 }),
           );
-        });
+        });}});
   }
 
   Widget _slider(Product product) {
@@ -351,7 +365,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               width: 10,
             ),
             IconTextButton(
-              onTap: () {
+              onTap:!logged ? (){
+                 Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ));
+              } : () {
                 if (quantity == 0) {
                   ToastUtils.showToast(AppStrings.outOfStock);
                 } else if (nameSize == "") {

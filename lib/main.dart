@@ -22,7 +22,6 @@ void main() async{
          Provider<UserManager>(
         create: (_) => UserManager(),
         dispose: (_, userManager) => userManager.dispose(),
-        child: OrderScreen(),
       ),
       ],
       child: MyApp()))

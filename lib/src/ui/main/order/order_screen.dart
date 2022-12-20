@@ -90,19 +90,10 @@ class _OrderScreenState extends State<OrderScreen> {
     deliver = DeliverInformation();
     super.dispose();
   }
-  bool logged = false;
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: context.read<UserManager>().userStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return ErrorScreen(message: snapshot.error!.toString());
-          }
-
-          logged = snapshot.data != null;
-          {
+     
             return Scaffold(
                 appBar: customAppbar,
                 body: Stack(
@@ -122,8 +113,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     )
                   ],
                 ));
-          }
-        });
+          
+  
   }
 
   Widget _pageInput() {
@@ -741,13 +732,7 @@ class _OrderScreenState extends State<OrderScreen> {
           IconTextButton(
               imageUrl: AppImages.wallet,
               title: AppStrings.checkout,
-              onTap: !logged ? (){
-                 Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ));
-              } : () async {
+              onTap:  () async {
                 try {
                   await postOrder();
                   for (var element in globalApi.listCartSelect) {

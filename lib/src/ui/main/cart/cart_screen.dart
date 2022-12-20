@@ -16,7 +16,9 @@ import 'package:launch_review/launch_review.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../manager/user_manager.dart';
 import '../../../utils/toast_utils.dart';
+import '../../auth/login_screen.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({Key? key}) : super(key: key);
@@ -45,117 +47,144 @@ class _CartScreenState extends State<CartScreen> {
     }
     super.initState();
   }
+
   @override
   void dispose() {
     globalApi.listCart.clear();
     removeListCart();
     super.dispose();
   }
+
   void removeListCart() async {
     pref = await SharedPreferences.getInstance();
     pref.remove('listCart');
   }
 
+  bool logged = false;
 
   @override
   Widget build(BuildContext context) {
     String totalPrice = getTotalPrice();
-    return Container(
-      color: AppColors.pinkLight,
-      child: SingleChildScrollView(
-        child: Column(children: [
-          Container(
-            alignment: Alignment.center,
-            width: double.infinity,
-            height: 100,
-            child: const Text(
-              AppStrings.cart,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
-            ),
-          ),
-          cartProducts.isEmpty
-              ? Image.asset(AppImages.cartEmpty)
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text(
-                            AppStrings.product,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 16),
-                          ),
-                          Text(
-                            AppStrings.quantity,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700, fontSize: 16),
-                          )
-                        ],
-                      ),
+    return StreamBuilder(
+        stream: context.read<UserManager>().userStream,
+        builder: (context, snapshot) {
+          logged = snapshot.data != null;
+          {
+            return Container(
+              color: AppColors.pinkLight,
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  Container(
+                    alignment: Alignment.center,
+                    width: double.infinity,
+                    height: 100,
+                    child: const Text(
+                      AppStrings.cart,
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
                     ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Column(
-                          children: List.generate(
-                        cartProducts.length,
-                        (index) {
-                          return _cartDetail(index % 2 == 0,
-                              cartProducts[index], globalApi.listCart[index], index);
-                        },
-                      )),
-                    ),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 20),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                  cartProducts.isEmpty
+                      ? Image.asset(AppImages.cartEmpty)
+                      : Column(
                           children: [
-                            Row(
-                              children: [
-                                const Text(AppStrings.total + ':'),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  totalPrice,
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                              ],
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text(
+                                    AppStrings.product,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    AppStrings.quantity,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 16),
+                                  )
+                                ],
+                              ),
                             ),
-                            IconTextButton(
-                                imageUrl: AppImages.wallet,
-                                title: AppStrings.checkout,
-                                onTap: () async {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => OrderScreen(),
-                                      ));
-                                })
-                          ]),
-                    )
-                  ],
-                )
-        ]),
-      ),
-    );
+                            Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Column(
+                                  children: List.generate(
+                                cartProducts.length,
+                                (index) {
+                                  return _cartDetail(
+                                      index % 2 == 0,
+                                      cartProducts[index],
+                                      globalApi.listCart[index],
+                                      index);
+                                },
+                              )),
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 20),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50)),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Text(AppStrings.total + ':'),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          totalPrice,
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ],
+                                    ),
+                                    IconTextButton(
+                                        imageUrl: AppImages.wallet,
+                                        title: AppStrings.checkout,
+                                        onTap:!logged ? (){
+                 Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ));
+              } : () async {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    OrderScreen(),
+                                              ));
+                                        })
+                                  ]),
+                            )
+                          ],
+                        )
+                ]),
+              ),
+            );
+          }
+        });
   }
 
   Widget _cartDetail(bool isStroke, Product? product, Cart cart, int index) {
     print("CHECK ${listCheck[index]}");
-     print("CHECK ADD1 ${globalApi.listCart[index].numberQuantityBuy}");
+    print("CHECK ADD1 ${globalApi.listCart[index].numberQuantityBuy}");
 
     return Container(
       color: isStroke ? Colors.black.withOpacity(0.05) : null,
@@ -170,7 +199,8 @@ class _CartScreenState extends State<CartScreen> {
                       if (listCheck[index]) {
                         globalApi.listCartSelect.add(globalApi.listCart[index]);
                       } else {
-                        globalApi.listCartSelect.remove(globalApi.listCart[index]);
+                        globalApi.listCartSelect
+                            .remove(globalApi.listCart[index]);
                       }
                     }
                   });
@@ -192,7 +222,8 @@ class _CartScreenState extends State<CartScreen> {
                       if (listCheck[index]) {
                         globalApi.listCartSelect.add(globalApi.listCart[index]);
                       } else {
-                        globalApi.listCartSelect.remove(globalApi.listCart[index]);
+                        globalApi.listCartSelect
+                            .remove(globalApi.listCart[index]);
                       }
                     }
                   });
@@ -267,7 +298,7 @@ class _CartScreenState extends State<CartScreen> {
       ..priceAfterDiscount = globalApi.listCart[index].priceAfterDiscount
       ..product = product;
 
-    globalApi.listCart.insert(index,cart);
+    globalApi.listCart.insert(index, cart);
     print("CHECK ADD ${globalApi.listCart[index].numberQuantityBuy}");
     const Color buttonColor = AppColors.primay;
     return Container(
@@ -315,8 +346,9 @@ class _CartScreenState extends State<CartScreen> {
   String getTotalPrice() {
     int total = 0;
     for (int i = 0; i < listCheck.length; i++) {
-      if(listCheck[i]) {
-        total += globalApi.listCart[i].priceAfterDiscount! * listNumberQuantity[i];
+      if (listCheck[i]) {
+        total +=
+            globalApi.listCart[i].priceAfterDiscount! * listNumberQuantity[i];
       }
     }
     return total.formatMoney;
