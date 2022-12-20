@@ -4,6 +4,7 @@ import 'package:base_code/src/models/user.dart';
 import 'package:base_code/src/repositories/auth_repo.dart';
 import 'package:base_code/src/struct/api_services/get_user_infor_mixin.dart';
 import 'package:base_code/src/ui/auth/sign_up_screen.dart';
+import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
@@ -129,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> with UserMixin {
                                         message: AppStrings.logingIn);
                                     await login(emailController.text,
                                         passwordController.text);
-                                    Navigator.pop(context);
+                                    Navigator.popUntil(context, (route) => route.isFirst);
                                   } catch (error, stackStrace) {
                                     debugPrint(error.toString());
                                     debugPrintStack(stackTrace: stackStrace);

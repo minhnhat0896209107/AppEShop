@@ -6,6 +6,7 @@ import 'package:base_code/src/models/deliver_infomation/deliver_information.dart
 import 'package:base_code/src/models/order.dart';
 import 'package:base_code/src/models/order_momo/order_momo.dart';
 import 'package:base_code/src/struct/app_color.dart';
+import 'package:base_code/src/ui/auth/login_screen.dart';
 import 'package:base_code/src/ui/main/main.dart';
 import 'package:base_code/src/utils/helpers.dart';
 import 'package:base_code/src/utils/integer_extension.dart';
@@ -16,6 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../api/global_api.dart';
 import '../../../blocs/order_momo_bloc.dart';
+import '../../../commons/screens/error_screen.dart';
 import '../../../manager/user_manager.dart';
 import '../../../models/cart.dart';
 import '../../../repositories/order_repo.dart';
@@ -66,6 +68,7 @@ class _OrderScreenState extends State<OrderScreen> {
     pref = await SharedPreferences.getInstance();
     pref.remove('listCart');
   }
+
   @override
   void initState() {
     idOrderMomo = widget.id;
@@ -87,28 +90,40 @@ class _OrderScreenState extends State<OrderScreen> {
     deliver = DeliverInformation();
     super.dispose();
   }
+  bool logged = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: customAppbar,
-        body: Stack(
-          children: [
-            Container(
-              color: AppColors.pinkLight,
-            ),
-            PageView(
-              physics: NeverScrollableScrollPhysics(),
-              onPageChanged: (value) {
-                setState(() {
-                  page = value;
-                });
-              },
-              children: [_pageInput(), _pageInforOrder()],
-              controller: controller,
-            )
-          ],
-        ));
+    return StreamBuilder(
+        stream: context.read<UserManager>().userStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return ErrorScreen(message: snapshot.error!.toString());
+          }
+
+          logged = snapshot.data != null;
+          {
+            return Scaffold(
+                appBar: customAppbar,
+                body: Stack(
+                  children: [
+                    Container(
+                      color: AppColors.pinkLight,
+                    ),
+                    PageView(
+                      physics: NeverScrollableScrollPhysics(),
+                      onPageChanged: (value) {
+                        setState(() {
+                          page = value;
+                        });
+                      },
+                      children: [_pageInput(), _pageInforOrder()],
+                      controller: controller,
+                    )
+                  ],
+                ));
+          }
+        });
   }
 
   Widget _pageInput() {
@@ -311,24 +326,29 @@ class _OrderScreenState extends State<OrderScreen> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
             ),
-            _listOrderMomo(orderMomo!.orderItems!, int.parse(orderMomo!.total!.stringSplitZero)),
+            _listOrderMomo(orderMomo!.orderItems!,
+                int.parse(orderMomo!.total!.stringSplitZero)),
             SizedBox(
               height: 10,
             ),
             _lineHeight(),
-            _inforPrice(AppStrings.price, int.parse(orderMomo!.total!.stringSplitZero).formatMoney,
+            _inforPrice(
+                AppStrings.price,
+                int.parse(orderMomo!.total!.stringSplitZero).formatMoney,
                 FontWeight.w500),
             _inforPrice(
                 AppStrings.discount,
-                (int.parse(orderMomo!.total!.stringSplitZero) - int.parse(orderMomo!.orderItems![0].price!.stringSplitZero))
+                (int.parse(orderMomo!.total!.stringSplitZero) -
+                        int.parse(
+                            orderMomo!.orderItems![0].price!.stringSplitZero))
                     .formatMoney,
                 FontWeight.w500),
+            _inforPrice(AppStrings.discount, "20.000 đ", FontWeight.w500),
             _inforPrice(
-                AppStrings.discount,
-                "20.000 đ",
-                FontWeight.w500),
-            _inforPrice(AppStrings.total,
-                int.parse(orderMomo!.orderItems![0].price!.stringSplitZero).formatMoney, FontWeight.w700),
+                AppStrings.total,
+                int.parse(orderMomo!.orderItems![0].price!.stringSplitZero)
+                    .formatMoney,
+                FontWeight.w700),
             _lineHeight(),
             _backInforInputMomo(orderMomo),
             Container(
@@ -387,10 +407,7 @@ class _OrderScreenState extends State<OrderScreen> {
                   _inforPrice(AppStrings.price, totalPrice, FontWeight.w500),
                   _inforPrice(AppStrings.discount, "${priceDiscount.toInt()}",
                       FontWeight.w500),
-                _inforPrice(
-                AppStrings.ship,
-                  "20.000 đ",
-                FontWeight.w500),
+                  _inforPrice(AppStrings.ship, "20.000 đ", FontWeight.w500),
                   _inforPrice(AppStrings.total, totalPriceAfterDiscount,
                       FontWeight.w700),
                   _lineHeight(),
@@ -611,7 +628,9 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget _backInforInputMomo(OrderMomo? orderMomo) {
     itemsOrder = [];
     for (var i in orderMomo!.orderItems!) {
-      var item = Item(productSizeId: i.productSizeId, quantity: int.parse(i.quantity?.stringSplitZero ?? "0"));
+      var item = Item(
+          productSizeId: i.productSizeId,
+          quantity: int.parse(i.quantity?.stringSplitZero ?? "0"));
       itemsOrder.add(item);
     }
     order
@@ -723,7 +742,13 @@ class _OrderScreenState extends State<OrderScreen> {
           IconTextButton(
               imageUrl: AppImages.wallet,
               title: AppStrings.checkout,
-              onTap: () async {
+              onTap: !logged ? (){
+                 Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ));
+              } : () async {
                 try {
                   await postOrder();
                   for (var element in globalApi.listCartSelect) {

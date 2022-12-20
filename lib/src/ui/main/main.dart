@@ -11,6 +11,7 @@ import 'package:base_code/src/utils/app_strings.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/app_image.dart';
+import '../auth/login_screen.dart';
 
 class Main extends StatefulWidget {
   const Main({Key? key}) : super(key: key);
@@ -67,6 +68,7 @@ class _MainState extends State<Main> {
           }, context, 3),
           _listTitle(AppImages.logout, AppStrings.logout, () {
             context.read<UserManager>().clearUser();
+            Navigator.pop(context);
           }, context, -1)
         ],
       ),

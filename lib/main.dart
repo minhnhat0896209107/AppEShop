@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:base_code/src/api/global_api.dart';
+import 'package:base_code/src/ui/main/main.dart';
+import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:base_code/src/app.dart';
 import 'package:base_code/src/manager/user_manager.dart';
@@ -14,7 +16,17 @@ import 'src/models/cart.dart';
 late SharedPreferences pref;
 
 void main() async{
-  runApp(const MyApp());
+  runApp(
+    (MultiProvider(
+      providers: [
+         Provider<UserManager>(
+        create: (_) => UserManager(),
+        dispose: (_, userManager) => userManager.dispose(),
+        child: OrderScreen(),
+      ),
+      ],
+      child: MyApp()))
+  );
    pref = await SharedPreferences.getInstance();
     String? jsonProducts = pref.getString('listCart');
     jsonProducts ??= '[]';
@@ -22,6 +34,7 @@ void main() async{
     List<Cart> listCart =
         listMapProduct.map((json) => Cart.fromJson(json)).toList();
     globalApi.listCart = listCart;
+   
 }
 
 class MyApp extends StatelessWidget {
@@ -33,11 +46,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
       theme: appTheme,
-      home: Provider<UserManager>(
-        create: (_) => UserManager(),
-        dispose: (_, userManager) => userManager.dispose(),
-        child: const AppRoot(),
-      ),
+      home: Main()
     );
   }
 }
