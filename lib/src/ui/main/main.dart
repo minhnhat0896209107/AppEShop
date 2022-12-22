@@ -27,6 +27,8 @@ class _MainState extends State<Main> {
       selectedIndex = index;
     });
   }
+  bool logged = false;
+
 
   final List<Widget> _screens = [
     const HomeScreen(),
@@ -45,34 +47,49 @@ class _MainState extends State<Main> {
 
   Widget _drawer() {
     print("SELECT INDEX $selectedIndex");
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          _drawerHeader(context),
-          _listTitle(AppImages.home, AppStrings.home, () {
-            changeIndex(0);
-            Navigator.pop(context);
-          }, context, 0),
-          _listTitle(AppImages.product, AppStrings.product, () {
-            changeIndex(1);
-            Navigator.pop(context);
-          }, context, 1),
-          _listTitle(AppImages.cart_header, AppStrings.cart, () {
-            changeIndex(2);
-            Navigator.pop(context);
-          }, context, 2),
-          _listTitle(AppImages.order, AppStrings.order, () {
-            changeIndex(3);
-            Navigator.pop(context);
-          }, context, 3),
-          _listTitle(AppImages.logout, AppStrings.logout, () {
-            context.read<UserManager>().clearUser();
-            Navigator.pop(context);
-          }, context, -1)
-        ],
-      ),
-    );
+    return StreamBuilder(
+        stream: context.read<UserManager>().userStream,
+        builder: (context, snapshot) {
+          logged = snapshot.data != null;
+          {
+        return Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              _drawerHeader(context),
+              _listTitle(AppImages.home, AppStrings.home, () {
+                changeIndex(0);
+                Navigator.pop(context);
+              }, context, 0),
+              _listTitle(AppImages.product, AppStrings.product, () {
+                changeIndex(1);
+                Navigator.pop(context);
+              }, context, 1),
+              _listTitle(AppImages.cart_header, AppStrings.cart, () {
+                changeIndex(2);
+                Navigator.pop(context);
+              }, context, 2),
+              _listTitle(AppImages.order, AppStrings.order,!logged
+                  ? () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ));
+                    }
+                  : () {
+                changeIndex(3);
+                Navigator.pop(context);
+              }, context, 3),
+              _listTitle(AppImages.logout, AppStrings.logout, () {
+                context.read<UserManager>().clearUser();
+                Navigator.pop(context);
+              }, context, -1)
+            ],
+          ),
+        );
+      }
+  });
   }
 
   Widget _listTitle(String image, String title, Function() onTap,

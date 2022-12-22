@@ -52,6 +52,7 @@ class _OrderScreenState extends State<OrderScreen> {
   List<Item> itemsOrder = [];
   final OrderRepository _orderRepository = OrderRepository();
   String? url;
+  String? urlPayment;
   late OrderMomoBloc _orderMomoBloc;
   int? idOrderMomo;
   OrderMomo? orderMomo;
@@ -62,6 +63,13 @@ class _OrderScreenState extends State<OrderScreen> {
         "ORDERPOST== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
 
     url = await _orderRepository.postOrder(order: order);
+  }
+
+    Future getPayment(int idOrder) async {
+    print(
+        "ORDERPOST== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
+
+    urlPayment = await _orderRepository.getPayment(idOrder: idOrder);
   }
 
   void removeListCart() async {
@@ -333,7 +341,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         orderMomo!.orderItems![0].price!)
                     .formatMoney,
                 FontWeight.w500),
-            _inforPrice(AppStrings.discount, "20.000 đ", FontWeight.w500),
+            _inforPrice(AppStrings.ship, "20.000 đ", FontWeight.w500),
             _inforPrice(
                 AppStrings.total,
                 orderMomo!.orderItems![0].price!
@@ -661,18 +669,18 @@ class _OrderScreenState extends State<OrderScreen> {
             ),
           ),
           Visibility(
-            visible: orderMomo!.status != 'cancelled',
+            visible: orderMomo.status != 'cancelled',
             child: IconTextButton(
                 imageUrl: AppImages.wallet,
                 title: AppStrings.checkout,
                 onTap: () async {
                   try {
-                    await postOrder();
+                    await getPayment(idOrderMomo!);
                     print("URL == $url \t ${UserManager.globalToken}");
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MomoScreen(url: url),
+                          builder: (context) => MomoScreen(url: urlPayment),
                         )).then((value) {
                       globalApi.listCartSelect = [];
                       setState(() {});

@@ -21,4 +21,15 @@ class OrderRepository{
       }
 
   }
+
+  Future<String> getPayment({required int idOrder}) async {
+      
+      var repsponse = await _baseApi.getMethod("${OrderUrl.order}/$idOrder/payment");
+      if(repsponse['success']){
+        return repsponse['data'];
+      }else {
+        return '';
+      }
+
+  }
 }

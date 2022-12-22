@@ -47,10 +47,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int priceDiscount = 0;
   bool logged = false;
 
-
   @override
   Widget build(BuildContext context) {
-    return  StreamBuilder(
+    return StreamBuilder(
         stream: context.read<UserManager>().userStream,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -59,46 +58,50 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           logged = snapshot.data != null;
           {
-    return Provider<ProductDetailBloC>(
-        create: ((context) => ProductDetailBloC()),
-        builder: (context, child) {
-          bloC = context.read<ProductDetailBloC>();
-          bloC.init(product: widget.product);
-          bloC.getProductDetail(slug: widget.product.slug!);
-          return Scaffold(
-            appBar: customAppbar,
-            body: StreamBuilder<Product>(
-                stream: bloC.productStream,
-                builder: (context, snapshot) {
-                  Product product = snapshot.data!;
-                  if (product.discount.length > 0) {
-                    priceDiscount =
-                        ((product.discount[0].percent! / 100) * product.price!)
-                            .toInt();
-                  print("PRICEDISCOUNT1  \t ${product.discount[0].percent}");
-                  }
-                  print(
-                      "PRICEDISCOUNT ${product.discount.length} \t $priceDiscount \t ${product}");
-                  return Container(
-                    color: AppColors.pinkLight,
-                    child: SingleChildScrollView(
-                        child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 80,
-                        ),
-                        _slider(product),
-                        _productDetail(product),
-                        _description(product),
-                        const SizedBox(
-                          height: 50,
-                        )
-                      ],
-                    )),
+            return Provider<ProductDetailBloC>(
+                create: ((context) => ProductDetailBloC()),
+                builder: (context, child) {
+                  bloC = context.read<ProductDetailBloC>();
+                  bloC.init(product: widget.product);
+                  bloC.getProductDetail(slug: widget.product.slug!);
+                  return Scaffold(
+                    appBar: customAppbar,
+                    body: StreamBuilder<Product>(
+                        stream: bloC.productStream,
+                        builder: (context, snapshot) {
+                          Product product = snapshot.data!;
+                          if (product.discount.length > 0) {
+                            priceDiscount =
+                                ((product.discount[0].percent! / 100) *
+                                        product.price!)
+                                    .toInt();
+                            print(
+                                "PRICEDISCOUNT1  \t ${product.discount[0].percent}");
+                          }
+                          print(
+                              "PRICEDISCOUNT ${product.discount.length} \t $priceDiscount \t ${product}");
+                          return Container(
+                            color: AppColors.pinkLight,
+                            child: SingleChildScrollView(
+                                child: Column(
+                              children: [
+                                const SizedBox(
+                                  height: 80,
+                                ),
+                                _slider(product),
+                                _productDetail(product),
+                                _description(product),
+                                const SizedBox(
+                                  height: 50,
+                                )
+                              ],
+                            )),
+                          );
+                        }),
                   );
-                }),
-          );
-        });}});
+                });
+          }
+        });
   }
 
   Widget _slider(Product product) {
@@ -210,7 +213,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               const SizedBox(
                 width: 20,
               ),
-              Text(indexSelect == null ? "0 ${AppStrings.quantity}":"${product.productSizes?[indexSelect!].quantity} ${AppStrings.quantity}"),
+              Text(indexSelect == null
+                  ? "0 ${AppStrings.quantity}"
+                  : "${product.productSizes?[indexSelect!].quantity} ${AppStrings.quantity}"),
             ],
           ),
         ),
@@ -311,13 +316,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
         Row(
           children: [
             const Text('${AppStrings.total}:'),
-            
             const SizedBox(
               width: 5,
             ),
             FittedBox(
               child: Text(
-                numberQuantity > 0 ? ((product.price! * numberQuantity) - priceDiscount).formatMoney : "0d",
+                numberQuantity > 0
+                    ? ((product.price! * numberQuantity) - priceDiscount)
+                        .formatMoney
+                    : "0d",
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     fontFamily: 'Nunito',
@@ -334,7 +341,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     decoration: TextDecoration.lineThrough,
-
                     fontFamily: 'Nunito',
                     fontWeight: FontWeight.w500,
                     fontSize: 20),
@@ -354,8 +360,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 } else if (numberQuantity == 0) {
                   ToastUtils.showToast(AppStrings.chooseQuantity);
                 } else {
-                  bloC.addToCart(product, quantity!, numberQuantity, nameSize,
-                      productSizeId!, ((product.price! * numberQuantity) - priceDiscount));
+                  bloC.addToCart(
+                      product,
+                      quantity!,
+                      numberQuantity,
+                      nameSize,
+                      productSizeId!,
+                      ((product.price! * numberQuantity) - priceDiscount));
                 }
               },
               imageUrl: AppImages.cart,
@@ -365,41 +376,45 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               width: 10,
             ),
             IconTextButton(
-              onTap:!logged ? (){
-                 Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ));
-              } : () {
-                if (quantity == 0) {
-                  ToastUtils.showToast(AppStrings.outOfStock);
-                } else if (nameSize == "") {
-                  ToastUtils.showToast(AppStrings.chooseYourShoe);
-                } else if (numberQuantity == 0) {
-                  ToastUtils.showToast(AppStrings.chooseQuantity);
-                } else {
-                  cart
-                    ..idProduct = product.id
-                    ..quantity = quantity
-                    ..numberQuantityBuy = numberQuantity
-                    ..size = nameSize
-                    ..productSizeId = productSizeId
-                    ..priceAfterDiscount = ((product.price! * numberQuantity) - priceDiscount)
-                    ..percent = product.discount.length > 0
-                        ? product.discount[0].percent
-                        : 0
-                    ..product = product;
-                  print(
-                      "CARTPERCENT == ${cart.percent} \t ${product.discount.length}");
-                  globalApi.listCartSelect.add(cart);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OrderScreen(),
-                      )).then((value) => globalApi.listCartSelect = []);
-                }
-              },
+              onTap: !logged
+                  ? () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ));
+                    }
+                  : () {
+                      if (quantity == 0) {
+                        ToastUtils.showToast(AppStrings.outOfStock);
+                      } else if (nameSize == "") {
+                        ToastUtils.showToast(AppStrings.chooseYourShoe);
+                      } else if (numberQuantity == 0) {
+                        ToastUtils.showToast(AppStrings.chooseQuantity);
+                      } else {
+                        cart
+                          ..idProduct = product.id
+                          ..quantity = quantity
+                          ..numberQuantityBuy = numberQuantity
+                          ..size = nameSize
+                          ..productSizeId = productSizeId
+                          ..priceAfterDiscount =
+                              ((product.price! * numberQuantity) -
+                                  priceDiscount)
+                          ..percent = product.discount.length > 0
+                              ? product.discount[0].percent
+                              : 0
+                          ..product = product;
+                        print(
+                            "CARTPERCENT == ${cart.percent} \t ${product.discount.length}");
+                        globalApi.listCartSelect.add(cart);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderScreen(),
+                            )).then((value) => globalApi.listCartSelect = []);
+                      }
+                    },
               imageUrl: AppImages.wallet,
               title: AppStrings.buyNow,
             ),
