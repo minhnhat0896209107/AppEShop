@@ -1,9 +1,11 @@
+import 'package:base_code/src/api/global_api.dart';
 import 'package:base_code/src/commons/widgets/loading_widget.dart';
 import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:base_code/src/utils/helpers.dart';
 import 'package:base_code/src/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../../blocs/order_momo_bloc.dart';
 import '../../../models/order_momo/order_momo.dart';
@@ -24,7 +26,8 @@ class OrderMomoScreen extends StatefulWidget {
 class _OrderMomoScreenState extends State<OrderMomoScreen> {
   late OrderMomoBloc _orderMomoBloc = OrderMomoBloc();
   final OrderRepository _orderRepository = OrderRepository();
-
+  DataPagerController dataPagerController = DataPagerController();
+  DataPagerDelegate dataPagerDelegate = DataPagerDelegate();
   Future receivedOrder(int idOrder) async {
      _orderRepository.receivedOrder(idOrder: idOrder);
   }
@@ -35,13 +38,12 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
       dispose: (context, bloc) => bloc.dispose(),
       builder: (context, child) {
         _orderMomoBloc = context.read<OrderMomoBloc>();
-        _orderMomoBloc.getListOrderMomo();
+        _orderMomoBloc.getListOrderMomo(1);
         return StreamBuilder<List<OrderMomo>>(
             stream: _orderMomoBloc.orderMomoStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<OrderMomo> orderMomos = snapshot.data!;
-                print("Lenght ordermomo == ${orderMomos.length}");
                 if (orderMomos.isEmpty) {
                   return Image.asset(
                     AppImages.cartEmpty,
@@ -86,7 +88,22 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
                                     height: 2,
                                     color: Colors.black,
                                   ),
-                              itemCount: orderMomos.length))
+                              itemCount: orderMomos.length)),
+                      SizedBox(height: 20,),
+                      Center(
+                        child: SfDataPager(
+                          visibleItemsCount: 3,
+                          pageCount: globalApi.totalPageOrderMomo?.floorToDouble() ?? 1,
+                          controller: dataPagerController,
+                          onPageNavigationStart: (pageIndex)  {
+                            _orderMomoBloc.getListOrderMomo(pageIndex + 1);
+                          },
+                          initialPageIndex: 0,
+                          direction: Axis.horizontal,
+                          delegate: dataPagerDelegate,
+                        ),
+                      ),
+                      SizedBox(height: 30,)
                     ],
                   ),
                 );

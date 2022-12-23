@@ -12,10 +12,12 @@ class OrderMomoBloc extends BaseBloC{
     final BehaviorSubject<OrderMomo> _orderMomoDetailController = BehaviorSubject<OrderMomo>();
   Stream<OrderMomo> get orderMomoDetailStream => _orderMomoDetailController.stream;
   final OrderMomoRepository _orderMomoRepository = OrderMomoRepository();
+  List<OrderMomo> listOrder = [];
+  int page = 1;
+  void getListOrderMomo(int pageIndex) async{
+    listOrder = await _orderMomoRepository.getListProduct(page: pageIndex);
 
-  void getListOrderMomo() async{
-    List<OrderMomo> listOrder = await _orderMomoRepository.getListProduct();
-    _orderMomoController.add(listOrder);
+      _orderMomoController.add(listOrder);
   }
   
   void getDetailOrderMomo(String id) async{
