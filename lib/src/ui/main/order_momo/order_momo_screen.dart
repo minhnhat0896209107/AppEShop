@@ -31,6 +31,22 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
   Future receivedOrder(int idOrder) async {
      _orderRepository.receivedOrder(idOrder: idOrder);
   }
+  String _nameStatus = "";
+  void changeNameStatus(String status){
+    switch(status){
+      case "completed":
+      _nameStatus = "Deliveried";
+      break;
+      case "on_preparing":
+      _nameStatus = "Preparing";
+      break;
+      default:
+      _nameStatus = "Payment";
+      break;
+    }
+  }
+
+  String get nameStatus => _nameStatus;
   @override
   Widget build(BuildContext context) {
     return Provider<OrderMomoBloc>(
@@ -115,6 +131,7 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
   }
 
   Widget _itemOrder(OrderMomo orderMomo) {
+    changeNameStatus(orderMomo.status!);
     return Container(
       color: Colors.transparent,
       child: Padding(
@@ -158,7 +175,7 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 Text(
-                  orderMomo.status ?? "--",
+                  nameStatus ?? "--",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
@@ -168,22 +185,27 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
             const SizedBox(
               height: 5,
             ),
-            Align(
-              alignment: Alignment.center,
-              child: GestureDetector(
-                onTap: (){
-                   receivedOrder(orderMomo.id!);
-                   showSuccessDialog(context, "Bạn đã xác nhận");
-
-                },
-                child: Container(
-                    alignment: Alignment.center,
-                    width: MediaQuery.of(context).size.width / 2,
-                    padding: const EdgeInsets.all(5),
-                    decoration:  BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        color: Colors.pink[400]),
-                    child: const Text("RECEIVED" , style :TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white) )),
+            Visibility(
+              visible: nameStatus != "Deliveried",
+              child: Align(
+                alignment: Alignment.center,
+                child: GestureDetector(
+                  onTap: (){
+                     receivedOrder(orderMomo.id!);
+                     showSuccessDialog(context, "Bạn đã xác nhận").then((value) => setState(() {
+                       
+                     },));
+            
+                  },
+                  child: Container(
+                      alignment: Alignment.center,
+                      width: MediaQuery.of(context).size.width / 2,
+                      padding: const EdgeInsets.all(5),
+                      decoration:  BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          color: Colors.pink[400]),
+                      child: const Text("RECEIVED" , style :TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white) )),
+                ),
               ),
             )
           ],
