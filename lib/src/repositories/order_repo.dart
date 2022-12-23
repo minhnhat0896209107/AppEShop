@@ -30,6 +30,15 @@ class OrderRepository{
       }else {
         return '';
       }
+  }
 
+    Future receivedOrder({required int idOrder}) async {
+      
+      var repsponse = await _baseApi.putMethod("${OrderUrl.order}/$idOrder/received");
+      if(repsponse['success']){
+        return repsponse['data'];
+      }else {
+        return '';
+      }
   }
 }

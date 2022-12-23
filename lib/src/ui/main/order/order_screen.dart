@@ -59,16 +59,10 @@ class _OrderScreenState extends State<OrderScreen> {
   double priceDiscount = 0;
   // List<Product> cartProducts = [];
   Future postOrder() async {
-    print(
-        "ORDERPOST== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
-
     url = await _orderRepository.postOrder(order: order);
   }
 
-    Future getPayment(int idOrder) async {
-    print(
-        "ORDERPOST== ${order.items?.length} \t ${order.name} \t ${order.phone} \t ${order.address}");
-
+  Future getPayment(int idOrder) async {
     urlPayment = await _orderRepository.getPayment(idOrder: idOrder);
   }
 

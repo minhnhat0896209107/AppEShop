@@ -1,11 +1,13 @@
 import 'package:base_code/src/commons/widgets/loading_widget.dart';
 import 'package:base_code/src/ui/main/order/order_screen.dart';
+import 'package:base_code/src/utils/helpers.dart';
 import 'package:base_code/src/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../blocs/order_momo_bloc.dart';
 import '../../../models/order_momo/order_momo.dart';
+import '../../../repositories/order_repo.dart';
 import '../../../struct/app_color.dart';
 import '../../../utils/app_image.dart';
 import '../../../utils/app_strings.dart';
@@ -21,6 +23,11 @@ class OrderMomoScreen extends StatefulWidget {
 
 class _OrderMomoScreenState extends State<OrderMomoScreen> {
   late OrderMomoBloc _orderMomoBloc = OrderMomoBloc();
+  final OrderRepository _orderRepository = OrderRepository();
+
+  Future receivedOrder(int idOrder) async {
+     _orderRepository.receivedOrder(idOrder: idOrder);
+  }
   @override
   Widget build(BuildContext context) {
     return Provider<OrderMomoBloc>(
@@ -141,6 +148,27 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 5,
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: GestureDetector(
+                onTap: (){
+                   receivedOrder(orderMomo.id!);
+                   showSuccessDialog(context, "Bạn đã xác nhận");
+
+                },
+                child: Container(
+                    alignment: Alignment.center,
+                    width: MediaQuery.of(context).size.width / 2,
+                    padding: const EdgeInsets.all(5),
+                    decoration:  BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                        color: Colors.pink[400]),
+                    child: const Text("RECEIVED" , style :TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white) )),
+              ),
+            )
           ],
         ),
       ),
