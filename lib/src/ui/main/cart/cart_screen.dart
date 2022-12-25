@@ -294,7 +294,7 @@ class _CartScreenState extends State<CartScreen> {
       ..numberQuantityBuy = listNumberQuantity[index]
       ..size = globalApi.listCart[index].size
       ..productSizeId = globalApi.listCart[index].productSizeId
-      ..percent = product.discount.length > 0 ? product.discount[0].percent : 0
+      ..percent = product.discount!.length > 0 ? product.discount![0].percent : 0
       ..priceAfterDiscount = globalApi.listCart[index].priceAfterDiscount
       ..product = product;
 

@@ -29,10 +29,9 @@ class _ProductScreenState extends State<ProductScreen> {
     "Price ascending",
     "Price descending"
   ];
-  String? selectPriceAssending;
+  String selectPriceAssending =  "Price ascending";
   @override
   Widget build(BuildContext context) {
-    print("SELECT == $selectedValue \t $isCheckLatest \t $selectPriceAssending");
     return Provider<ProductScreenBloC>(
         create: (_) => ProductScreenBloC(),
         dispose: (_, bloc) => bloc.dispose(),

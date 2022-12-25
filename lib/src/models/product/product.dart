@@ -17,7 +17,7 @@ class Product {
   Category? category;
   List<ProductSize>? productSizes;
   List<Category>? images;
-  List<Discount> discount;
+  List<Discount>? discount;
 
 
   Product({
@@ -32,7 +32,7 @@ class Product {
     this.category,
     this.productSizes,
     this.images,
-    required this.discount
+    this.discount
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);

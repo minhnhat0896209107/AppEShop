@@ -46,7 +46,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Cart cart = Cart();
   int priceDiscount = 0;
   bool logged = false;
+  Product product = new Product();
+  @override
+  void initState() {
+    product = widget.product;
+     if (product.discount!.length > 0) {
+                            priceDiscount =
+                                ((product.discount![0].percent! / 100) *
+                                        product.price!)
+                                    .toInt();
 
+                          }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -62,42 +74,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 create: ((context) => ProductDetailBloC()),
                 builder: (context, child) {
                   bloC = context.read<ProductDetailBloC>();
-                  bloC.init(product: widget.product);
-                  bloC.getProductDetail(slug: widget.product.slug!);
                   return Scaffold(
                     appBar: customAppbar,
-                    body: StreamBuilder<Product>(
-                        stream: bloC.productStream,
-                        builder: (context, snapshot) {
-                          Product product = snapshot.data!;
-                          if (product.discount.length > 0) {
-                            priceDiscount =
-                                ((product.discount[0].percent! / 100) *
-                                        product.price!)
-                                    .toInt();
-                            print(
-                                "PRICEDISCOUNT1  \t ${product.discount[0].percent}");
-                          }
-                          print(
-                              "PRICEDISCOUNT ${product.discount.length} \t $priceDiscount \t ${product}");
-                          return Container(
-                            color: AppColors.pinkLight,
-                            child: SingleChildScrollView(
-                                child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 80,
-                                ),
-                                _slider(product),
-                                _productDetail(product),
-                                _description(product),
-                                const SizedBox(
-                                  height: 50,
-                                )
-                              ],
-                            )),
-                          );
-                        }),
+                    body: Container(
+                      color: AppColors.pinkLight,
+                      child: SingleChildScrollView(
+                          child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 80,
+                          ),
+                          _slider(product),
+                          _productDetail(product),
+                          _description(product),
+                          const SizedBox(
+                            height: 50,
+                          )
+                        ],
+                      )),
+                    ),
                   );
                 });
           }
@@ -401,12 +396,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ..priceAfterDiscount =
                               ((product.price! * numberQuantity) -
                                   priceDiscount)
-                          ..percent = product.discount.length > 0
-                              ? product.discount[0].percent
+                          ..percent = product.discount!.length > 0
+                              ? product.discount![0].percent
                               : 0
                           ..product = product;
                         print(
-                            "CARTPERCENT == ${cart.percent} \t ${product.discount.length}");
+                            "CARTPERCENT == ${cart.percent} \t ${product.discount!.length}");
                         globalApi.listCartSelect.add(cart);
                         Navigator.push(
                             context,
