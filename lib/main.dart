@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:base_code/src/api/global_api.dart';
+import 'package:base_code/src/blocs/home_screen_bloc.dart';
 import 'package:base_code/src/ui/main/main.dart';
 import 'package:base_code/src/ui/main/order/order_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,10 @@ void main() async{
          Provider<UserManager>(
         create: (_) => UserManager(),
         dispose: (_, userManager) => userManager.dispose(),
+      ),
+      Provider<HomeScreenBloC>(
+        create: (_) => HomeScreenBloC(),
+        dispose: (_, homeScreenBloC) => homeScreenBloC.dispose(),
       ),
       ],
       child: MyApp()))

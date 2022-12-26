@@ -2,12 +2,15 @@ import 'package:base_code/src/blocs/home_screen_bloc.dart';
 import 'package:base_code/src/commons/widgets/rounded_image.dart';
 import 'package:base_code/src/manager/user_manager.dart';
 import 'package:base_code/src/struct/app_color.dart';
+import 'package:base_code/src/ui/main/main.dart';
 import 'package:base_code/src/utils/app_boxshadow.dart';
 import 'package:base_code/src/utils/app_image.dart';
 import 'package:base_code/src/utils/app_strings.dart';
 import 'package:base_code/src/utils/app_textstyle.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../product/product_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  HomeScreenBloC _bloC = HomeScreenBloC();
+  MainState mainState = MainState();
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -42,7 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: OutlinedButton.styleFrom(
                           shape: const StadiumBorder(),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductScreen(isCheckHomeToProduct: true,),));
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Row(

@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:base_code/src/utils/app_strings.dart';
 import 'package:provider/provider.dart';
 
+import '../../blocs/home_screen_bloc.dart';
 import '../../utils/app_image.dart';
 import '../auth/login_screen.dart';
 
@@ -17,22 +18,22 @@ class Main extends StatefulWidget {
   const Main({Key? key}) : super(key: key);
 
   @override
-  State<Main> createState() => _MainState();
+  State<Main> createState() => MainState();
 }
 
-class _MainState extends State<Main> {
+class MainState extends State<Main> {
   int selectedIndex = 0;
   void changeIndex(int index) {
     setState(() {
       selectedIndex = index;
     });
   }
-  bool logged = false;
 
+  bool logged = false;
 
   final List<Widget> _screens = [
     const HomeScreen(),
-    const ProductScreen(),
+    ProductScreen(),
     const CartScreen(),
     const OrderMomoScreen()
   ];
@@ -47,60 +48,64 @@ class _MainState extends State<Main> {
 
   Widget _drawer() {
     print("SELECT INDEX $selectedIndex");
+
     return StreamBuilder(
         stream: context.read<UserManager>().userStream,
         builder: (context, snapshot) {
           logged = snapshot.data != null;
           {
-        return Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              _drawerHeader(context),
-              _listTitle(AppImages.home, AppStrings.home, () {
-                changeIndex(0);
-                Navigator.pop(context);
-              }, context, 0),
-              _listTitle(AppImages.product, AppStrings.product, () {
-                changeIndex(1);
-                Navigator.pop(context);
-              }, context, 1),
-              _listTitle(AppImages.cart_header, AppStrings.cart, () {
-                changeIndex(2);
-                Navigator.pop(context);
-              }, context, 2),
-              _listTitle(AppImages.order, AppStrings.order,!logged
-                  ? () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ));
-                    }
-                  : () {
-                changeIndex(3);
-                Navigator.pop(context);
-              }, context, 3),
-              _listTitle(AppImages.logout, AppStrings.logout, () {
-                context.read<UserManager>().clearUser();
-                Navigator.pop(context);
-              }, context, -1)
-            ],
-          ),
-        );
-      }
-  });
+            return Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  _drawerHeader(context),
+                  _listTitle(AppImages.home, AppStrings.home, () {
+                    changeIndex(0);
+                    Navigator.pop(context);
+                  }, context, 0),
+                  _listTitle(AppImages.product, AppStrings.product, () {
+                    changeIndex(1);
+                    Navigator.pop(context);
+                  }, context, 1),
+                  _listTitle(AppImages.cart_header, AppStrings.cart, () {
+                    changeIndex(2);
+                    Navigator.pop(context);
+                  }, context, 2),
+                  _listTitle(
+                      AppImages.order,
+                      AppStrings.order,
+                      !logged
+                          ? () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginScreen(),
+                                  ));
+                            }
+                          : () {
+                              changeIndex(3);
+                              Navigator.pop(context);
+                            },
+                      context,
+                      3),
+                  _listTitle(AppImages.logout, AppStrings.logout, () {
+                    context.read<UserManager>().clearUser();
+                    Navigator.pop(context);
+                  }, context, -1)
+                ],
+              ),
+            );
+          }
+        });
   }
 
   Widget _listTitle(String image, String title, Function() onTap,
       BuildContext context, int? index) {
     return ListTile(
-      leading: Image.asset(
-        image,
-        width: 30,
-        height: 30,
-        color: index == selectedIndex ? AppColors.pinkDark : Colors.black
-      ),
+      leading: Image.asset(image,
+          width: 30,
+          height: 30,
+          color: index == selectedIndex ? AppColors.pinkDark : Colors.black),
       title: Text(
         title,
         style: TextStyle(
