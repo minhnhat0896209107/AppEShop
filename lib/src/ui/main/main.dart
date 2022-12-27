@@ -34,7 +34,7 @@ class MainState extends State<Main> {
   final List<Widget> _screens = [
     const HomeScreen(),
     ProductScreen(),
-   CartScreen(),
+    CartScreen(),
     const OrderMomoScreen()
   ];
   @override

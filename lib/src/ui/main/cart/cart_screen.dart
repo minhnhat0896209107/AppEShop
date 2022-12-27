@@ -66,7 +66,8 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String totalPrice = getTotalPrice();
+    String? totalPrice = getTotalPrice();
+    
     return StreamBuilder(
         stream: context.read<UserManager>().userStream,
         builder: (context, snapshot) {
@@ -87,7 +88,7 @@ class _CartScreenState extends State<CartScreen> {
                           TextStyle(fontSize: 32, fontWeight: FontWeight.w700),
                     ),
                   ),
-                  cartProducts.isEmpty
+                  cartProducts.isEmpty || listCheck.length == 0
                       ? Image.asset(AppImages.cartEmpty)
                       : Column(
                           children: [
@@ -126,6 +127,40 @@ class _CartScreenState extends State<CartScreen> {
                                       index);
                                 },
                               )),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: GestureDetector(
+                                  onTap: () {
+                                    for (int i = 0; i < cartProducts.length; i++) {
+                                      if (listCheck[i] == true) {
+                                        cartProducts.remove(cartProducts[i]);
+                                        listNumberQuantity.removeAt(i);
+                                        listSizeProduct.removeAt(i);
+                                        listCheck.removeAt(i);
+                                      }
+                                    }
+                                      setState(() {});
+
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(5)),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "DELETE",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  )),
                             ),
                             const SizedBox(
                               height: 50,
@@ -188,7 +223,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _cartDetail(bool isStroke, Product? product, Cart cart, int index) {
-    print("CHECK ${listCheck[index]}");
+    print("CHECK $index ${listCheck[index]}");
     print("CHECK ADD1 ${globalApi.listCart[index].numberQuantityBuy}");
 
     return Container(
@@ -202,29 +237,27 @@ class _CartScreenState extends State<CartScreen> {
                     listCheck[index] = !listCheck[index];
                     Cart cart = Cart();
 
-                    if(listCheck[index]){
-                       cart
-                          ..idProduct = globalApi.listCart[index].idProduct
-                          ..quantity = globalApi.listCart[index].quantity
-                          ..numberQuantityBuy = listNumberQuantity[index]
-                          ..size = listSizeProduct[index]
-                          ..productSizeId =
-                              globalApi.listCart[index].productSizeId
-                          ..percent = product!.discount!.length > 0
-                              ? product.discount![0].percent
-                              : 0
-                          ..priceAfterDiscount =
-                              globalApi.listCart[index].priceAfterDiscount
-                          ..product = product;
+                    if (listCheck[index]) {
+                      cart
+                        ..idProduct = globalApi.listCart[index].idProduct
+                        ..quantity = globalApi.listCart[index].quantity
+                        ..numberQuantityBuy = listNumberQuantity[index]
+                        ..size = listSizeProduct[index]
+                        ..productSizeId =
+                            globalApi.listCart[index].productSizeId
+                        ..percent = product!.discount!.length > 0
+                            ? product.discount![0].percent
+                            : 0
+                        ..priceAfterDiscount =
+                            globalApi.listCart[index].priceAfterDiscount
+                        ..product = product;
                     }
-                   
+
                     if (globalApi.listCartSelect != []) {
                       if (listCheck[index]) {
-                        
                         globalApi.listCartSelect.add(cart);
                       } else {
-                        globalApi.listCartSelect
-                            .remove(cart);
+                        globalApi.listCartSelect.remove(cart);
                       }
                     }
                   });
@@ -243,10 +276,10 @@ class _CartScreenState extends State<CartScreen> {
                   setState(() {
                     listCheck[index] = !listCheck[index];
                     if (globalApi.listCartSelect != []) {
-                       Cart cart = Cart();
+                      Cart cart = Cart();
 
-                    if(listCheck[index]){
-                       cart
+                      if (listCheck[index]) {
+                        cart
                           ..idProduct = globalApi.listCart[index].idProduct
                           ..quantity = globalApi.listCart[index].quantity
                           ..numberQuantityBuy = listNumberQuantity[index]
@@ -259,7 +292,7 @@ class _CartScreenState extends State<CartScreen> {
                           ..priceAfterDiscount =
                               globalApi.listCart[index].priceAfterDiscount
                           ..product = product;
-                    }
+                      }
                       if (listCheck[index]) {
                         globalApi.listCartSelect.add(globalApi.listCart[index]);
                       } else {

@@ -61,7 +61,7 @@ class ProductDetailBloC extends BaseBloC {
     }
   
   void updateToCart(int indexCart, int numberBuyBefore, Product product ) async {
-      globalApi.listCart.remove(globalApi.listCart[indexCart]);
+      globalApi.listCart.removeAt(indexCart);
       cart
         ..idProduct = globalApi.listCart[indexCart].idProduct
         ..quantity = globalApi.listCart[indexCart].quantity
@@ -71,7 +71,7 @@ class ProductDetailBloC extends BaseBloC {
         ..percent = product.discount!.length > 0 ? product.discount![0].percent : 0
         ..priceAfterDiscount = globalApi.listCart[indexCart].priceAfterDiscount
         ..product = product;
-      globalApi.listCart.insert(indexCart!,cart);
+      globalApi.listCart.add(cart);
       ToastUtils.showToast(AppStrings.updateCartSuccess);
       cart = Cart();
   }
