@@ -57,7 +57,11 @@ class _OrderScreenState extends State<OrderScreen> {
   int? idOrderMomo;
   OrderMomo? orderMomo;
   double priceDiscount = 0;
-  // List<Product> cartProducts = [];
+  List<String> listSizeProduct = [];
+    List<Cart> listCart = [];
+    List<Product> listProduct = [];
+
+
   Future postOrder() async {
     url = await _orderRepository.postOrder(order: order);
   }
@@ -73,11 +77,13 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   void initState() {
+    print("Inita");
     idOrderMomo = widget.id;
-
-    for (Cart i in globalApi.listCartSelect) {
+    listCart = globalApi.listCartSelect;
+    for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
-      // cartProducts.add(i.product!);
+      listSizeProduct.add(i.size!);
+
       var item =
           Item(productSizeId: i.productSizeId, quantity: i.numberQuantityBuy);
       items.add(item);
@@ -365,7 +371,7 @@ class _OrderScreenState extends State<OrderScreen> {
       String totalPriceAfterDiscount =
           getTotalPriceAfterDiscount(globalApi.listCartSelect);
 
-      return globalApi.listCartSelect.length == 0
+      return listCart.length == 0
           ? Image.asset(AppImages.cartEmpty)
           : SingleChildScrollView(
               child: Column(
@@ -391,7 +397,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  _listOrder(globalApi.listCartSelect),
+                  _listOrder(),
                   SizedBox(
                     height: 10,
                   ),
@@ -424,7 +430,7 @@ class _OrderScreenState extends State<OrderScreen> {
     }
   }
 
-  Widget _listOrder(List<Cart> listCart) {
+  Widget _listOrder() {
     return Container(
         padding: EdgeInsets.only(left: 10, right: 10, top: 5),
         child: ListView.builder(
@@ -452,9 +458,9 @@ class _OrderScreenState extends State<OrderScreen> {
                       Container(
                         margin: EdgeInsets.only(left: 55),
                         child: Padding(
-                          padding: const EdgeInsets.all(3.0),
+                          padding:  EdgeInsets.all(3.0),
                           child: Text(
-                            "${listCart[index].numberQuantityBuy}",
+                            "${listNumberQuantity[index]}",
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -481,7 +487,7 @@ class _OrderScreenState extends State<OrderScreen> {
                         height: 5,
                       ),
                       Text(
-                        listCart[index].size ?? '--',
+                        listSizeProduct[index] ?? '--',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(

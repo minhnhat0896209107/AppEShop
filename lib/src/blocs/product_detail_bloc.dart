@@ -18,9 +18,6 @@ class ProductDetailBloC extends BaseBloC {
       BehaviorSubject<Product>();
   Stream<Product> get productStream => _productController.stream;
   List<Cart> listCart = [];
-  bool isCheckUpdate = false;
-  int? indexCart;
-  int? numberBuyBefore;
   Cart cart = Cart();
 
   void init({required Product product}) {
@@ -43,15 +40,7 @@ class ProductDetailBloC extends BaseBloC {
     String? jsonProducts = pref.getString('listCart');
     jsonProducts ??= '[]';
     List listMapProduct = (json.decode(jsonProducts));
-    for (int i = 0; i < globalApi.listCart.length; i++) {
-      if (globalApi.listCart[i].idProduct == product.id && globalApi.listCart[i].size == size ) {
-        isCheckUpdate = true;
-        indexCart = i;
-        numberBuyBefore = globalApi.listCart[i].numberQuantityBuy;
-      }
-    }
-    if (!isCheckUpdate) {
-      cart
+     cart
         ..idProduct = product.id
         ..quantity = quantity
         ..numberQuantityBuy = numberQuantityBuy
@@ -62,25 +51,31 @@ class ProductDetailBloC extends BaseBloC {
         ..product = product;
 
       // listMapProduct.add(product.toJson());
+    print("CART SIZE== ${cart.size}");
       globalApi.listCart.add(cart);
     listMapProduct.add(cart.toJson());
     pref.setString('listCart', json.encode(listMapProduct));
       ToastUtils.showToast(AppStrings.addToCartSuccess);
-    }else {
-      globalApi.listCart.remove(globalApi.listCart[indexCart!]);
+      cart = Cart();
+
+    }
+  
+  void updateToCart(int indexCart, int numberBuyBefore, Product product ) async {
+      globalApi.listCart.remove(globalApi.listCart[indexCart]);
       cart
-        ..idProduct = product.id
-        ..quantity = quantity
-        ..numberQuantityBuy = (numberQuantityBuy + numberBuyBefore!)
-        ..size = size
-        ..productSizeId = productSizeId
+        ..idProduct = globalApi.listCart[indexCart].idProduct
+        ..quantity = globalApi.listCart[indexCart].quantity
+        ..numberQuantityBuy = (globalApi.listCart[indexCart].numberQuantityBuy! + numberBuyBefore)
+        ..size = globalApi.listCart[indexCart].size
+        ..productSizeId = globalApi.listCart[indexCart].productSizeId
         ..percent = product.discount!.length > 0 ? product.discount![0].percent : 0
-        ..priceAfterDiscount = priceAfterDiscount
+        ..priceAfterDiscount = globalApi.listCart[indexCart].priceAfterDiscount
         ..product = product;
       globalApi.listCart.insert(indexCart!,cart);
       ToastUtils.showToast(AppStrings.updateCartSuccess);
-    }
+      cart = Cart();
   }
+  
 
   @override
   void dispose() {}

@@ -40,7 +40,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int? indexSelect;
   int numberQuantity = 0;
   String nameSize = "";
-  int? quantity;
+  int quantity = 0;
   late SharedPreferences pref;
   int? productSizeId;
   Cart cart = Cart();
@@ -50,15 +50,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   void initState() {
     product = widget.product;
-     if (product.discount!.length > 0) {
-                            priceDiscount =
-                                ((product.discount![0].percent! / 100) *
-                                        product.price!)
-                                    .toInt();
-
-                          }
+    if (product.discount!.length > 0) {
+      priceDiscount =
+          ((product.discount![0].percent! / 100) * product.price!).toInt();
+    }
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -152,8 +150,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   }
 
   Widget _productDetail(Product product) {
-    print(
-        "NAME SIZE == $nameSize \t $quantity \t $numberQuantity \t $productSizeId");
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       padding: const EdgeInsets.all(20),
@@ -246,7 +242,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           isCheckSelect = true;
                           indexSelect = index;
                           nameSize = productSize.size!.name!;
-                          quantity = productSize.quantity;
+                          quantity = productSize.quantity!;
                           productSizeId = productSize.id;
                         });
                       },
@@ -271,7 +267,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         isCheckSelect = true;
                         indexSelect = index;
                         nameSize = productSize.size!.name!;
-                        quantity = productSize.quantity;
+                        quantity = productSize.quantity!;
                         productSizeId = productSize.id;
                       });
                     },
@@ -355,13 +351,36 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 } else if (numberQuantity == 0) {
                   ToastUtils.showToast(AppStrings.chooseQuantity);
                 } else {
-                  bloC.addToCart(
+                  print(
+                      "NAME SIZE == $nameSize \t $quantity \t $numberQuantity \t $productSizeId");
+                  if(globalApi.listCart.length == 0){
+                     bloC.addToCart(
                       product,
-                      quantity!,
+                      quantity,
                       numberQuantity,
                       nameSize,
                       productSizeId!,
                       ((product.price! * numberQuantity) - priceDiscount));
+                  }
+                  else{
+                    for (int i = 0; i < globalApi.listCart.length; i++) {
+                    if (globalApi.listCart[i].productSizeId == productSizeId) {
+                      bloC.updateToCart(i, numberQuantity, product);
+                      break;
+                    }else{
+                    bloC.addToCart(
+                      product,
+                      quantity,
+                      numberQuantity,
+                      nameSize,
+                      productSizeId!,
+                      ((product.price! * numberQuantity) - priceDiscount));
+                      break;
+                    }
+                  }
+                  }
+                  resetData();
+                 
                 }
               },
               imageUrl: AppImages.cart,
@@ -436,6 +455,16 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 )).toList(),
       ],
     );
+  }
+
+  void resetData() {
+    nameSize = "";
+    quantity = 0;
+    numberQuantity = 0;
+    productSizeId = 0;
+    setState(() {
+      
+    });
   }
 
   Widget _description(Product product) {

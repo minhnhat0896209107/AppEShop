@@ -72,5 +72,6 @@ class AppStrings {
   static const chooseQuantity = "Vui lòng chọn số lượng mua!!";
   static const address = "Address";
   static const pleaseChooseProduct = "Vui lòng chọn sản phẩm";
+  static const delete = "Delete";
   
 }

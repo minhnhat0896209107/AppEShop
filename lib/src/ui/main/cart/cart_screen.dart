@@ -31,6 +31,7 @@ class _CartScreenState extends State<CartScreen> {
   late CartBloC bloC;
   late List<Cart> listCartSelect = [];
   List<int> listNumberQuantity = [];
+  List<String> listSizeProduct = [];
   List<Cart> listCart = [];
   late SharedPreferences pref;
   List<Product> cartProducts = [];
@@ -42,6 +43,7 @@ class _CartScreenState extends State<CartScreen> {
     listCart = globalApi.listCart;
     for (Cart i in listCart) {
       listNumberQuantity.add(i.numberQuantityBuy!);
+      listSizeProduct.add(i.size!);
       cartProducts.add(i.product!);
       listCheck.add(false);
     }
@@ -120,7 +122,7 @@ class _CartScreenState extends State<CartScreen> {
                                   return _cartDetail(
                                       index % 2 == 0,
                                       cartProducts[index],
-                                      globalApi.listCart[index],
+                                      listCart[index],
                                       index);
                                 },
                               )),
@@ -157,20 +159,23 @@ class _CartScreenState extends State<CartScreen> {
                                     IconTextButton(
                                         imageUrl: AppImages.wallet,
                                         title: AppStrings.checkout,
-                                        onTap:!logged ? (){
-                 Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ));
-              } : () async {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    OrderScreen(),
-                                              ));
-                                        })
+                                        onTap: !logged
+                                            ? () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          LoginScreen(),
+                                                    ));
+                                              }
+                                            : () async {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          OrderScreen(),
+                                                    ));
+                                              })
                                   ]),
                             )
                           ],
@@ -195,12 +200,31 @@ class _CartScreenState extends State<CartScreen> {
                 onTap: () {
                   setState(() {
                     listCheck[index] = !listCheck[index];
+                    Cart cart = Cart();
+
+                    if(listCheck[index]){
+                       cart
+                          ..idProduct = globalApi.listCart[index].idProduct
+                          ..quantity = globalApi.listCart[index].quantity
+                          ..numberQuantityBuy = listNumberQuantity[index]
+                          ..size = listSizeProduct[index]
+                          ..productSizeId =
+                              globalApi.listCart[index].productSizeId
+                          ..percent = product!.discount!.length > 0
+                              ? product.discount![0].percent
+                              : 0
+                          ..priceAfterDiscount =
+                              globalApi.listCart[index].priceAfterDiscount
+                          ..product = product;
+                    }
+                   
                     if (globalApi.listCartSelect != []) {
                       if (listCheck[index]) {
-                        globalApi.listCartSelect.add(globalApi.listCart[index]);
+                        
+                        globalApi.listCartSelect.add(cart);
                       } else {
                         globalApi.listCartSelect
-                            .remove(globalApi.listCart[index]);
+                            .remove(cart);
                       }
                     }
                   });
@@ -219,6 +243,23 @@ class _CartScreenState extends State<CartScreen> {
                   setState(() {
                     listCheck[index] = !listCheck[index];
                     if (globalApi.listCartSelect != []) {
+                       Cart cart = Cart();
+
+                    if(listCheck[index]){
+                       cart
+                          ..idProduct = globalApi.listCart[index].idProduct
+                          ..quantity = globalApi.listCart[index].quantity
+                          ..numberQuantityBuy = listNumberQuantity[index]
+                          ..size = listSizeProduct[index]
+                          ..productSizeId =
+                              globalApi.listCart[index].productSizeId
+                          ..percent = product!.discount!.length > 0
+                              ? product.discount![0].percent
+                              : 0
+                          ..priceAfterDiscount =
+                              globalApi.listCart[index].priceAfterDiscount
+                          ..product = product;
+                    }
                       if (listCheck[index]) {
                         globalApi.listCartSelect.add(globalApi.listCart[index]);
                       } else {
@@ -272,7 +313,7 @@ class _CartScreenState extends State<CartScreen> {
                 height: 10,
               ),
               Text(
-                cart.size ?? '--',
+                listSizeProduct[index] ?? '--',
               ),
             ],
           ),
@@ -294,7 +335,8 @@ class _CartScreenState extends State<CartScreen> {
       ..numberQuantityBuy = listNumberQuantity[index]
       ..size = globalApi.listCart[index].size
       ..productSizeId = globalApi.listCart[index].productSizeId
-      ..percent = product.discount!.length > 0 ? product.discount![0].percent : 0
+      ..percent =
+          product.discount!.length > 0 ? product.discount![0].percent : 0
       ..priceAfterDiscount = globalApi.listCart[index].priceAfterDiscount
       ..product = product;
 
