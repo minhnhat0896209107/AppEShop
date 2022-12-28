@@ -12,17 +12,24 @@ class ProductScreenBloC extends BaseBloC {
   Stream<List<Product>?> get productStream => _productController.stream;
   Sink<String> get searchSink => _searchController.sink;
   final ProductRepository _productRepository = ProductRepository();
-
+  List<Product> products = [];
   ProductScreenBloC() {
     _searchController
         .debounce((_) => TimerStream(true, kSearchDebounceDuration))
         .listen((searchText) => _searchText(searchText));
   }
-  void getListProducts(String search, bool isCheckLatest, int sortAssending) async {
-    List<Product> products = await _productRepository.getListProduct(search, isCheckLatest, sortAssending);
+  void getListProducts(String search, bool isCheckLatest, int sortAssending,
+      int pageIndex) async {
+    print("SELECT INDEX1 $pageIndex");
+
+    products = await _productRepository.getListProduct(
+        search: search,
+        isCheckLatest: isCheckLatest,
+        sortAssending: sortAssending,
+        page: pageIndex);
+    print("SELECT INDEX2 $pageIndex");
     _productController.add(products);
   }
-
 
   void _searchText(String searchText) async {
     _productController.add(null);
@@ -34,5 +41,6 @@ class ProductScreenBloC extends BaseBloC {
   @override
   void dispose() {
     _productController.close();
+    _searchController.close();
   }
 }

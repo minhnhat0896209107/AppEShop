@@ -10,13 +10,15 @@ import 'package:base_code/src/utils/app_strings.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+import '../../../api/global_api.dart';
 import '../../../blocs/category_bloc.dart';
 import '../../../blocs/home_screen_bloc.dart';
 import '../../../models/category/category.dart';
 
 class ProductScreen extends StatefulWidget {
-  bool?isCheckHomeToProduct;
+  bool? isCheckHomeToProduct;
   ProductScreen({Key? key, this.isCheckHomeToProduct}) : super(key: key);
 
   @override
@@ -31,106 +33,129 @@ class _ProductScreenState extends State<ProductScreen> {
   List<String> itemsPriceAccending = ["Price ascending", "Price descending"];
   String selectPriceAssending = "Price ascending";
   GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
-
+  DataPagerController dataPagerController = DataPagerController();
+  DataPagerDelegate dataPagerDelegate = DataPagerDelegate();
   @override
   Widget build(BuildContext context) {
-    print("ISCHECH == ${widget.isCheckHomeToProduct}");
+    print(
+        "ISCHECH == ${widget.isCheckHomeToProduct} \t ${globalApi.totalPageProduct}");
     return Scaffold(
-      appBar: widget.isCheckHomeToProduct == null ? null : customAppbar,
-      body: Provider<ProductScreenBloC>(
+        appBar: widget.isCheckHomeToProduct == null ? null : customAppbar,
+        body: Provider<ProductScreenBloC>(
           create: (_) => ProductScreenBloC(),
           dispose: (_, bloc) => bloc.dispose(),
           builder: (context, _) {
             _bloC = context.read<ProductScreenBloC>();
             _bloC.getListProducts(selectedValue ?? "", isCheckLatest,
-                selectPriceAssending == "Price ascending" ? 0 : 1);
+                selectPriceAssending == "Price ascending" ? 0 : 1, 1);
             return Provider<CategoryBloc>(
-              create: (_) => CategoryBloc(),
-              dispose: (context, bloc) => bloc.dispose(),
-              builder: (context, _) {
-                _categoryBloc = context.read<CategoryBloc>();
-                _categoryBloc.getListCategory();
+                create: (_) => CategoryBloc(),
+                dispose: (context, bloc) => bloc.dispose(),
+                builder: (context, _) {
+                  _categoryBloc = context.read<CategoryBloc>();
+                  _categoryBloc.getListCategory();
 
-                      return Container(
-                        color: AppColors.pinkLight,
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height,
-                        child: SingleChildScrollView(
-                          child: Column(children: [
-
-                            Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16, right: 16, top: 100, bottom: 50),
-                                child: _searchBox()),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _categoryAllItem(AppStrings.allCategories),
-                                _categoryPriceItem(AppStrings.priceAscending)
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                    child: GestureDetector(
-                                        onTap: () => setState(() {
-                                              isCheckLatest = !isCheckLatest;
-                                            }),
-                                        child: _categoryItem(AppStrings.latest,
-                                            hasLogo: false))),
-                                Container(
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  width: 1,
+                  return StreamBuilder<List<Product>?>(
+                      stream: _bloC.productStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<Product>? products = snapshot.data;
+                          print("Products ${products!.length}");
+                          if (products.isEmpty) {
+                            return Image.asset(
+                              AppImages.cartEmpty,
+                              width: 300,
+                              height: 300,
+                            );
+                          }
+                          return Container(
+                            color: AppColors.pinkLight,
+                            width: double.infinity,
+                            height: MediaQuery.of(context).size.height,
+                            child: SingleChildScrollView(
+                              child: Column(children: [
+                                Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 16,
+                                        right: 16,
+                                        top: 100,
+                                        bottom: 50),
+                                    child: _searchBox()),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _categoryAllItem(AppStrings.allCategories),
+                                    _categoryPriceItem(
+                                        AppStrings.priceAscending)
+                                  ],
+                                ),
+                                const SizedBox(
                                   height: 15,
-                                  color: AppColors.primay,
                                 ),
-                                Flexible(
-                                    child: _categoryItem(AppStrings.bestSeller,
-                                        hasLogo: false))
-                              ],
-                            ),
-                            _productGridView(),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                            OutlinedButton(
-                                style: OutlinedButton.styleFrom(
-                                  shape: const StadiumBorder(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                        child: GestureDetector(
+                                            onTap: () => setState(() {
+                                                  isCheckLatest =
+                                                      !isCheckLatest;
+                                                }),
+                                            child: _categoryItem(
+                                                AppStrings.latest,
+                                                hasLogo: false))),
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      width: 1,
+                                      height: 15,
+                                      color: AppColors.primay,
+                                    ),
+                                    Flexible(
+                                        child: _categoryItem(
+                                            AppStrings.bestSeller,
+                                            hasLogo: false))
+                                  ],
                                 ),
-                                onPressed: () {},
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Image.asset(
-                                        AppImages.share,
-                                        width: 24,
-                                      ),
-                                      const SizedBox(
-                                        width: 11,
-                                      ),
-                                      const Text(AppStrings.nextPage)
-                                    ],
-                                  ),
-                                )),
-                            const SizedBox(
-                              height: 100,
-                            ),
-                          ]),
-                        ),
-                      );
-                    });
-              },
-            ));
-          
+                                _productGridView(products),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Center(
+                                  child: SfDataPager(
+                                    visibleItemsCount: 4,
+                                    pageCount: globalApi.totalPageProduct?.floorToDouble() ?? 1,
+                                    controller: dataPagerController,
+                                    onPageNavigationStart: (pageIndex) {
+                                                        _categoryBloc.getListCategory();
 
+                                      _bloC.getListProducts(
+                                          selectedValue ?? "",
+                                          isCheckLatest,
+                                          selectPriceAssending ==
+                                                  "Price ascending"
+                                              ? 0
+                                              : 1,
+                                          pageIndex + 1);
+                                    },
+                                    initialPageIndex: 0,
+                                    direction: Axis.horizontal,
+                                    delegate: dataPagerDelegate,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 100,
+                                ),
+                              ]),
+                            ),
+                          );
+                        }
+                        return loadingWidget;
+                      });
+                });
+          },
+        ));
   }
 
   Widget _searchBox() {
@@ -298,44 +323,27 @@ class _ProductScreenState extends State<ProductScreen> {
     );
   }
 
-  Widget _productGridView() {
-    return StreamBuilder<List<Product>?>(
-        stream: _bloC.productStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Product>? products = snapshot.data;
-            print("Products ${products!.length}");
-            if (products.isEmpty) {
-              return Image.asset(
-                AppImages.cartEmpty,
-                width: 300,
-                height: 300,
+  Widget _productGridView(List<Product> products) {
+    return Container(
+      margin: EdgeInsets.only(top: 30),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: products.length,
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200,
+                childAspectRatio: 170 / 280,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20),
+            itemBuilder: (context, index) {
+              return ProductItem(
+                url: products[index].images!.first.url!,
+                product: products[index],
               );
-            }
-            return Container(
-              margin: EdgeInsets.only(top: 30),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: products.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200,
-                            childAspectRatio: 170 / 280,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20),
-                    itemBuilder: (context, index) {
-                      return ProductItem(
-                        url: products[index].images!.first.url!,
-                        product: products[index],
-                      );
-                    }),
-              ),
-            );
-          }
-          return loadingWidget;
-        });
+            }),
+      ),
+    );
   }
 }

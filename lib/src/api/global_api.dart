@@ -10,4 +10,5 @@ class GlobalApi with ChangeNotifier{
   List<Cart> listCart = [];
   List<Cart> listCartSelect = [];
   int? totalPageOrderMomo = 0;
+  int? totalPageProduct = 0;
 }

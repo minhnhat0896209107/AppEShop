@@ -35,16 +35,19 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
   void changeNameStatus(String status){
     switch(status){
       case "completed":
-      _nameStatus = "Deliveried";
+      _nameStatus = "Complete";
       break;
       case "on_preparing":
       _nameStatus = "Preparing";
       break;
       case "on_delivery":
-      _nameStatus = "On Delivery";
+      _nameStatus = "Delivery";
+      break;
+      case "cancelled":
+      _nameStatus = "Cancelled";
       break;
       default:
-      _nameStatus = "Payment";
+      _nameStatus = "Waiting payment";
       break;
     }
   }
@@ -189,7 +192,7 @@ class _OrderMomoScreenState extends State<OrderMomoScreen> {
               height: 5,
             ),
             Visibility(
-              visible: nameStatus == "On Delivery",
+              visible: nameStatus == "Delivery",
               child: Align(
                 alignment: Alignment.center,
                 child: GestureDetector(

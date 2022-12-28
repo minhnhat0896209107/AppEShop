@@ -1,23 +1,27 @@
+import 'package:base_code/src/api/global_api.dart';
 import 'package:base_code/src/models/product/product.dart';
 import 'package:base_code/src/struct/api_services/base_api.dart';
 import 'package:base_code/src/struct/api_services/product_url.dart';
 
 class ProductRepository {
   final BaseApi _baseApi = BaseApi();
+  String querySearch = "";
+  String checkLatest = "";
+  String sortAssen = "";
   Future<List<Product>> getListProduct(
-      [String search = '',
+
+      {String search = '',
       bool isCheckLatest = false,
-      int sortAssending = 0]) async {
-    Map<String, dynamic> params = {};
-      
-      params.addAll({
-      'filter': search != "" ? "category|\$eq|$search" : "",
-      'sort': isCheckLatest ? "createdAt" : "",
-      'sort': sortAssending == 0 ? "price" : "-price"
-    });
+      int sortAssending = 0, int page = 1}) async {
+      search != "" ? querySearch =  "category|\$eq|$search" :  querySearch = "";
+      isCheckLatest ? checkLatest = "createdAt" : checkLatest = "";
+      sortAssending == 0 ?sortAssen = "price" : sortAssen ="-price";
+ 
 
     var respond =
-        await _baseApi.getMethod(ProductUrl.listProduct, param: params);
+        await _baseApi.getMethod("${ProductUrl.listProduct}?page=$page&filter=$querySearch&sort=$sortAssen");
+    globalApi.totalPageProduct = respond['data']['meta']['totalPages'];
+    print("ISCHECH == ${respond['data']['meta']['totalPages']}");
     if (respond['success']) {
 
       return (respond['data']['items'] as List)
