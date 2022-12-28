@@ -14,6 +14,7 @@ import 'package:base_code/src/utils/string_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api/global_api.dart';
 import '../../../blocs/order_momo_bloc.dart';
@@ -58,9 +59,8 @@ class _OrderScreenState extends State<OrderScreen> {
   OrderMomo? orderMomo;
   double priceDiscount = 0;
   List<String> listSizeProduct = [];
-    List<Cart> listCart = [];
-    List<Product> listProduct = [];
-
+  List<Cart> listCart = [];
+  List<Product> listProduct = [];
 
   Future postOrder() async {
     url = await _orderRepository.postOrder(order: order);
@@ -101,28 +101,25 @@ class _OrderScreenState extends State<OrderScreen> {
 
   @override
   Widget build(BuildContext context) {
-     
-            return Scaffold(
-                appBar: customAppbar,
-                body: Stack(
-                  children: [
-                    Container(
-                      color: AppColors.pinkLight,
-                    ),
-                    PageView(
-                      physics: NeverScrollableScrollPhysics(),
-                      onPageChanged: (value) {
-                        setState(() {
-                          page = value;
-                        });
-                      },
-                      children: [_pageInput(), _pageInforOrder()],
-                      controller: controller,
-                    )
-                  ],
-                ));
-          
-  
+    return Scaffold(
+        appBar: customAppbar,
+        body: Stack(
+          children: [
+            Container(
+              color: AppColors.pinkLight,
+            ),
+            PageView(
+              physics: NeverScrollableScrollPhysics(),
+              onPageChanged: (value) {
+                setState(() {
+                  page = value;
+                });
+              },
+              children: [_pageInput(), _pageInforOrder()],
+              controller: controller,
+            )
+          ],
+        ));
   }
 
   Widget _pageInput() {
@@ -342,11 +339,8 @@ class _OrderScreenState extends State<OrderScreen> {
                     .formatMoney,
                 FontWeight.w500),
             _inforPrice(AppStrings.ship, "20.000 đ", FontWeight.w500),
-            _inforPrice(
-                AppStrings.total,
-                orderMomo!.orderItems![0].price!
-                    .formatMoney,
-                FontWeight.w700),
+            _inforPrice(AppStrings.total,
+                orderMomo!.orderItems![0].price!.formatMoney, FontWeight.w700),
             _lineHeight(),
             _backInforInputMomo(orderMomo),
             Container(
@@ -458,7 +452,7 @@ class _OrderScreenState extends State<OrderScreen> {
                       Container(
                         margin: EdgeInsets.only(left: 55),
                         child: Padding(
-                          padding:  EdgeInsets.all(3.0),
+                          padding: EdgeInsets.all(3.0),
                           child: Text(
                             "${listNumberQuantity[index]}",
                             textAlign: TextAlign.center,
@@ -626,9 +620,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget _backInforInputMomo(OrderMomo? orderMomo) {
     itemsOrder = [];
     for (var i in orderMomo!.orderItems!) {
-      var item = Item(
-          productSizeId: i.productSizeId,
-          quantity: i.quantity);
+      var item = Item(productSizeId: i.productSizeId, quantity: i.quantity);
       itemsOrder.add(item);
     }
     order
@@ -677,14 +669,16 @@ class _OrderScreenState extends State<OrderScreen> {
                   try {
                     await getPayment(idOrderMomo!);
                     print("URL == $url \t ${UserManager.globalToken}");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MomoScreen(url: urlPayment),
-                        )).then((value) {
-                      globalApi.listCartSelect = [];
-                      setState(() {});
-                    });
+                    _launchUrl(url ?? '');
+
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => MomoScreen(url: urlPayment),
+                    //     )).then((value) {
+                    //   globalApi.listCartSelect = [];
+                    //   setState(() {});
+                    // });
                   } catch (error, stackStrace) {
                     debugPrint(error.toString());
                     debugPrintStack(stackTrace: stackStrace);
@@ -740,18 +734,20 @@ class _OrderScreenState extends State<OrderScreen> {
           IconTextButton(
               imageUrl: AppImages.wallet,
               title: AppStrings.checkout,
-              onTap:  () async {
+              onTap: () async {
                 try {
                   await postOrder();
                   for (var element in globalApi.listCartSelect) {
                     globalApi.listCart.remove(element);
                   }
                   removeListCart();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MomoScreen(url: url),
-                      )).then((value) {});
+
+                  _launchUrl(url ?? '');
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) => MomoScreen(url: url),
+                  //     )).then((value) {});
                   globalApi.listCartSelect = [];
                   setState(() {});
                 } catch (error, stackStrace) {
@@ -782,4 +778,14 @@ class _OrderScreenState extends State<OrderScreen> {
     }
     return (total - priceDiscount.toInt() + 20000).formatMoney;
   }
+}
+
+Future<void> _launchUrl(String url) async {
+  Uri _url = Uri.parse(url);
+   if (!await launchUrl(
+      _url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw 'Could not launch $url';
+    }
 }

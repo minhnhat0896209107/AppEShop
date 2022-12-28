@@ -50,6 +50,7 @@ dependencies:
   intl: ^0.17.0
   multi_select_flutter: ^4.1.2
   syncfusion_flutter_datagrid: ^20.4.38
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:
