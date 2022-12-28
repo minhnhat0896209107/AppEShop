@@ -780,12 +780,9 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 }
 
-Future<void> _launchUrl(String url) async {
-  Uri _url = Uri.parse(url);
-   if (!await launchUrl(
-      _url,
-      mode: LaunchMode.externalApplication,
-    )) {
-      throw 'Could not launch $url';
-    }
+Future<void> _launchUrl(String urlA) async {
+  Uri _url = Uri.parse(urlA);
+   if (!await launchUrl(_url)) {
+    throw 'Could not launch $_url';
+  }
 }
